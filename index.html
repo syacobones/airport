@@ -18,6 +18,7 @@
       overflow: auto;
       -webkit-overflow-scrolling: touch;
       touch-action: pinch-zoom;
+      background: #000;
     }
     #map {
       position: relative;
@@ -40,7 +41,7 @@
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.8);
       color: white;
       padding: 6px 12px;
       border-radius: 8px;
@@ -97,12 +98,19 @@
 
     function updateMarker(lat, lon, heading) {
       const { x, y } = interpolate(lat, lon);
+      if (x < 0 || x > 1600 || y < 0 || y > 2800) {
+        status.textContent = "Estás fuera del área del mapa 🚫";
+        marker.style.display = "none";
+        return;
+      }
       marker.style.left = `${x}px`;
       marker.style.top = `${y}px`;
+      marker.style.display = "block";
       if (typeof heading === 'number') {
         marker.style.transform = `translate(-50%, -50%) rotate(${heading}deg)`;
       }
       lastPosition = { x, y };
+      status.textContent = "Ubicado ✔️";
     }
 
     centerBtn.addEventListener('click', () => {
@@ -120,7 +128,6 @@
       const lon = position.coords.longitude;
       const heading = position.coords.heading;
       updateMarker(lat, lon, heading);
-      status.textContent = `Ubicado ✔️`;
     }
 
     function handleError(error) {
