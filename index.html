@@ -10,88 +10,245 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       touch-action: none;
+      background: #000;
     }
+    
     #map-container {
       width: 100%;
       height: 100%;
       overflow: hidden;
       touch-action: none;
-      background: #000;
+      background: #f0f0f0;
       position: relative;
     }
+    
     #map {
       position: absolute;
       top: 0;
       left: 0;
       background: url('airport_diagram_page1.png') no-repeat;
       background-size: contain;
+      background-color: #ffffff;
       width: 1600px;
       height: 2800px;
       transform-origin: top left;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      border: 1px solid #ccc;
     }
+    
     #marker {
       position: absolute;
-      width: 32px;
-      height: 32px;
-      background: url('https://upload.wikimedia.org/wikipedia/commons/e/e3/Airplane_silhouette_icon.png') no-repeat center center;
-      background-size: contain;
-      transform: translate(-50%, -50%) rotate(0deg);
+      width: 40px;
+      height: 40px;
       z-index: 10;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+      transition: transform 0.3s ease;
     }
+    
+    .airplane-icon {
+      width: 100%;
+      height: 100%;
+      fill: #2196F3;
+      stroke: white;
+      stroke-width: 2;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    
     #status {
       position: fixed;
-      top: 10px;
+      top: 15px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.9);
       color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 12px 20px;
+      border-radius: 25px;
       font-size: 14px;
+      font-weight: 500;
       z-index: 20;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
-    #center-btn, .zoom-btn {
+    
+    .control-panel {
       position: fixed;
       right: 20px;
-      background: #007bff;
-      color: white;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      z-index: 20;
-      cursor: pointer;
-    }
-    #center-btn {
       bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 20;
     }
-    #zoom-in {
-      bottom: 80px;
+    
+    .control-btn {
+      width: 55px;
+      height: 55px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
-    #zoom-out {
-      bottom: 140px;
+    
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    
+    .control-btn:active {
+      transform: translateY(0);
+    }
+    
+    #info-panel {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 12px;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      max-width: 280px;
+    }
+    
+    #coordinates {
+      font-family: 'Courier New', monospace;
+      margin-top: 8px;
+      color: #81c784;
+      font-size: 11px;
+    }
+    
+    #zoom-level {
+      position: fixed;
+      top: 50%;
+      right: 90px;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      z-index: 20;
+    }
+    
+    .loading {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .accuracy-indicator {
+      position: absolute;
+      border: 2px solid rgba(33, 150, 243, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9;
+      background: rgba(33, 150, 243, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .control-panel {
+        right: 15px;
+        bottom: 15px;
+        gap: 10px;
+      }
+      
+      .control-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+      }
+      
+      #info-panel {
+        max-width: 250px;
+        padding: 12px;
+      }
+      
+      #status {
+        top: 10px;
+        font-size: 13px;
+        padding: 10px 16px;
+      }
     }
   </style>
 </head>
 <body>
   <div id="map-container">
     <div id="map">
-      <div id="marker"></div>
+      <div id="marker">
+        <svg class="airplane-icon" viewBox="0 0 24 24">
+          <path d="M21,16V14L13,9V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z"/>
+        </svg>
+      </div>
+      <div id="accuracy-circle" class="accuracy-indicator"></div>
     </div>
   </div>
-  <div id="status">Buscando señal GPS...</div>
-  <button id="center-btn">Centrarme</button>
-  <button class="zoom-btn" id="zoom-in">+</button>
-  <button class="zoom-btn" id="zoom-out">−</button>
+  
+  <div id="status">
+    <div class="loading">
+      <div class="spinner"></div>
+      <span>Buscando señal GPS...</span>
+    </div>
+  </div>
+  
+  <div id="info-panel">
+    <h3 style="margin: 0 0 8px 0; color: #64b5f6; font-size: 14px;">✈️ Madrid-Barajas (LEMD)</h3>
+    <div style="font-size: 11px; margin-bottom: 8px;">Aeropuerto Adolfo Suárez Madrid-Barajas</div>
+    <div id="coordinates">Esperando GPS...</div>
+  </div>
+  
+  <div id="zoom-level">Zoom: 100%</div>
+  
+  <div class="control-panel">
+    <button class="control-btn" id="zoom-in" title="Acercar">+</button>
+    <button class="control-btn" id="zoom-out" title="Alejar">−</button>
+    <button class="control-btn" id="center-btn" title="Centrarme">📍</button>
+    <button class="control-btn" id="reset-btn" title="Vista completa">🏠</button>
+  </div>
 
   <script>
+    // Puntos de referencia para calibración GPS
     const gpsRef1 = { lat: 40.46154, lon: -3.56925 }; // I7
     const pixelRef1 = { x: 460, y: 2530 };
-    const gpsRef2 = { lat: 40.47964, lon: -3.57538 }; // G6
+    const gpsRef2 = { lat: 40.47964, lon: -3.57538 }; // G6  
     const pixelRef2 = { x: 1230, y: 1770 };
 
+    // Límites del área del aeropuerto
     const bounds = {
       minLat: 40.4600,
       maxLat: 40.5100,
@@ -99,64 +256,170 @@
       maxLon: -3.5400
     };
 
+    // Variables del DOM
     const mapContainer = document.getElementById('map-container');
     const map = document.getElementById('map');
     const marker = document.getElementById('marker');
+    const accuracyCircle = document.getElementById('accuracy-circle');
     const status = document.getElementById('status');
+    const coordinates = document.getElementById('coordinates');
+    const zoomLevel = document.getElementById('zoom-level');
     const centerBtn = document.getElementById('center-btn');
+    const resetBtn = document.getElementById('reset-btn');
     const zoomInBtn = document.getElementById('zoom-in');
     const zoomOutBtn = document.getElementById('zoom-out');
 
+    // Variables de estado
     let lastPosition = null;
+    let watchId = null;
     let scale = 1;
     let offsetX = 0;
     let offsetY = 0;
     let startX = 0;
     let startY = 0;
     let isDragging = false;
+    let currentAccuracy = null;
 
-    function interpolate(lat, lon) {
+    // Interpolación bilineal mejorada para convertir GPS a píxeles
+    function gpsToPixel(lat, lon) {
       const dx = pixelRef2.x - pixelRef1.x;
       const dy = pixelRef2.y - pixelRef1.y;
       const dLat = gpsRef2.lat - gpsRef1.lat;
       const dLon = gpsRef2.lon - gpsRef1.lon;
+      
       const x = pixelRef1.x + ((lon - gpsRef1.lon) / dLon) * dx;
       const y = pixelRef1.y + ((lat - gpsRef1.lat) / dLat) * dy;
+      
       return { x, y };
     }
 
+    // Actualizar transformación del mapa
     function updateTransform() {
       map.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+      updateZoomLevel();
     }
 
-    function updateMarker(lat, lon, heading) {
-      if (
-        lat < bounds.minLat || lat > bounds.maxLat ||
-        lon < bounds.minLon || lon > bounds.maxLon
-      ) {
-        status.textContent = "Estás fuera del área del mapa 🚫";
+    // Actualizar indicador de zoom
+    function updateZoomLevel() {
+      const percentage = Math.round(scale * 100);
+      zoomLevel.textContent = `Zoom: ${percentage}%`;
+    }
+
+    // Calcular distancia al centro del aeropuerto
+    function distanceToAirport(lat, lon) {
+      const centerLat = (bounds.minLat + bounds.maxLat) / 2;
+      const centerLon = (bounds.minLon + bounds.maxLon) / 2;
+      
+      const R = 6371; // Radio de la Tierra en km
+      const dLat = (lat - centerLat) * Math.PI / 180;
+      const dLng = (lon - centerLon) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(centerLat * Math.PI / 180) * Math.cos(lat * Math.PI / 180) *
+          Math.sin(dLng/2) * Math.sin(dLng/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    // Actualizar posición del marcador
+    function updateMarker(lat, lon, heading, accuracy) {
+      currentAccuracy = accuracy;
+      
+      // Verificar si está dentro de los límites del aeropuerto
+      const isInAirport = lat >= bounds.minLat && lat <= bounds.maxLat && 
+                         lon >= bounds.minLon && lon <= bounds.maxLon;
+      
+      if (!isInAirport) {
+        const distance = distanceToAirport(lat, lon);
+        updateStatus(`🚫 Fuera del aeropuerto (${distance.toFixed(1)}km de distancia)`, false);
         marker.style.display = "none";
+        accuracyCircle.style.display = "none";
         return;
       }
 
-      const { x, y } = interpolate(lat, lon);
+      const { x, y } = gpsToPixel(lat, lon);
+      
+      // Verificar si las coordenadas están dentro del área visual
       if (x < 0 || x > 1600 || y < 0 || y > 2800) {
-        status.textContent = "Coordenadas fuera del área visual";
+        updateStatus("📍 Coordenadas fuera del área visual", false);
         marker.style.display = "none";
+        accuracyCircle.style.display = "none";
         return;
       }
 
+      // Posicionar marcador
       marker.style.left = `${x}px`;
       marker.style.top = `${y}px`;
       marker.style.display = "block";
-      if (typeof heading === 'number') {
+      
+      // Orientar el avión según la dirección
+      if (typeof heading === 'number' && heading >= 0) {
         marker.style.transform = `translate(-50%, -50%) rotate(${heading}deg)`;
+      } else {
+        marker.style.transform = `translate(-50%, -50%) rotate(0deg)`;
       }
+      
+      // Mostrar círculo de precisión
+      if (accuracy && accuracy < 100) {
+        const accuracyPixels = accuracy * 2; // Aproximación: 1 metro = 2 píxeles
+        accuracyCircle.style.left = `${x}px`;
+        accuracyCircle.style.top = `${y}px`;
+        accuracyCircle.style.width = `${accuracyPixels}px`;
+        accuracyCircle.style.height = `${accuracyPixels}px`;
+        accuracyCircle.style.transform = `translate(-50%, -50%)`;
+        accuracyCircle.style.display = "block";
+      } else {
+        accuracyCircle.style.display = "none";
+      }
+      
       lastPosition = { x, y };
-      status.textContent = "Ubicado ✔️";
+      updateStatus(`✅ Ubicado en el aeropuerto (±${Math.round(accuracy)}m)`, false);
+      updateCoordinates(lat, lon, accuracy);
     }
 
-    centerBtn.addEventListener('click', () => {
+    // Actualizar texto de estado
+    function updateStatus(message, showSpinner = false) {
+      if (showSpinner) {
+        status.innerHTML = `
+          <div class="loading">
+            <div class="spinner"></div>
+            <span>${message}</span>
+          </div>
+        `;
+      } else {
+        status.textContent = message;
+      }
+    }
+
+    // Actualizar coordenadas mostradas
+    function updateCoordinates(lat, lon, accuracy) {
+      coordinates.innerHTML = `
+        📍 Lat: ${lat.toFixed(6)}°<br>
+        📍 Lng: ${lon.toFixed(6)}°<br>
+        🎯 Precisión: ±${Math.round(accuracy)}m<br>
+        🕐 ${new Date().toLocaleTimeString()}
+      `;
+    }
+
+    // Centrar mapa en la ubicación actual
+    function centerOnPosition() {
+      if (!lastPosition) {
+        updateStatus("❌ No hay ubicación GPS disponible", false);
+        return;
+      }
+      
+      const containerWidth = mapContainer.clientWidth;
+      const containerHeight = mapContainer.clientHeight;
+      
+      offsetX = containerWidth / 2 - lastPosition.x * scale;
+      offsetY = containerHeight / 2 - lastPosition.y * scale;
+      
+      updateTransform();
+    }
+
+    // Event listeners para controles
+    centerBtn.addEventListener('click', centerOnPosition);
+
+    resetBtn.addEventListener('click', () => {
       scale = 1;
       offsetX = 0;
       offsetY = 0;
@@ -164,15 +427,34 @@
     });
 
     zoomInBtn.addEventListener('click', () => {
-      scale = Math.min(scale + 0.2, 5);
-      updateTransform();
+      const newScale = Math.min(scale + 0.3, 5);
+      if (newScale !== scale) {
+        const centerX = mapContainer.clientWidth / 2;
+        const centerY = mapContainer.clientHeight / 2;
+        const scaleRatio = newScale / scale;
+        
+        offsetX = centerX - (centerX - offsetX) * scaleRatio;
+        offsetY = centerY - (centerY - offsetY) * scaleRatio;
+        scale = newScale;
+        updateTransform();
+      }
     });
 
     zoomOutBtn.addEventListener('click', () => {
-      scale = Math.max(scale - 0.2, 0.5);
-      updateTransform();
+      const newScale = Math.max(scale - 0.3, 0.3);
+      if (newScale !== scale) {
+        const centerX = mapContainer.clientWidth / 2;
+        const centerY = mapContainer.clientHeight / 2;
+        const scaleRatio = newScale / scale;
+        
+        offsetX = centerX - (centerX - offsetX) * scaleRatio;
+        offsetY = centerY - (centerY - offsetY) * scaleRatio;
+        scale = newScale;
+        updateTransform();
+      }
     });
 
+    // Event listeners para gestos táctiles
     mapContainer.addEventListener('touchstart', e => {
       if (e.touches.length === 1) {
         isDragging = true;
@@ -182,6 +464,7 @@
     });
 
     mapContainer.addEventListener('touchmove', e => {
+      e.preventDefault();
       if (isDragging && e.touches.length === 1) {
         offsetX = e.touches[0].clientX - startX;
         offsetY = e.touches[0].clientY - startY;
@@ -193,25 +476,117 @@
       isDragging = false;
     });
 
+    // Event listeners para mouse (escritorio)
+    mapContainer.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.clientX - offsetX;
+      startY = e.clientY - offsetY;
+      mapContainer.style.cursor = 'grabbing';
+    });
+
+    mapContainer.addEventListener('mousemove', e => {
+      if (isDragging) {
+        offsetX = e.clientX - startX;
+        offsetY = e.clientY - startY;
+        updateTransform();
+      }
+    });
+
+    mapContainer.addEventListener('mouseup', () => {
+      isDragging = false;
+      mapContainer.style.cursor = 'move';
+    });
+
+    // Zoom con rueda del mouse
+    mapContainer.addEventListener('wheel', e => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.2 : 0.2;
+      const newScale = Math.max(0.3, Math.min(5, scale + delta));
+      
+      if (newScale !== scale) {
+        const rect = mapContainer.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        const scaleRatio = newScale / scale;
+        
+        offsetX = mouseX - (mouseX - offsetX) * scaleRatio;
+        offsetY = mouseY - (mouseY - offsetY) * scaleRatio;
+        scale = newScale;
+        updateTransform();
+      }
+    });
+
+    // Manejo de posición GPS
     function handlePosition(position) {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
       const heading = position.coords.heading;
-      updateMarker(lat, lon, heading);
+      const accuracy = position.coords.accuracy;
+      
+      updateMarker(lat, lon, heading, accuracy);
+      
+      // Auto-centrar en la primera ubicación
+      if (!lastPosition) {
+        setTimeout(centerOnPosition, 1000);
+      }
     }
 
+    // Manejo de errores GPS
     function handleError(error) {
-      status.textContent = `Error GPS: ${error.message}`;
+      let message;
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          message = "❌ Permiso GPS denegado. Activa la ubicación.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          message = "❌ Señal GPS no disponible.";
+          break;
+        case error.TIMEOUT:
+          message = "⏱️ Tiempo agotado. Reintentando...";
+          break;
+        default:
+          message = "❌ Error GPS desconocido.";
+          break;
+      }
+      updateStatus(message, false);
     }
 
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(handlePosition, handleError, {
+    // Inicializar GPS
+    function initGPS() {
+      if (!navigator.geolocation) {
+        updateStatus("❌ GPS no soportado por el navegador.", false);
+        return;
+      }
+
+      updateStatus("📡 Iniciando GPS de alta precisión...", true);
+      
+      const options = {
         enableHighAccuracy: true,
-        maximumAge: 1000
-      });
-    } else {
-      status.textContent = "GPS no soportado por el navegador.";
+        maximumAge: 2000,
+        timeout: 15000
+      };
+
+      watchId = navigator.geolocation.watchPosition(handlePosition, handleError, options);
     }
+
+    // Inicializar aplicación
+    document.addEventListener('DOMContentLoaded', () => {
+      updateZoomLevel();
+      initGPS();
+      
+      // Configurar cursor
+      mapContainer.style.cursor = 'move';
+      
+      console.log('Airport GPS Tracker iniciado');
+      console.log('Puntos de calibración:', { gpsRef1, pixelRef1, gpsRef2, pixelRef2 });
+    });
+
+    // Cleanup al cerrar
+    window.addEventListener('beforeunload', () => {
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    });
   </script>
 </body>
 </html>
