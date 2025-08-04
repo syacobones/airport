@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Airport Diagram GPS Tracker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+  <title>Airport GPS Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
       width: 100%;
+      height: 100%;
       overflow: hidden;
-      touch-action: none;
-      -webkit-user-select: none;
+      font-family: sans-serif;
     }
     #map-container {
       width: 100%;
       height: 100%;
-      overflow: scroll;
+      overflow: auto;
       -webkit-overflow-scrolling: touch;
+      touch-action: pinch-zoom;
     }
     #map {
       position: relative;
@@ -34,7 +34,31 @@
       background-size: contain;
       transform: translate(-50%, -50%) rotate(0deg);
       z-index: 10;
-      transition: transform 0.2s ease;
+    }
+    #status {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 20;
+    }
+    #center-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: #007bff;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      z-index: 20;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -44,6 +68,8 @@
       <div id="marker"></div>
     </div>
   </div>
+  <div id="status">Buscando señal GPS...</div>
+  <button id="center-btn">Centrarme</button>
 
   <script>
     const gpsRef1 = { lat: 40.46154, lon: -3.56925 }; // I7
@@ -51,36 +77,54 @@
     const gpsRef2 = { lat: 40.47964, lon: -3.57538 }; // G6
     const pixelRef2 = { x: 1230, y: 1770 };
 
+    const mapContainer = document.getElementById('map-container');
+    const map = document.getElementById('map');
+    const marker = document.getElementById('marker');
+    const status = document.getElementById('status');
+    const centerBtn = document.getElementById('center-btn');
+
+    let lastPosition = null;
+
     function interpolate(lat, lon) {
       const dx = pixelRef2.x - pixelRef1.x;
       const dy = pixelRef2.y - pixelRef1.y;
       const dLat = gpsRef2.lat - gpsRef1.lat;
       const dLon = gpsRef2.lon - gpsRef1.lon;
-
       const x = pixelRef1.x + ((lon - gpsRef1.lon) / dLon) * dx;
       const y = pixelRef1.y + ((lat - gpsRef1.lat) / dLat) * dy;
       return { x, y };
     }
 
-    function updatePosition(lat, lon, heading) {
+    function updateMarker(lat, lon, heading) {
       const { x, y } = interpolate(lat, lon);
-      const marker = document.getElementById("marker");
       marker.style.left = `${x}px`;
       marker.style.top = `${y}px`;
       if (typeof heading === 'number') {
         marker.style.transform = `translate(-50%, -50%) rotate(${heading}deg)`;
       }
+      lastPosition = { x, y };
     }
+
+    centerBtn.addEventListener('click', () => {
+      if (lastPosition) {
+        mapContainer.scrollTo({
+          left: lastPosition.x - mapContainer.clientWidth / 2,
+          top: lastPosition.y - mapContainer.clientHeight / 2,
+          behavior: 'smooth'
+        });
+      }
+    });
 
     function handlePosition(position) {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
       const heading = position.coords.heading;
-      updatePosition(lat, lon, heading);
+      updateMarker(lat, lon, heading);
+      status.textContent = `Ubicado ✔️`;
     }
 
     function handleError(error) {
-      alert("Error obteniendo ubicación GPS: " + error.message);
+      status.textContent = `Error GPS: ${error.message}`;
     }
 
     if (navigator.geolocation) {
@@ -89,7 +133,7 @@
         maximumAge: 1000
       });
     } else {
-      alert("Geolocalización no soportada por este navegador.");
+      status.textContent = "GPS no soportado por el navegador.";
     }
   </script>
 </body>
