@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Airport GPS Tracker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
   <style>
     html, body {
       margin: 0;
@@ -11,24 +11,25 @@
       height: 100%;
       overflow: hidden;
       font-family: sans-serif;
+      touch-action: none;
     }
     #map-container {
-      width: 1600px;
-      height: 2800px;
-      margin: auto;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
-      touch-action: pinch-zoom;
-      position: relative;
+      touch-action: none;
       background: #000;
+      position: relative;
     }
     #map {
       position: absolute;
       top: 0;
       left: 0;
-      width: 1600px;
-      height: 2800px;
       background: url('airport_diagram_page1.png') no-repeat;
       background-size: contain;
+      width: 1600px;
+      height: 2800px;
+      transform-origin: top left;
     }
     #marker {
       position: absolute;
@@ -51,9 +52,8 @@
       font-size: 14px;
       z-index: 20;
     }
-    #center-btn {
+    #center-btn, .zoom-btn {
       position: fixed;
-      bottom: 20px;
       right: 20px;
       background: #007bff;
       color: white;
@@ -63,6 +63,15 @@
       font-size: 14px;
       z-index: 20;
       cursor: pointer;
+    }
+    #center-btn {
+      bottom: 20px;
+    }
+    #zoom-in {
+      bottom: 80px;
+    }
+    #zoom-out {
+      bottom: 140px;
     }
   </style>
 </head>
@@ -74,6 +83,8 @@
   </div>
   <div id="status">Buscando señal GPS...</div>
   <button id="center-btn">Centrarme</button>
+  <button class="zoom-btn" id="zoom-in">+</button>
+  <button class="zoom-btn" id="zoom-out">−</button>
 
   <script>
     const gpsRef1 = { lat: 40.46154, lon: -3.56925 }; // I7
@@ -93,8 +104,16 @@
     const marker = document.getElementById('marker');
     const status = document.getElementById('status');
     const centerBtn = document.getElementById('center-btn');
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomOutBtn = document.getElementById('zoom-out');
 
     let lastPosition = null;
+    let scale = 1;
+    let offsetX = 0;
+    let offsetY = 0;
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
 
     function interpolate(lat, lon) {
       const dx = pixelRef2.x - pixelRef1.x;
@@ -104,6 +123,10 @@
       const x = pixelRef1.x + ((lon - gpsRef1.lon) / dLon) * dx;
       const y = pixelRef1.y + ((lat - gpsRef1.lat) / dLat) * dy;
       return { x, y };
+    }
+
+    function updateTransform() {
+      map.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
     }
 
     function updateMarker(lat, lon, heading) {
@@ -117,7 +140,6 @@
       }
 
       const { x, y } = interpolate(lat, lon);
-
       if (x < 0 || x > 1600 || y < 0 || y > 2800) {
         status.textContent = "Coordenadas fuera del área visual";
         marker.style.display = "none";
@@ -135,13 +157,40 @@
     }
 
     centerBtn.addEventListener('click', () => {
-      if (lastPosition) {
-        mapContainer.scrollTo({
-          left: lastPosition.x - mapContainer.clientWidth / 2,
-          top: lastPosition.y - mapContainer.clientHeight / 2,
-          behavior: 'smooth'
-        });
+      scale = 1;
+      offsetX = 0;
+      offsetY = 0;
+      updateTransform();
+    });
+
+    zoomInBtn.addEventListener('click', () => {
+      scale = Math.min(scale + 0.2, 5);
+      updateTransform();
+    });
+
+    zoomOutBtn.addEventListener('click', () => {
+      scale = Math.max(scale - 0.2, 0.5);
+      updateTransform();
+    });
+
+    mapContainer.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - offsetX;
+        startY = e.touches[0].clientY - offsetY;
       }
+    });
+
+    mapContainer.addEventListener('touchmove', e => {
+      if (isDragging && e.touches.length === 1) {
+        offsetX = e.touches[0].clientX - startX;
+        offsetY = e.touches[0].clientY - startY;
+        updateTransform();
+      }
+    });
+
+    mapContainer.addEventListener('touchend', () => {
+      isDragging = false;
     });
 
     function handlePosition(position) {
