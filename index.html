@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Airport Diagram GPS Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      touch-action: none;
+      -webkit-user-select: none;
+    }
+    #map-container {
+      width: 100%;
+      height: 100%;
+      overflow: scroll;
+      -webkit-overflow-scrolling: touch;
+    }
+    #map {
+      position: relative;
+      background: url('airport_diagram_page1.png') no-repeat;
+      background-size: contain;
+      width: 1600px;
+      height: 2800px;
+    }
+    #marker {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/e/e3/Airplane_silhouette_icon.png') no-repeat center center;
+      background-size: contain;
+      transform: translate(-50%, -50%) rotate(0deg);
+      z-index: 10;
+      transition: transform 0.2s ease;
+    }
+  </style>
+</head>
+<body>
+  <div id="map-container">
+    <div id="map">
+      <div id="marker"></div>
+    </div>
+  </div>
+
+  <script>
+    const gpsRef1 = { lat: 40.46154, lon: -3.56925 }; // I7
+    const pixelRef1 = { x: 460, y: 2530 };
+    const gpsRef2 = { lat: 40.47964, lon: -3.57538 }; // G6
+    const pixelRef2 = { x: 1230, y: 1770 };
+
+    function interpolate(lat, lon) {
+      const dx = pixelRef2.x - pixelRef1.x;
+      const dy = pixelRef2.y - pixelRef1.y;
+      const dLat = gpsRef2.lat - gpsRef1.lat;
+      const dLon = gpsRef2.lon - gpsRef1.lon;
+
+      const x = pixelRef1.x + ((lon - gpsRef1.lon) / dLon) * dx;
+      const y = pixelRef1.y + ((lat - gpsRef1.lat) / dLat) * dy;
+      return { x, y };
+    }
+
+    function updatePosition(lat, lon, heading) {
+      const { x, y } = interpolate(lat, lon);
+      const marker = document.getElementById("marker");
+      marker.style.left = `${x}px`;
+      marker.style.top = `${y}px`;
+      if (typeof heading === 'number') {
+        marker.style.transform = `translate(-50%, -50%) rotate(${heading}deg)`;
+      }
+    }
+
+    function handlePosition(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const heading = position.coords.heading;
+      updatePosition(lat, lon, heading);
+    }
+
+    function handleError(error) {
+      alert("Error obteniendo ubicación GPS: " + error.message);
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(handlePosition, handleError, {
+        enableHighAccuracy: true,
+        maximumAge: 1000
+      });
+    } else {
+      alert("Geolocalización no soportada por este navegador.");
+    }
+  </script>
+</body>
+</html>
