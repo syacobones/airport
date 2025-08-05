@@ -242,15 +242,19 @@
   </div>
 
   <script>
-    // Puntos de referencia para calibración GPS
-    const gpsRef1 = { lat: 40.46154, lon: -3.56925 }; // I7
-    const pixelRef1 = { x: 460, y: 2530 };
-    const gpsRef2 = { lat: 40.47964, lon: -3.57538 }; // G6  
-    const pixelRef2 = { x: 1230, y: 1770 };
+    // Puntos de referencia para calibración GPS (los nuevos y correctos)
+    const calibrationPoints = [
+      { lat: 40.461540, lon: -3.569250, x: 747, y: 1830 }, // I7
+      { lat: 40.479640, lon: -3.575380, x: 650, y: 1468 }, // G6
+      { lat: 40.466119, lon: -3.564846, x: 810, y: 1735 }, // A8
+      { lat: 40.459906, lon: -3.570738, x: 729, y: 1867 }, // C5
+      { lat: 40.491241, lon: -3.580587, x: 570, y: 1243 }, // MZ3
+      { lat: 40.498134, lon: -3.580626, x: 570, y: 1090 }  // MZ7
+    ];
 
     // Límites del área del aeropuerto
     const bounds = {
-      minLat: 40.4600,
+      minLat: 40.4500,
       maxLat: 40.5100,
       minLon: -3.6050,
       maxLon: -3.5400
@@ -279,17 +283,70 @@
     let startY = 0;
     let isDragging = false;
     let currentAccuracy = null;
+    let affineMatrix = null;
 
-    // Interpolación bilineal mejorada para convertir GPS a píxeles
+    // Función para calcular la matriz de transformación afín usando mínimos cuadrados
+    function getAffineTransformMatrix(points) {
+      const n = points.length;
+      let sumLat = 0, sumLon = 0, sumX = 0, sumY = 0;
+      let sumLat2 = 0, sumLon2 = 0, sumLatLon = 0;
+      let sumLatX = 0, sumLatY = 0, sumLonX = 0, sumLonY = 0;
+
+      for (const p of points) {
+          const lat = p.lat;
+          const lon = p.lon;
+          const x = p.x;
+          const y = p.y;
+          
+          sumLat += lat;
+          sumLon += lon;
+          sumX += x;
+          sumY += y;
+          sumLat2 += lat * lat;
+          sumLon2 += lon * lon;
+          sumLatLon += lat * lon;
+          sumLatX += lat * x;
+          sumLatY += lat * y;
+          sumLonX += lon * x;
+          sumLonY += lon * y;
+      }
+
+      const det = n * sumLat2 * sumLon2 - sumLat * sumLat2 * sumLon - n * sumLat2 * sumLon * sumLon - sumLat2 * sumLon * sumLon - sumLat * sumLat * sumLon2 + sumLat * sumLon * sumLatLon;
+      
+      if (det === 0) {
+        console.error("No se pudo calcular la matriz afín. Matriz singular.");
+        return null;
+      }
+
+      const a = (sumLat2 * sumLonY - sumLatY * sumLatLon) / det;
+      const b = (sumLatX * sumLon2 - sumLat2 * sumLonX) / det;
+      const c = (sumLat2 * sumLonY - sumLatY * sumLatLon) / det;
+      const d = (sumLat2 * sumLonX - sumLatX * sumLatLon) / det;
+      const tx = (sumX - a * sumLat - b * sumLon) / n;
+      const ty = (sumY - c * sumLat - d * sumLon) / n;
+
+      return { a, b, c, d, tx, ty };
+    }
+    
+    // Función para convertir GPS a píxeles usando la matriz afín
     function gpsToPixel(lat, lon) {
-      const dx = pixelRef2.x - pixelRef1.x;
-      const dy = pixelRef2.y - pixelRef1.y;
-      const dLat = gpsRef2.lat - gpsRef1.lat;
-      const dLon = gpsRef2.lon - gpsRef1.lon;
+      if (!affineMatrix) {
+          // Fallback a un método simple si no se pudo calcular la matriz
+          const p1 = calibrationPoints[0];
+          const p2 = calibrationPoints[1];
+          
+          const dx = p2.x - p1.x;
+          const dy = p2.y - p1.y;
+          const dLat = p2.lat - p1.lat;
+          const dLon = p2.lon - p1.lon;
+          
+          const x = p1.x + ((lon - p1.lon) / dLon) * dx;
+          const y = p1.y + ((lat - p1.lat) / dLat) * dy;
+          return { x, y };
+      }
       
-      const x = pixelRef1.x + ((lon - gpsRef1.lon) / dLon) * dx;
-      const y = pixelRef1.y + ((lat - gpsRef1.lat) / dLat) * dy;
-      
+      const x = affineMatrix.a * lat + affineMatrix.b * lon + affineMatrix.tx;
+      const y = affineMatrix.c * lat + affineMatrix.d * lon + affineMatrix.ty;
       return { x, y };
     }
 
@@ -571,6 +628,7 @@
 
     // Inicializar aplicación
     document.addEventListener('DOMContentLoaded', () => {
+      affineMatrix = getAffineTransformMatrix(calibrationPoints);
       updateZoomLevel();
       initGPS();
       
@@ -578,7 +636,7 @@
       mapContainer.style.cursor = 'move';
       
       console.log('Airport GPS Tracker iniciado');
-      console.log('Puntos de calibración:', { gpsRef1, pixelRef1, gpsRef2, pixelRef2 });
+      console.log('Puntos de calibración:', calibrationPoints);
     });
 
     // Cleanup al cerrar
