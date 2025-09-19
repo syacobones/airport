@@ -127,20 +127,25 @@
             color: #374151;
         }
 
-        .form-input {
+        .form-input, .form-select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e5e7eb;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.2s;
+            background-color: white;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
         }
         
         .form-input-half {
             width: calc(50% - 6px);
         }
 
-        .form-input:focus {
+        .form-input:focus, .form-select:focus {
             outline: none;
             border-color: #2563eb;
         }
@@ -309,9 +314,9 @@
                 GHR BELUGA
             </h1>
             <div class="header-logos">
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjUiIHZpZXdCb3g9IjAgMCAyNSAyNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0wIDAuMTgyMzE3SDIuOTY2NzRWNC4xNjU3OThIMjEuODI4NlYwLjE4MjMxN0gyNC43OTQ0VjcuMzcxOTkzSDIxLjgyODZWMTIuMjk3NUgxOC44NjM5VjI0Ljg2MTFIMTUuODk4NlYxMi4yOTc1SDUuOTI4MDJWNy4zNzE5OTNIMi45NjY3NFYxMi4yOTc1SDUuOTI4MDJWMTkuOTM0M0gyLjYwMDM4VjI0Ljg2MTFIMjIuMTM5NVYxOS45MzQzSDE4LjgzMzlWMTAuNTUyN0gxOS45MjQ2VjcuMzcxOTkzSDE1Ljg5ODZWMTUuNTI1MjEwLjc3OTg2VjEwLjU1MjdIMTguODYzOVY3LjM3MTk5M0gxNS44OTg2VjQuMTY1Nzk4SDIxLjgyODZWNy4zNzE5OTNIMjQuNzk0NFYxMS41MjVIMjEuODI4NlYxNy44MjMzSDE4LjgzMzlWMTkuOTM0M0gxNS44OTg2VjEwLjU1MjdIMTcuMDg4NFYxMS40MTI4SDE3LjA4ODRWMTIuMjk3NUgxOS42ODE1VjExLjUyNUgxOS42ODE1VjE2Ljk1MzNIMTcuMDc5NFYyMS41NzI3aDUtLjUwNTV2LTYuNzQzMmwtLjM1NDcxLTQuOTMyMVYxMy45OTU1aDcuMzI5OTRWMTUuMTczNEwyMy41MzQ3IDE4Ljg5MzJMOS42MTEwMyAxNy42MTExaDIuMjU3ODhWMjEuNzczMkwxNC4yMTM2IDE2Ljk4MzVIMTguNzUzNlYxNy40ODU4TDEzLjUxMTggMjEuMzkxM0gxNS43NzM1VjI1LjUxODdIMjQuMjk1NlYyNC4wOTE1VjI4LjA2ODhIMjcuMjQyOVYzMC4wMjIyVjI4LjA5NzlMMzAuMDQ5NiAyNC4wOTM4aDEuNDQzODdWMjIuMDcyM0gzMC4xODQ3VjI1LjU1NDlIMjYuOTU2MlYyNC4yODk3aDIuMTQ1NTlWMjIuNTU1OUwyNS4yMTkyIDI2LjUzODdIMjIuNDkwMVYyNC45OTI5bC4zNDU1My0uNDQ2MzVWMjMuOTE0OUgyMS45MTk5VjI2LjU5MDRIMjAuNjI2VjI0LjIyOTZIMTguNDkxNVYyMS42MTY0SDE3LjgyNjNWMTkuOTAyVjE4LjU5NjNIMTkuNjcxMVYxNy42NjgzVjIwLjA4NjVIMjEuOTI1MVYxOS45NzYzSDE3LjkxNzlWMTguODIzNkgyNS4wMTc4VjE2Ljk1MzNIMjguMDY2NVYxOC44MjM2SDI2LjA5NzVWMTYuOTUzM0gzMS4yNjY3VjE3Ljk0OTdIMjguNTU5NFYyMy41NTI1SDMyLjA2NjVWMjEuOTIzTDI3LjE4OTMgMjcuNDMyNkwxOS45ODIgMjUuMTMwMkM5LjE2NTMgMjMuNjA1MSAyLjUzMTcgMjMuMTUzOSAxLjgzMDE2IDIyLjg4MjRDMC40NTU5NjggMjIuMzQzNSAxLjA1NDk5IDIxLjc0NDUgMS41NTczNSAyMS44Nzg2QzEuOTQ4NCAyMi42MTk4IDIuNzMxMTUgMjMuOTYwNiAzLjI2MDk5IDI0LjYzOTRjMi4zNTc4NSAzLjA4MzI5IDMuMDYzOTYgMi44Nzk0NyAyLjYwMzk2IDIuMDcyNThsLTEuODczMDMtMy4yMjY3OEwyLjk2Njc0IDIyLjk2NjdIMi41NTA4OXYtMy41NDUxMkgxLjgyNjMzdi01LjMzMzI1SDMuODk3NjZWMTEuNTI1SDIuNjAwMzhWMTAuNTUyN0gyLjk2Njc0VjcuMzcxOTkzSDcuMTIyNjVWMTAuNTUyN0gxMS4wODg2VjEyLjU1MTZIMTAuNTE5NkwxMi42OTE1IDguMzE0MjdIMTAuNzM2MVYxMC41NTI3SDcuNzcxNjVWNC4xNjU3OThIMTIuNjgyOFY3LjE5MzgySDcuMjkzMzZWOS4wMDI3M0g3LjcwODQ0VjExLjUyNUg1LjU4NTM5VjcuNDI1MzZINy44MjUzNlY2LjY0MDMzSDE0LjgyNjdWOS4wMDI3M0g5LjcxOTY0VjExLjUyNUgxMS40MjQ4VjE0LjMyNTRIMTQuMDM0N1YyMS41NzI3SDE5LjgzOTNWMTQuMzI1NEgxNy4xMzkzVjEyLjU1MTZIMjAuNDc1NlYyMC4wODI0VjE0LjMyNTRIMTcuOTQ0VjEyLjU1MTZIMjEuNzMzOVYxNC4zMjU0SDI0LjQ4MDNWMTIuNTUxNkgxNy40NzIyVjIwLjA4MjR2Ljk1MjYyMkwxNy45NDQgMjAuOTQxM0wyMC40NTA4IDIyLjAwMzFWMjEuNTA0N0wyMS40NDY2IDIwLjA4MjRWMjIuNDY0OUgyNC43OTQ0VjIwLjA4MjRIMjAuNzQwNFYxNi4xNTI4SDE3LjQxNDdWMTguODMyN0gyMC43NDA0VjIwLjA4MjR6IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="Logo de WFS" class="header-logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjUiIHZpZXdCb3g9IjAgMCAyNSAyNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0wIDAuMTgyMzE3SDIuOTY2NzRWNC4xNjU3OThIMjEuODI4NlYwLjE4MjMxN0gyNC43OTQ0VjcuMzcxOTkzSDIxLjgyODZWMTIuMjk3NUgxOC44NjM5VjI0Ljg2MTFIMTUuODk4NlYxMi4yOTc1SDUuOTI4MDJWNy4zNzE5OTNIMi45NjY3NFYxMi4yOTc1SDUuOTI4MDJWMTkuOTM0M0gyLjYwMDM4VjI0Ljg2MTFIMjIuMTM5NVYxOS45MzQzSDE4LjgzMzlWMTAuNTUyN0gxOS45MjQ2VjcuMzcxOTkzSDE1Ljg5ODZWMTUuNTI1MjEwLjc3OTg2VjEwLjU1MjdIMTguODYzOVY3LjM3MTk5M0gxNS44OTg2VjQuMTY1Nzk4SDIxLjgyODZWNy4zNzE5OTNIMjQuNzk0NFYxMS41MjVIMjEuODI4NlYxNy44MjMzSDE4LjgzMzlWMTkuOTM0M0gxNS44OTg2VjEwLjU1MjdIMTcuMDg4NFYxMS40MTI4SDE3LjA4ODRWMTIuMjk3NUgxOS42ODE1VjExLjUyNUgxOS42ODE1VjE2Ljk1MzNIMTcuMDc5NFYyMS41NzI3aDUtLjUwNTV2LTYuNzQzMmwtLjM1NDcxLTQuOTMyMVYxMy45OTU1aDcuMzI5OTRWMTUuMTczNEwyMy41MzQ3IDE4Ljg5MzJMOS42MTEwMyAxNy42MTExaDIuMjU3ODhWMjEuNzczMkwxNC4yMTM2IDE2Ljk4MzVIMTguNzUzNlYxNy40ODU4TDEzLjUxMTggMjEuMzkxM0gxNS43NzM1VjI1LjUxODdIMjQuMjk1NlYyNC4wOTE1VjI4LjA2ODhIMjcuMjQyOVYzMC4wMjIyVjI4LjA5NzlMMzAuMDQ5NiAyNC4wOTM4aDEuNDQzODdWMjIuMDcyM0gzMC4xODQ3VjI1LjU1NDlIMjYuOTU2MlYyNC4yODk3aDIuMTQ1NTlWMjIuNTU1OUwyNS4yMTkyIDI2LjUzODdIMjIuNDkwMVYyNC45OTI5bC4zNDU1My0uNDQ2MzVWMjMuOTE0OUgyMS45MTk5VjI2LjU5MDRIMjAuNjI2VjI0LjIyOTZIMTguNDkxNVYyMS42MTY0SDE3LjgyNjNWMTkuOTAyVjE4LjU5NjNIMTkuNjcxMVYxNy42NjgzVjIwLjA4NjVIMjEuOTI1MVYxOS45NzYzSDE3LjkxNzlWMTguODIzNkgyNS4wMTc4VjE2Ljk1MzNIMjguMDY2NVYxOC44MjM2SDI2LjA5NzVWMTYuOTUzM0gzMS4yNjY3VjE3Ljk0OTdIMjguNTU5NFYyMy41NTI1SDMyLjA2NjVWMjEuOTIzTDI3LjE4OTMgMjcuNDMyNkwxOS45ODIgMjUuMTMwMkM5LjE2NTMgMjMuNjA1MSAyLjUzMTcgMjMuMTUzOSAxLjgzMDE2IDIyLjg4MjRDMC40NTU5NjggMjIuMzQzNSAxLjA1NDk5IDIxLjc0NDUgMS41NTczNSAyMS44Nzg2QzEuOTQ4NCAyMi42MTk4IDIuNzMxMTUgMjMuOTYwNiAzLjI2MDk5IDI0LjYzOTRjMi4zNTc4NSAzLjA4MzI5IDMuMDYzOTYgMi44Nzk0NyAyLjYwMzk2IDIuMDcyNThsLTEuODczMDMtMy4yMjY3OEwyLjk2Njc0IDIyLjk2NjdIMi41NTA4OXYtMy41NDUxMkgxLjgyNjMzdi01LjMzMzI1SDMuODk3NjZWMTEuNTI1SDIuNjAwMzhWMTAuNTUyN0gyLjk2Njc0VjcuMzcxOTkzSDcuMTIyNjVWMTAuNTUyN0gxMS4wODg2VjEyLjU1MTZIMTAuNTE5NkwxMi42OTE1IDguMzE0MjdIMTAuNzM2MVYxMC41NTI3SDcuNzcxNjVWNC4xNjU3OThIMTIuNjgyOFY3LjE5MzgySDcuMjkzMzZWOS4wMDI3M0g3LjcwODQ0VjExLjUyNUg1LjU4NTM5VjcuNDI1MzZINy44MjUzNlY2LjY0MDMzSDE0LjgyNjdWOS4wMDI3M0g5LjcxOTY0VjExLjUyNUgxMS40MjQ4VjE0LjMyNTRIMTQuMDM0N1YyMS41NzI3SDE5LjgzOTNWMTQuMzI1NEgxNy4xMzkzVjEyLjU1MTZIMjAuNDc1NlYyMC4wNzUyVjE0LjMyNTRIMTcuOTQ0VjEyLjU1MTZIMjEuNzMzOVYxNC4zMjU0SDI0LjQ4MDNWMTIuNTUxNkgxNy40NzIyVjIwLjA4MjR2Ljk1MjYyMkwxNy45NDQgMjAuOTQxM0wyMC40NTA4IDIyLjAwMzFWMjEuNTA0N0wyMS40NDY2IDIwLjA4MjRWMjIuNDY0OUgyNC43OTQ0VjIwLjA4MjRIMjAuNzQwNFYxNi4xNTI4SDE3LjQxNDdWMTguODMyN0gyMC43NDA0VjIwLjA4MjR6IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="Logo de WFS" class="header-logo">
                 
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzOCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI3LjA5MzggMTguODIzNkMyNy4wOTM4IDE4LjUyOTIgMjYuOTk3NSAxOC4xODUgMjYuODAxMyAxNy44NTQ1QzI2LjYwNTEgMTcuNTQ5MSAyNi4zMTA1IDE3LjMxODkgMjYuMDA4NCAxNy4wOTc3QzI1LjcwNjQgMTYuODc2NSAyNS4yNzc1IDE2LjcwODQgMjQuODI4OCAxNi41OTY4QzI0LjM4MDEgMTYuNDgzOCAyMy45MDM1IDE2LjQyMTYgMjMuNDIxMSAxNi40MjE2SDIuNTY2NDFWMTMuNzIyN0gyMi44OTU5QzI1LjQyNzYgMTMuNzIyNyAyNy40MTgyIDEzLjE0NTYgMjguODY1IDEyLjAwMzRDNDAuNzQzMSAzLjU0MjE0IDQyLjg0MTkgMC4wNDU3MTg4IDQyLjIxOTQgMC4wNDU3MTg4QzQyLjA5NiAwLjA0NTcxODggNDAuMjIyNyA3LjIwMzI1IDM5LjA5MzggOS44NzM2MkwzNi4xODIzIDE2Ljk4MzVIMzkuMzc0NUw0Mi44MjI5IDguOTQxNjVDNDMuMTM4MyA4LjE2NDU3IDQyLjU0NDUgNi40MTgxNiA0MS4xNTI1IDUuMTI3MzNDMzguMzc3OSAyLjUyODE0IDMzLjYwODIgMS4zMTI2MiAzMy42MDgyIDEuMzEyNjJDMTUuMjQ2NSAzLjI1MTc2IDcuODg5MDEgMTAuMzU2MiAxMi4yNDk4IDE4LjQ2NzZDMTAuNzcxNSAyMC43MTE1IDkuNjg2MDcgMjIuOTY2IDkuNjgzNDEgMjIuOTY2VjIzLjcxMTdDMTAuMjgzOSAyMy40NTEgMTEuMDk0NyAyMy4xMjkxIDEyLjA0MDMgMjIuNjkzNkMxMy44MDM0IDIxLjg2MTcgMTUuNTA5NSAyMS4wNDk1IDE2LjcyMjggMjAuMzUzNUMxOS41MTE5IDE5LjI1NzcgMjEuNzc2OSAxNy4zNzcgMjMuMjg1NiAxNC42NTIyQzI0LjMwOTEgMTIuMTY0MSAyNC42MjU4IDkuMzgxOTcgMjQuNTU1MiA2LjU0MTY3QzI0LjU0MTkgNi4yNzg5MiAyNC40MzggNi4wNzI1NiAyNC4yNjQ0IDUuODY2OTZDMjQuMTI1OCA1Ljc0NTc5IDIzLjg1NSA1LjY1MzU5IDIzLjU5MzEgNS42MjQ4OUMyMy41MjI1IDUuNjAyNTcgMjMuMzgwNSA1LjU4MDM4IDIzLjI5NjYgNS41ODA1NUwyMy4xMjI5IDUuNzY0ODdDMTUuNTE1OSAxMC44MzY0IDEyLjgyMTEgMTYuMDAzMiA4LjAzNzgyIDIxLjcwMjFDNy4yOTQzOSAyMi41NDUgNi4zMTI5MiAyMy4yNTI0IDUuNTY5NDkgMjMuNjQ0OEM1LjA3NjkyIDI0LjAxMDMgNC42NTcyOSAyNC4xODkyIDQuNTQ5MTYgMjQuMTg5MkM0LjMzNzU2IDI0LjE4OTIgNC41MTI4MSAyNC42NTM4IDUuMzE1MjEgMjUuNzE2TDE2LjU5MDUgMjkuOTk5OUMxNy4zOTI5IDMwLjg1NjEgMTcuMTcxMyAzMS4yMDM3IDE2LjQ2NTYgMzEuMjAzN0wxLjU1NzQ1IDMwLjE5MDRDLTAuMjM1MTc1IDMwLjAyNTMgLTcuMjY0MTkgMjMuNzEwMyAwIDIxLjY2MzFDMy42ODQ3NSAxNy40Nzg1IDkuNDMzNTYgMTQuMTMyNSAxMS43MjQgMTIuMjkxMkwxMS4wOTY1IDExLjMyOTFDMTIuNzk3OSA4LjA2OTYgMTUuMzEyNSA1LjM5NTUzIDE4LjI2MTYgMy44MzgxMkMyMC4zNzU2IDIuNzE4OTYgMjIuNjE0NiAyLjEyMzI5IDI0LjcyOTcgMi4wNzcxQzI1LjUzMiAxLjgyOTE2IDIzLjYwOTIgMS4yOTM5OSAyMS42NzI0IDIuMTIzMjlDMjEuMzY3MSAyLjIxNTE4IDIxLjIxMDcgMi4zMzA1NSAyMS4wMTA1IDIuNDc4N0MyMC42ODAxIDIuNzI1OTYgMjAuMzYyNiAyLjgzNjQ5IDIwLjA5MTUgMi45MDUxNUMxOS41NjExIDMuMDk0OTcgMTkuMTA4IDMuMzYzNCAxOC44ODcgMy41NjM1NUMxNy44MzEgNC41MzYxOSAxNy4yMDggNS40OTgyMSAxNy4wMzQ0IDYuMjMyODRDMTYuOTY5OCA2LjUwMDYxIDE2Ljk4NyA2LjY4ODkgMTcuMDY5OCA2LjcwNTUxQzE3LjE2MTQgNi43NjU5MiAxNy4zNTUgNi43NTYxIDE3LjUxNzIgNi41NjA5MkMxNy42MTMxIDYuNDQ5MjkgMTcuODI3NCA2LjMwNjIzIDE4LjA3NzUgNi4xMDk4M0MxOC41MDQyIDUuNzU0NzYgMTkuMDIzNSA1LjMwNDkgMTkuNjExMiA0LjkyMzQ5QzE5LjkzNDMgNC43NjE5MiAyMC4yOTYxIDQuNjIyMiAyMC43MjI2IDQuNTMxOTJDMTcuMTYwNiA5Ljg3MzYyIDE3LjUzZWcxNiAyMC43Njc5IDI5LjAzNzIgMjcuMTQxNkMzMC4xMTUzIDI4LjUzMzcgMzEuMTYyOSAyOS41NDEzIDMxLjE2MjkgMjkuNTQxM0gzMS43NjExVjI5LjE5MzZDMzAuMzc3NiAyNy41NTY0IDI5LjIxMjUgMjUuOTk5MSAyOS4xMzQ4IDI1Ljg1NjNDMjcuOTI4MyAyMy4zNDQ1IDI3LjA5MzggMTguOTIgMjcuMDkzOCAxOC44MjM2WjIiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=" alt="Logo de Airbus" class="header-logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzOCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI3LjA5MzggMTguODIzNkMyNy4wOTM4IDE4LjUyOTIgMjYuOTk3NSAxOC4xODUgMjYuODAxMyAxNy44NTQ1QzI2LjYwNTEgMTcuNTQ5MSAyNi4zMTA1IDE3LjMxODkgMjYuMDA4NCAxNy4wOTc3QzI1LjcwNjQgMTYuODc2NSAyNS4yNzc1IDE2LjcwODQgMjQuODI4OCAxNi41OTY4QzI0LjM4MDEgMTYuNDgzOCAyMy45MDM1IDE2LjQyMTYgMjMuNDIxMSAxNi40MjE2SDIuNTY2NDFWMTMuNzIyN0gyMi44OTU5QzI1LjQyNzYgMTMuNzIyNyAyNy40MTgyIDEzLjE0NTYgMjguODY1IDEyLjAwMzRDNDAuNzQzMSAzLjU0MjE0IDQyLjgwMTEgMC4xMjg1MjMgNDIuMjE5NCAwLjA0NTcxODhDNDIuMDk2IDAuMDQ1NzE4OCA0MC4yMjI3IDcuMjAzMjUgMzkuMDkzOCA5Ljg3MzYyTDM2LjE4MjMgMTYuOTgzNUgzOS4zNzQ1TDQyLjgyMjkgOC45NDE2NUM0My4xMzgzIDguMTY0NTcgNDIuNTQ0NSA2LjQxODE2IDQxLjE1MjUgNS4xMjczM0MzOC4zNzc5IDIuNTI4MTQgMzMuNjA4MiAxLjMxMjYyIDMzLjYwODIgMS4zMTI2MkMxNS4yNDY1IDMuMjUxNzYgNy44ODkwMSAxMC4zNTYyIDEyLjI0OTggMTguNDY3NkMxMC43NzE1IDIwLjcxMTUgOS42ODYwNyAyMi45NjYgOS42ODM0MSAyMi45NjZWMjMuNzExN0MxMC4yODM5IDIzLjQ1MSAxMS4wOTQ3IDIzLjEyOTEgMTIuMDQwMyAyMi42OTM2QzEzLjgwMzQgMjEuODYxNyAxNS41MDk1IDIxLjA0OTUgMTYuNzIyOCAyMC4zNTM1QzE5LjUxMTkgMTkuMjU3NyAyMS43NzY5IDE3LjM3NyAyMy4yODU2IDE0LjY1MjJDMjQuMzA5MSAxMi4xNjQxIDI0LjYyNTggOS4zODE5NyAyNC41NTUyIDYuNTQxNjdDMjQuNTQxOSA2LjI3ODkyIDI0LjQzOCA2LjA3MjU2IDI0LjI2NDQgNS44NjY5NkMyNC4xMjU4IDUuNzQ1NzkgMjMuODU1IDUuNjUzNTkgMjMuNTkzMSA1LjYyNDg5QzIzLjUyMjUgNS42MDI1NyAyMy4zODA1IDUuNTgwMzggMjMuMjk2NiA1LjU4MDU1TDIzLjEyMjkgNS43NjQ4N0MxNS41MTU5IDEwLjgzNjQgMTIuODIxMSAxNi4wMDMyIDguMDM3ODIgMjEuNzAyMUM3LjI5NDM5IDIyLjU0NSA2LjMxMjkyIDIzLjI1MjQgNS41Njk0OSAyMy42NDQ4QzUuMDc2OTIgMjQuMDEwMyA0LjY1NzI5IDI0LjE4OTIgNC41NDkxNiAyNC4xODkyQzQuMzM3NTYgMjQuMTg5MiA0LjUxMjgxIDI0LjY1MzggNS4zMTUyMSAyNS43MTZMMTYuNTkwNSAyOS45OTk5QzE3LjM5MjkgMzAuODU2MSAxNy4xNzEzIDMxLjIwMzcgMTYuNDY1NiAzMS4yMDM3TDEuNTU3NDUgMzAuMTkwNEMtMC4yMzUxNzUgMzAuMDI1MyAtNy4yNjQxOSAyMy43MTAzIDAgMjEuNjYzMUMzLjY4NDc1IDE3LjQ3ODUgOS40MzM1NiAxNC4xMzI1IDExLjcyNCAxMi4yOTExTDExLjA5NjUgMTEuMzI5MUMxMi43OTc5IDguMDY5NiAxNS4zMTI1IDUuMzk1NTMgMTguMjYxNiAzLjgzODEyQzIwLjM3NTYgMi43MTg5NiAyMi42MTQ2IDIuMTIzMjkgMjQuNzI5NyAyLjA3NzFDMjUuNTMyIDEuODI5MTYgMjMuNjA5MiAxLjI5Mzk5IDIxLjY3MjQgMi4xMjMyOUMyMS4zNjcxIDIuMjE1MTggMjEuMjEwNyAyLjMzMDU1IDIxLjAxMDUgMi40Nzg3QzIwLjY4MDEgMi43MjU5NiAyMC4zNjI2IDIuODM2NDkgMjAuMDkxNSAyLjkwNTE1QzE5LjU2MTEgMy4wOTQ5NyAxOS4xMDggMy4zNjM0IDE4Ljg4NyAzLjU2MzU1QzE3LjgzMSA0LjUzNjE5IDE3LjIwOCA1LjQ5ODIxIDE3LjAzNDQgNi4yMzI4NEMxNi45Njk4IDYuNTAwNjEgMTYuOTg3IDYuNjg4OSAxNy4wNjk4IDYuNzA1NTFDMTcuMTYxNCA2Ljc2NTkyIDE3LjM1NSA2Ljc1NjEgMTcuNTE3MiA2LjU2MDkyQzE3LjYxMzEgNi40NDkyOSAxNy44Mjc0IDYuMzA2MjMgMTguMDc3NSA2LjEwOTgzQzE4LjUwNDIgNS43NTQ3NiAxOS4wMjM1IDUuMzA0OSAxOS42MTEyIDQuOTIzNDlDMTkuOTM0MyA0Ljc2MTkyIDIwLjI5NjEgNC42MjIyIDIwLjcyMjYgNC41MzE5MkMxNy4xNjA2IDkuODczNjIgMTcuNTM2MSAyMC43Njc5IDI5LjAzNzIgMjcuMTQxNkMzMC4xMTUzIDI4LjUzMzcgMzEuMTYyOSAyOS41NDEzIDMxLjE2MjkgMjkuNTQxM0gzMS43NjExVjI5LjE5MzZDMzAuMzc3NiAyNy41NTY0IDI5LjIxMjUgMjUuOTk5MSAyOS4xMzQ4IDI1Ljg1NjNDMjcuOTI4MyAyMy4zNDQ1IDI3LjA5MzggMTguOTIgMjcuMDkzOCAxOC44MjM2WjIiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=" alt="Logo de Airbus" class="header-logo">
             </div>
         </div>
 
@@ -341,11 +346,11 @@
                             <div style="display: flex; gap: 12px;">
                                 <div class="form-group" style="flex: 1;">
                                     <label class="form-label">Aeropuerto Llegada</label>
-                                    <input type="text" id="arrivalAirport" class="form-input" placeholder="Ej: XFW">
+                                    <select id="arrivalAirport" class="form-select"></select>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label class="form-label">Aeropuerto Salida</label>
-                                    <input type="text" id="departureAirport" class="form-input" placeholder="Ej: MAD">
+                                    <select id="departureAirport" class="form-select"></select>
                                 </div>
                             </div>
                             <div style="display: flex; gap: 12px;">
@@ -358,22 +363,24 @@
                                     <input type="time" id="std" class="form-input">
                                 </div>
                             </div>
+                            
                             <div class="form-group">
                                 <label class="form-label">Coordinador</label>
-                                <input type="text" id="coordinator" class="form-input" placeholder="Nombre completo">
+                                <select id="coordinator" class="form-select"></select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Conductor</label>
-                                <input type="text" id="driver" class="form-input" placeholder="Nombre completo">
+                                <select id="driver" class="form-select"></select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Wingwalker 1</label>
-                                <input type="text" id="wingwalker1" class="form-input" placeholder="Nombre completo">
+                                <select id="wingwalker1" class="form-select"></select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Wingwalker 2</label>
-                                <input type="text" id="wingwalker2" class="form-input" placeholder="Nombre completo">
+                                <select id="wingwalker2" class="form-select"></select>
                             </div>
+
                             <div style="display: flex; gap: 12px;">
                                 <button type="submit" class="btn btn-primary" style="flex: 1;">Crear Vuelo</button>
                                 <button type="button" id="cancelNewFlight" class="btn" style="background: #e5e7eb; color: #374151;">Cancelar</button>
@@ -458,6 +465,9 @@
         let flights = [];
         let currentFlight = null;
         let currentView = 'list';
+
+        const crewMembers = ["", "Sergio Iacobone", "Francisco Cartas", "Fernando Perez", "Paco Muñoz"];
+        const airportOptions = ["", "Chester CEG", "Toulouse TLS", "Hamburgo XFW", "Bremen BRE", "Saint-Nazaire SNR"];
 
         const operations = [
             'OPERATIVA', 'PAYLOAD', 'LLEGADA', 'SALIDA', 'ATA', 'PARADA MOTORES',
@@ -713,15 +723,51 @@
             }
         }
 
+        // Generar opciones para los selects de la tripulación
+        function generateCrewOptions() {
+            const coordinatorSelect = document.getElementById('coordinator');
+            const driverSelect = document.getElementById('driver');
+            const ww1Select = document.getElementById('wingwalker1');
+            const ww2Select = document.getElementById('wingwalker2');
+
+            [coordinatorSelect, driverSelect, ww1Select, ww2Select].forEach(select => {
+                select.innerHTML = '';
+                crewMembers.forEach(member => {
+                    const option = document.createElement('option');
+                    option.value = member;
+                    option.textContent = member || "Seleccionar...";
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // Generar opciones para los selects de aeropuertos
+        function generateAirportOptions() {
+            const arrivalAirportSelect = document.getElementById('arrivalAirport');
+            const departureAirportSelect = document.getElementById('departureAirport');
+
+            [arrivalAirportSelect, departureAirportSelect].forEach(select => {
+                select.innerHTML = '';
+                airportOptions.forEach(airport => {
+                    const option = document.createElement('option');
+                    option.value = airport;
+                    option.textContent = airport || "Seleccionar...";
+                    select.appendChild(option);
+                });
+            });
+        }
+
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
+            generateCrewOptions();
+            generateAirportOptions();
 
             // Nuevo vuelo
             document.getElementById('newFlightBtn').addEventListener('click', () => {
                 document.getElementById('newFlightBtn').classList.add('hidden');
-                document.getElementById('continueFlightBtn').classList.add('hidden'); // Ocultar el botón de continuar
-                document.getElementById('historyBtn').classList.add('hidden'); // Ocultar el botón de historial
+                document.getElementById('continueFlightBtn').classList.add('hidden');
+                document.getElementById('historyBtn').classList.add('hidden');
                 document.getElementById('newFlightForm').classList.remove('hidden');
                 document.getElementById('flightNumber').focus();
             });
@@ -743,14 +789,14 @@
                     registrationNumber: document.getElementById('registrationNumber').value.trim(),
                     arrivalFlight: document.getElementById('arrivalFlight').value.trim(),
                     departureFlight: document.getElementById('departureFlight').value.trim(),
-                    arrivalAirport: document.getElementById('arrivalAirport').value.trim(),
-                    departureAirport: document.getElementById('departureAirport').value.trim(),
+                    arrivalAirport: document.getElementById('arrivalAirport').value.trim() || 'N/A',
+                    departureAirport: document.getElementById('departureAirport').value.trim() || 'N/A',
                     sta: document.getElementById('sta').value.trim(),
                     std: document.getElementById('std').value.trim(),
-                    coordinator: document.getElementById('coordinator').value.trim(),
-                    driver: document.getElementById('driver').value.trim(),
-                    wingwalker1: document.getElementById('wingwalker1').value.trim(),
-                    wingwalker2: document.getElementById('wingwalker2').value.trim()
+                    coordinator: document.getElementById('coordinator').value.trim() || 'N/A',
+                    driver: document.getElementById('driver').value.trim() || 'N/A',
+                    wingwalker1: document.getElementById('wingwalker1').value.trim() || 'N/A',
+                    wingwalker2: document.getElementById('wingwalker2').value.trim() || 'N/A'
                 };
                 if (flightData.flightNumber) {
                     createFlight(flightData);
