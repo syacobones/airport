@@ -1,650 +1,745 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="es">
 <head>
-  <title>Airport GPS Tracker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      touch-action: none;
-      background: #000;
-    }
-    
-    #map-container {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      touch-action: none;
-      background: #f0f0f0;
-      position: relative;
-    }
-    
-    #map {
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: url('airport_diagram_page1.png') no-repeat;
-      background-size: contain;
-      background-color: #ffffff;
-      width: 1600px;
-      height: 2800px;
-      transform-origin: top left;
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      border: 1px solid #ccc;
-    }
-    
-    #marker {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      z-index: 10;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-      transition: transform 0.3s ease;
-    }
-    
-    .airplane-icon {
-      width: 100%;
-      height: 100%;
-      fill: #2196F3;
-      stroke: white;
-      stroke-width: 2;
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.1); }
-      100% { transform: translate(-50%, -50%) scale(1); }
-    }
-    
-    #status {
-      position: fixed;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.9);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 25px;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 20;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-    
-    .control-panel {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      z-index: 20;
-    }
-    
-    .control-btn {
-      width: 55px;
-      height: 55px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-    }
-    
-    .control-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    }
-    
-    .control-btn:active {
-      transform: translateY(0);
-    }
-    
-    #info-panel {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      background: rgba(0,0,0,0.9);
-      color: white;
-      padding: 15px;
-      border-radius: 12px;
-      font-size: 12px;
-      z-index: 20;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.1);
-      max-width: 280px;
-    }
-    
-    #coordinates {
-      font-family: 'Courier New', monospace;
-      margin-top: 8px;
-      color: #81c784;
-      font-size: 11px;
-    }
-    
-    #zoom-level {
-      position: fixed;
-      top: 50%;
-      right: 90px;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.8);
-      color: white;
-      padding: 8px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      z-index: 20;
-    }
-    
-    .loading {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top: 2px solid white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .accuracy-indicator {
-      position: absolute;
-      border: 2px solid rgba(33, 150, 243, 0.4);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9;
-      background: rgba(33, 150, 243, 0.1);
-    }
-    
-    @media (max-width: 768px) {
-      .control-panel {
-        right: 15px;
-        bottom: 15px;
-        gap: 10px;
-      }
-      
-      .control-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 16px;
-      }
-      
-      #info-panel {
-        max-width: 250px;
-        padding: 12px;
-      }
-      
-      #status {
-        top: 10px;
-        font-size: 13px;
-        padding: 10px 16px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GHR BELUGA</title>
+<link rel="manifest" href="#" id="manifest-placeholder">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="GHR BELUGA">
+
+```
+<!-- Iconos para diferentes dispositivos -->
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiBmaWxsPSIjMjU2M2ViIiByeD0iMjAiLz4KPHN2ZyB4PSI0MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0ibTE3LjUgMTkuNS0uNS0yLjUtLjUtMi41LTUtMi41LTUtMi41LS41IDIuNS0uNSAyLjVaIi8+CjxwYXRoIGQ9Im05IDUgOCA4LTMuNS0xTDkgNVoiLz4KPHN2Zz4KPHN2Zz4KPC9zdmc+">
+
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+min-height: 100vh;
+padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.app-container {
+max-width: 400px;
+margin: 0 auto;
+background: #f5f5f5;
+min-height: 100vh;
+position: relative;
+}
+
+.header {
+background: #2563eb;
+color: white;
+padding: 20px;
+text-align: center;
+box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+font-size: 24px;
+font-weight: bold;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+}
+
+.content {
+padding: 20px;
+padding-bottom: 100px;
+}
+
+.btn {
+width: 100%;
+padding: 16px;
+border-radius: 12px;
+border: none;
+font-weight: 600;
+font-size: 16px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+margin-bottom: 12px;
+transition: all 0.2s;
+}
+
+.btn:active {
+transform: scale(0.98);
+}
+
+.btn-primary {
+background: #2563eb;
+color: white;
+}
+
+.btn-success {
+background: #059669;
+color: white;
+}
+
+.btn-warning {
+background: #d97706;
+color: white;
+}
+
+.btn-danger {
+background: #dc2626;
+color: white;
+}
+
+.card {
+background: white;
+border-radius: 12px;
+padding: 20px;
+margin-bottom: 16px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.form-group {
+margin-bottom: 16px;
+}
+
+.form-label {
+display: block;
+font-weight: 600;
+margin-bottom: 8px;
+color: #374151;
+}
+
+.form-input {
+width: 100%;
+padding: 12px;
+border: 2px solid #e5e7eb;
+border-radius: 8px;
+font-size: 16px;
+transition: border-color 0.2s;
+}
+
+.form-input:focus {
+outline: none;
+border-color: #2563eb;
+}
+
+.operation-item {
+background: white;
+border-radius: 12px;
+padding: 16px;
+margin-bottom: 12px;
+box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+border-left: 4px solid #2563eb;
+}
+
+.operation-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 12px;
+}
+
+.operation-title {
+font-weight: 600;
+color: #1f2937;
+}
+
+.operation-time {
+color: #059669;
+font-family: 'Courier New', monospace;
+font-size: 14px;
+font-weight: 600;
+}
+
+.operation-controls {
+display: flex;
+align-items: center;
+gap: 8px;
+flex-wrap: wrap;
+}
+
+.btn-sm {
+padding: 8px 12px;
+font-size: 14px;
+min-width: auto;
+margin: 0;
+}
+
+.btn-icon {
+width: 32px;
+height: 32px;
+border-radius: 8px;
+border: none;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s;
+}
+
+.btn-icon:active {
+transform: scale(0.9);
+}
+
+.btn-icon.minus {
+background: #fee2e2;
+color: #dc2626;
+}
+
+.btn-icon.plus {
+background: #dcfce7;
+color: #16a34a;
+}
+
+.btn-icon.edit {
+background: #dbeafe;
+color: #2563eb;
+}
+
+.payload-input {
+width: 100px;
+padding: 8px;
+border: 2px solid #e5e7eb;
+border-radius: 6px;
+font-size: 14px;
+margin-right: 8px;
+}
+
+.flight-info {
+background: linear-gradient(135deg, #2563eb, #1d4ed8);
+color: white;
+border-radius: 12px;
+padding: 20px;
+margin-bottom: 20px;
+}
+
+.flight-info h2 {
+font-size: 20px;
+margin-bottom: 8px;
+}
+
+.flight-info p {
+opacity: 0.9;
+margin-bottom: 4px;
+}
+
+.history-item {
+background: white;
+border-radius: 12px;
+padding: 16px;
+margin-bottom: 16px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.history-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 12px;
+}
+
+.history-operations {
+max-height: 200px;
+overflow-y: auto;
+background: #f9fafb;
+border-radius: 8px;
+padding: 12px;
+}
+
+.history-operation {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 8px;
+margin-bottom: 4px;
+background: white;
+border-radius: 6px;
+font-size: 14px;
+}
+
+.bottom-nav {
+position: fixed;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%);
+width: 100%;
+max-width: 400px;
+background: white;
+padding: 12px 20px;
+box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+display: flex;
+gap: 12px;
+}
+
+.hidden {
+display: none !important;
+}
+
+.install-banner {
+background: #059669;
+color: white;
+padding: 16px;
+text-align: center;
+cursor: pointer;
+}
+
+@media (display-mode: standalone) {
+.install-banner {
+display: none;
+}
+}
+</style>
+```
+
 </head>
 <body>
-  <div id="map-container">
-    <div id="map">
-      <div id="marker">
-        <svg class="airplane-icon" viewBox="0 0 24 24">
-          <path d="M21,16V14L13,9V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z"/>
-        </svg>
-      </div>
-      <div id="accuracy-circle" class="accuracy-indicator"></div>
-    </div>
-  </div>
-  
-  <div id="status">
-    <div class="loading">
-      <div class="spinner"></div>
-      <span>Buscando señal GPS...</span>
-    </div>
-  </div>
-  
-  <div id="info-panel">
-    <h3 style="margin: 0 0 8px 0; color: #64b5f6; font-size: 14px;">✈️ Madrid-Barajas (LEMD)</h3>
-    <div style="font-size: 11px; margin-bottom: 8px;">Aeropuerto Adolfo Suárez Madrid-Barajas</div>
-    <div id="coordinates">Esperando GPS...</div>
-  </div>
-  
-  <div id="zoom-level">Zoom: 100%</div>
-  
-  <div class="control-panel">
-    <button class="control-btn" id="zoom-in" title="Acercar">+</button>
-    <button class="control-btn" id="zoom-out" title="Alejar">−</button>
-    <button class="control-btn" id="center-btn" title="Centrarme">📍</button>
-    <button class="control-btn" id="reset-btn" title="Vista completa">🏠</button>
-  </div>
+<div class="app-container">
+<div id="installBanner" class="install-banner">
+📱 Toca aquí para instalar GHR BELUGA como app
+</div>
 
-  <script>
-    // Puntos de referencia para calibración GPS (los nuevos y correctos)
-    const calibrationPoints = [
-      { lat: 40.461540, lon: -3.569250, x: 747, y: 1830 }, // I7
-      { lat: 40.479640, lon: -3.575380, x: 650, y: 1468 }, // G6
-      { lat: 40.466119, lon: -3.564846, x: 810, y: 1735 }, // A8
-      { lat: 40.459906, lon: -3.570738, x: 729, y: 1867 }, // C5
-      { lat: 40.491241, lon: -3.580587, x: 570, y: 1243 }, // MZ3
-      { lat: 40.498134, lon: -3.580626, x: 570, y: 1090 }  // MZ7
-    ];
+```
+<div class="header">
+<h1>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="m17.5 19.5-.5-2.5-.5-2.5-5-2.5-5-2.5-.5 2.5-.5 2.5Z"/>
+<path d="m9 5 8 8-3.5-1L9 5Z"/>
+</svg>
+GHR BELUGA
+</h1>
+</div>
 
-    // Límites del área del aeropuerto
-    const bounds = {
-      minLat: 40.4500,
-      maxLat: 40.5100,
-      minLon: -3.6050,
-      maxLon: -3.5400
-    };
+<div class="content">
+<!-- Vista Lista -->
+<div id="listView">
+<div id="newFlightForm" class="hidden">
+<div class="card">
+<form id="flightForm">
+<div class="form-group">
+<label class="form-label">Número de Vuelo</label>
+<input type="text" id="flightNumber" class="form-input" placeholder="Ej: 1847" required>
+</div>
+<div style="display: flex; gap: 12px;">
+<button type="submit" class="btn btn-primary" style="flex: 1;">Crear Vuelo</button>
+<button type="button" id="cancelNewFlight" class="btn" style="background: #e5e7eb; color: #374151;">Cancelar</button>
+</div>
+</form>
+</div>
+</div>
 
-    // Variables del DOM
-    const mapContainer = document.getElementById('map-container');
-    const map = document.getElementById('map');
-    const marker = document.getElementById('marker');
-    const accuracyCircle = document.getElementById('accuracy-circle');
-    const status = document.getElementById('status');
-    const coordinates = document.getElementById('coordinates');
-    const zoomLevel = document.getElementById('zoom-level');
-    const centerBtn = document.getElementById('center-btn');
-    const resetBtn = document.getElementById('reset-btn');
-    const zoomInBtn = document.getElementById('zoom-in');
-    const zoomOutBtn = document.getElementById('zoom-out');
+<button id="newFlightBtn" class="btn btn-primary">
+<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<line x1="12" y1="5" x2="12" y2="19"></line>
+<line x1="5" y1="12" x2="19" y2="12"></line>
+</svg>
+Nuevo Vuelo
+</button>
 
-    // Variables de estado
-    let lastPosition = null;
-    let watchId = null;
-    let scale = 1;
-    let offsetX = 0;
-    let offsetY = 0;
-    let startX = 0;
-    let startY = 0;
-    let isDragging = false;
-    let currentAccuracy = null;
-    let affineMatrix = null;
+<button id="continueFlightBtn" class="btn btn-warning hidden">
+<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12,6 12,12 16,14"></polyline>
+</svg>
+Continuar Vuelo
+</button>
 
-    // Función para calcular la matriz de transformación afín usando mínimos cuadrados
-    function getAffineTransformMatrix(points) {
-      const n = points.length;
-      let sumLat = 0, sumLon = 0, sumX = 0, sumY = 0;
-      let sumLat2 = 0, sumLon2 = 0, sumLatLon = 0;
-      let sumLatX = 0, sumLatY = 0, sumLonX = 0, sumLonY = 0;
+<button id="historyBtn" class="btn btn-success">
+<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11 2 2m-2-2v10a1 1 0 0 0 1 1h3m-6 0a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h2z"/>
+</svg>
+Ver Historial (<span id="historyCount">0</span>)
+</button>
+</div>
 
-      for (const p of points) {
-          const lat = p.lat;
-          const lon = p.lon;
-          const x = p.x;
-          const y = p.y;
-          
-          sumLat += lat;
-          sumLon += lon;
-          sumX += x;
-          sumY += y;
-          sumLat2 += lat * lat;
-          sumLon2 += lon * lon;
-          sumLatLon += lat * lon;
-          sumLatX += lat * x;
-          sumLatY += lat * y;
-          sumLonX += lon * x;
-          sumLonY += lon * y;
-      }
+<!-- Vista Vuelo Actual -->
+<div id="currentFlightView" class="hidden">
+<div id="flightInfo" class="flight-info">
+<h2 id="currentFlightTitle">Vuelo</h2>
+<p id="currentFlightDate">Fecha:</p>
+<p id="currentFlightTime">Inicio:</p>
+</div>
 
-      const det = n * sumLat2 * sumLon2 - sumLat * sumLat2 * sumLon - n * sumLat2 * sumLon * sumLon - sumLat2 * sumLon * sumLon - sumLat * sumLat * sumLon2 + sumLat * sumLon * sumLatLon;
-      
-      if (det === 0) {
-        console.error("No se pudo calcular la matriz afín. Matriz singular.");
-        return null;
-      }
+<div id="operationsList"></div>
+</div>
 
-      const a = (sumLat2 * sumLonY - sumLatY * sumLatLon) / det;
-      const b = (sumLatX * sumLon2 - sumLat2 * sumLonX) / det;
-      const c = (sumLat2 * sumLonY - sumLatY * sumLatLon) / det;
-      const d = (sumLat2 * sumLonX - sumLatX * sumLatLon) / det;
-      const tx = (sumX - a * sumLat - b * sumLon) / n;
-      const ty = (sumY - c * sumLat - d * sumLon) / n;
+<!-- Vista Historial -->
+<div id="historyView" class="hidden">
+<div id="historyList"></div>
+<div id="emptyHistory" class="hidden" style="text-align: center; color: #6b7280; padding: 40px 0;">
+No hay vuelos completados aún
+</div>
+</div>
+</div>
 
-      return { a, b, c, d, tx, ty };
-    }
-    
-    // Función para convertir GPS a píxeles usando la matriz afín
-    function gpsToPixel(lat, lon) {
-      if (!affineMatrix) {
-          // Fallback a un método simple si no se pudo calcular la matriz
-          const p1 = calibrationPoints[0];
-          const p2 = calibrationPoints[1];
-          
-          const dx = p2.x - p1.x;
-          const dy = p2.y - p1.y;
-          const dLat = p2.lat - p1.lat;
-          const dLon = p2.lon - p1.lon;
-          
-          const x = p1.x + ((lon - p1.lon) / dLon) * dx;
-          const y = p1.y + ((lat - p1.lat) / dLat) * dy;
-          return { x, y };
-      }
-      
-      const x = affineMatrix.a * lat + affineMatrix.b * lon + affineMatrix.tx;
-      const y = affineMatrix.c * lat + affineMatrix.d * lon + affineMatrix.ty;
-      return { x, y };
-    }
+<div id="bottomNav" class="bottom-nav hidden">
+<button id="backBtn" class="btn btn-primary" style="flex: 1;">← Volver</button>
+<button id="saveBtn" class="btn btn-success hidden" style="flex: 1;">
+<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="m9 12 2 2 4-4"></path>
+<path d="M21 12c.552 0 1-.448 1-1V8a2 2 0 0 0-2-2h-5L9 2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2z"></path>
+</svg>
+Guardar
+</button>
+</div>
+</div>
 
-    // Actualizar transformación del mapa
-    function updateTransform() {
-      map.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
-      updateZoomLevel();
-    }
+<script>
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+navigator.serviceWorker.register('data:text/javascript,')
+.catch(() => {});
+}
 
-    // Actualizar indicador de zoom
-    function updateZoomLevel() {
-      const percentage = Math.round(scale * 100);
-      zoomLevel.textContent = `Zoom: ${percentage}%`;
-    }
+// Variables globales
+let flights = [];
+let currentFlight = null;
+let currentView = 'list';
 
-    // Calcular distancia al centro del aeropuerto
-    function distanceToAirport(lat, lon) {
-      const centerLat = (bounds.minLat + bounds.maxLat) / 2;
-      const centerLon = (bounds.minLon + bounds.maxLon) / 2;
-      
-      const R = 6371; // Radio de la Tierra en km
-      const dLat = (lat - centerLat) * Math.PI / 180;
-      const dLng = (lon - centerLon) * Math.PI / 180;
-      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos(centerLat * Math.PI / 180) * Math.cos(lat * Math.PI / 180) *
-          Math.sin(dLng/2) * Math.sin(dLng/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c;
-    }
+const operations = [
+'OPERATIVA', 'PAYLOAD', 'LLEGADA', 'SALIDA', 'ATA', 'PARADA MOTORES',
+'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
+'REAR JACK UP', 'FUEL', 'ACU ON', 'ACU OFF', 'REAR JACK DOWN',
+'FRONT JACK DOWN', 'START TOWING', 'END TOWING', 'STARTUP', 'TAXI', 'TAKEOFF'
+];
 
-    // Actualizar posición del marcador
-    function updateMarker(lat, lon, heading, accuracy) {
-      currentAccuracy = accuracy;
-      
-      // Verificar si está dentro de los límites del aeropuerto
-      const isInAirport = lat >= bounds.minLat && lat <= bounds.maxLat && 
-                         lon >= bounds.minLon && lon <= bounds.maxLon;
-      
-      if (!isInAirport) {
-        const distance = distanceToAirport(lat, lon);
-        updateStatus(`🚫 Fuera del aeropuerto (${distance.toFixed(1)}km de distancia)`, false);
-        marker.style.display = "none";
-        accuracyCircle.style.display = "none";
-        return;
-      }
+// Cargar datos
+function loadData() {
+const saved = localStorage.getItem('ghrBelugaFlights');
+if (saved) {
+flights = JSON.parse(saved);
+}
+updateHistoryCount();
+}
 
-      const { x, y } = gpsToPixel(lat, lon);
-      
-      // Verificar si las coordenadas están dentro del área visual
-      if (x < 0 || x > 1600 || y < 0 || y > 2800) {
-        updateStatus("📍 Coordenadas fuera del área visual", false);
-        marker.style.display = "none";
-        accuracyCircle.style.display = "none";
-        return;
-      }
+// Guardar datos
+function saveData() {
+localStorage.setItem('ghrBelugaFlights', JSON.stringify(flights));
+updateHistoryCount();
+}
 
-      // Posicionar marcador
-      marker.style.left = `${x}px`;
-      marker.style.top = `${y}px`;
-      marker.style.display = "block";
-      
-      // Orientar el avión según la dirección
-      if (typeof heading === 'number' && heading >= 0) {
-        marker.style.transform = `translate(-50%, -50%) rotate(${heading}deg)`;
-      } else {
-        marker.style.transform = `translate(-50%, -50%) rotate(0deg)`;
-      }
-      
-      // Mostrar círculo de precisión
-      if (accuracy && accuracy < 100) {
-        const accuracyPixels = accuracy * 2; // Aproximación: 1 metro = 2 píxeles
-        accuracyCircle.style.left = `${x}px`;
-        accuracyCircle.style.top = `${y}px`;
-        accuracyCircle.style.width = `${accuracyPixels}px`;
-        accuracyCircle.style.height = `${accuracyPixels}px`;
-        accuracyCircle.style.transform = `translate(-50%, -50%)`;
-        accuracyCircle.style.display = "block";
-      } else {
-        accuracyCircle.style.display = "none";
-      }
-      
-      lastPosition = { x, y };
-      updateStatus(`✅ Ubicado en el aeropuerto (±${Math.round(accuracy)}m)`, false);
-      updateCoordinates(lat, lon, accuracy);
-    }
+// Actualizar contador de historial
+function updateHistoryCount() {
+document.getElementById('historyCount').textContent = flights.filter(f => f.completed).length;
+}
 
-    // Actualizar texto de estado
-    function updateStatus(message, showSpinner = false) {
-      if (showSpinner) {
-        status.innerHTML = `
-          <div class="loading">
-            <div class="spinner"></div>
-            <span>${message}</span>
-          </div>
-        `;
-      } else {
-        status.textContent = message;
-      }
-    }
+// Cambiar vista
+function showView(view) {
+document.querySelectorAll('#listView, #currentFlightView, #historyView').forEach(v => {
+v.classList.add('hidden');
+});
 
-    // Actualizar coordenadas mostradas
-    function updateCoordinates(lat, lon, accuracy) {
-      coordinates.innerHTML = `
-        📍 Lat: ${lat.toFixed(6)}°<br>
-        📍 Lng: ${lon.toFixed(6)}°<br>
-        🎯 Precisión: ±${Math.round(accuracy)}m<br>
-        🕐 ${new Date().toLocaleTimeString()}
-      `;
-    }
+if (view === 'list') {
+document.getElementById('listView').classList.remove('hidden');
+document.getElementById('bottomNav').classList.add('hidden');
+updateContinueButton();
+} else if (view === 'current') {
+document.getElementById('currentFlightView').classList.remove('hidden');
+document.getElementById('bottomNav').classList.remove('hidden');
+document.getElementById('saveBtn').classList.remove('hidden');
+updateCurrentFlightView();
+} else if (view === 'history') {
+document.getElementById('historyView').classList.remove('hidden');
+document.getElementById('bottomNav').classList.remove('hidden');
+document.getElementById('saveBtn').classList.add('hidden');
+updateHistoryView();
+}
 
-    // Centrar mapa en la ubicación actual
-    function centerOnPosition() {
-      if (!lastPosition) {
-        updateStatus("❌ No hay ubicación GPS disponible", false);
-        return;
-      }
-      
-      const containerWidth = mapContainer.clientWidth;
-      const containerHeight = mapContainer.clientHeight;
-      
-      offsetX = containerWidth / 2 - lastPosition.x * scale;
-      offsetY = containerHeight / 2 - lastPosition.y * scale;
-      
-      updateTransform();
-    }
+currentView = view;
+}
 
-    // Event listeners para controles
-    centerBtn.addEventListener('click', centerOnPosition);
+// Actualizar botón continuar
+function updateContinueButton() {
+const btn = document.getElementById('continueFlightBtn');
+if (currentFlight && !currentFlight.completed) {
+btn.classList.remove('hidden');
+btn.innerHTML = `
+<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12,6 12,12 16,14"></polyline>
+</svg>
+Continuar Vuelo ${currentFlight.flightNumber}
+`;
+} else {
+btn.classList.add('hidden');
+}
+}
 
-    resetBtn.addEventListener('click', () => {
-      scale = 1;
-      offsetX = 0;
-      offsetY = 0;
-      updateTransform();
-    });
+// Crear nuevo vuelo
+function createFlight(flightNumber) {
+currentFlight = {
+id: Date.now(),
+flightNumber: flightNumber.trim(),
+date: new Date().toLocaleDateString('es-ES'),
+startTime: new Date().toLocaleTimeString('es-ES'),
+operations: {},
+completed: false
+};
+showView('current');
+}
 
-    zoomInBtn.addEventListener('click', () => {
-      const newScale = Math.min(scale + 0.3, 5);
-      if (newScale !== scale) {
-        const centerX = mapContainer.clientWidth / 2;
-        const centerY = mapContainer.clientHeight / 2;
-        const scaleRatio = newScale / scale;
-        
-        offsetX = centerX - (centerX - offsetX) * scaleRatio;
-        offsetY = centerY - (centerY - offsetY) * scaleRatio;
-        scale = newScale;
-        updateTransform();
-      }
-    });
+// Registrar operación
+function recordOperation(operation) {
+if (!currentFlight) return;
 
-    zoomOutBtn.addEventListener('click', () => {
-      const newScale = Math.max(scale - 0.3, 0.3);
-      if (newScale !== scale) {
-        const centerX = mapContainer.clientWidth / 2;
-        const centerY = mapContainer.clientHeight / 2;
-        const scaleRatio = newScale / scale;
-        
-        offsetX = centerX - (centerX - offsetX) * scaleRatio;
-        offsetY = centerY - (centerY - offsetY) * scaleRatio;
-        scale = newScale;
-        updateTransform();
-      }
-    });
+const currentTime = new Date().toLocaleTimeString('es-ES');
+currentFlight.operations[operation] = currentTime;
+updateCurrentFlightView();
+}
 
-    // Event listeners para gestos táctiles
-    mapContainer.addEventListener('touchstart', e => {
-      if (e.touches.length === 1) {
-        isDragging = true;
-        startX = e.touches[0].clientX - offsetX;
-        startY = e.touches[0].clientY - offsetY;
-      }
-    });
+// Registrar payload
+function recordPayload(value) {
+if (!currentFlight || !value.trim()) return;
 
-    mapContainer.addEventListener('touchmove', e => {
-      e.preventDefault();
-      if (isDragging && e.touches.length === 1) {
-        offsetX = e.touches[0].clientX - startX;
-        offsetY = e.touches[0].clientY - startY;
-        updateTransform();
-      }
-    });
+currentFlight.operations['PAYLOAD'] = value.trim();
+updateCurrentFlightView();
+}
 
-    mapContainer.addEventListener('touchend', () => {
-      isDragging = false;
-    });
+// Ajustar tiempo
+function adjustTime(operation, minutes) {
+if (!currentFlight?.operations[operation]) return;
 
-    // Event listeners para mouse (escritorio)
-    mapContainer.addEventListener('mousedown', e => {
-      isDragging = true;
-      startX = e.clientX - offsetX;
-      startY = e.clientY - offsetY;
-      mapContainer.style.cursor = 'grabbing';
-    });
+const currentTime = currentFlight.operations[operation];
+const [hours, mins, secs] = currentTime.split(':').map(Number);
 
-    mapContainer.addEventListener('mousemove', e => {
-      if (isDragging) {
-        offsetX = e.clientX - startX;
-        offsetY = e.clientY - startY;
-        updateTransform();
-      }
-    });
+let totalMinutes = hours * 60 + mins + minutes;
+if (totalMinutes < 0) totalMinutes = 0;
+if (totalMinutes >= 24 * 60) totalMinutes = 24 * 60 - 1;
 
-    mapContainer.addEventListener('mouseup', () => {
-      isDragging = false;
-      mapContainer.style.cursor = 'move';
-    });
+const newHours = Math.floor(totalMinutes / 60);
+const newMins = totalMinutes % 60;
+const newTime = `${newHours.toString().padStart(2, '0')}:${newMins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
-    // Zoom con rueda del mouse
-    mapContainer.addEventListener('wheel', e => {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? -0.2 : 0.2;
-      const newScale = Math.max(0.3, Math.min(5, scale + delta));
-      
-      if (newScale !== scale) {
-        const rect = mapContainer.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        const scaleRatio = newScale / scale;
-        
-        offsetX = mouseX - (mouseX - offsetX) * scaleRatio;
-        offsetY = mouseY - (mouseY - offsetY) * scaleRatio;
-        scale = newScale;
-        updateTransform();
-      }
-    });
+currentFlight.operations[operation] = newTime;
+updateCurrentFlightView();
+}
 
-    // Manejo de posición GPS
-    function handlePosition(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      const heading = position.coords.heading;
-      const accuracy = position.coords.accuracy;
-      
-      updateMarker(lat, lon, heading, accuracy);
-      
-      // Auto-centrar en la primera ubicación
-      if (!lastPosition) {
-        setTimeout(centerOnPosition, 1000);
-      }
-    }
+// Actualizar vista de vuelo actual
+function updateCurrentFlightView() {
+if (!currentFlight) return;
 
-    // Manejo de errores GPS
-    function handleError(error) {
-      let message;
-      switch(error.code) {
-        case error.PERMISSION_DENIED:
-          message = "❌ Permiso GPS denegado. Activa la ubicación.";
-          break;
-        case error.POSITION_UNAVAILABLE:
-          message = "❌ Señal GPS no disponible.";
-          break;
-        case error.TIMEOUT:
-          message = "⏱️ Tiempo agotado. Reintentando...";
-          break;
-        default:
-          message = "❌ Error GPS desconocido.";
-          break;
-      }
-      updateStatus(message, false);
-    }
+document.getElementById('currentFlightTitle').textContent = `Vuelo ${currentFlight.flightNumber}`;
+document.getElementById('currentFlightDate').textContent = `Fecha: ${currentFlight.date}`;
+document.getElementById('currentFlightTime').textContent = `Inicio: ${currentFlight.startTime}`;
 
-    // Inicializar GPS
-    function initGPS() {
-      if (!navigator.geolocation) {
-        updateStatus("❌ GPS no soportado por el navegador.", false);
-        return;
-      }
+const operationsList = document.getElementById('operationsList');
+operationsList.innerHTML = '';
 
-      updateStatus("📡 Iniciando GPS de alta precisión...", true);
-      
-      const options = {
-        enableHighAccuracy: true,
-        maximumAge: 2000,
-        timeout: 15000
-      };
+operations.forEach(operation => {
+const div = document.createElement('div');
+div.className = 'operation-item';
 
-      watchId = navigator.geolocation.watchPosition(handlePosition, handleError, options);
-    }
+const hasValue = currentFlight.operations[operation];
 
-    // Inicializar aplicación
-    document.addEventListener('DOMContentLoaded', () => {
-      affineMatrix = getAffineTransformMatrix(calibrationPoints);
-      updateZoomLevel();
-      initGPS();
-      
-      // Configurar cursor
-      mapContainer.style.cursor = 'move';
-      
-      console.log('Airport GPS Tracker iniciado');
-      console.log('Puntos de calibración:', calibrationPoints);
-    });
+div.innerHTML = `
+<div class="operation-header">
+<div class="operation-title">${operation}</div>
+${hasValue ? `<div class="operation-time">${hasValue}</div>` : ''}
+</div>
+<div class="operation-controls">
+${operation === 'PAYLOAD' ? `
+<input type="text" id="payload-${operation}" class="payload-input" placeholder="Ej: 12.5 ton">
+<button onclick="recordPayload(document.getElementById('payload-${operation}').value); document.getElementById('payload-${operation}').value = '';" class="btn btn-sm btn-primary">Guardar</button>
+` : `
+<button onclick="recordOperation('${operation}')" class="btn btn-sm ${hasValue ? 'btn-success' : 'btn-primary'}">
+${hasValue ? 'Actualizar' : 'Registrar'}
+</button>
+${hasValue ? `
+<button onclick="adjustTime('${operation}', -1)" class="btn-icon minus" title="Restar 1 minuto">-</button>
+<button onclick="adjustTime('${operation}', 1)" class="btn-icon plus" title="Sumar 1 minuto">+</button>
+` : ''}
+`}
+</div>
+`;
 
-    // Cleanup al cerrar
-    window.addEventListener('beforeunload', () => {
-      if (watchId) {
-        navigator.geolocation.clearWatch(watchId);
-      }
-    });
-  </script>
+operationsList.appendChild(div);
+});
+}
+
+// Guardar vuelo
+function saveFlight() {
+if (!currentFlight) return;
+
+currentFlight.completed = true;
+currentFlight.endTime = new Date().toLocaleTimeString('es-ES');
+
+const existingIndex = flights.findIndex(f => f.id === currentFlight.id);
+if (existingIndex >= 0) {
+flights[existingIndex] = currentFlight;
+} else {
+flights.push(currentFlight);
+}
+
+saveData();
+currentFlight = null;
+showView('list');
+}
+
+// Actualizar vista de historial
+function updateHistoryView() {
+const historyList = document.getElementById('historyList');
+const emptyHistory = document.getElementById('emptyHistory');
+
+const completedFlights = flights.filter(f => f.completed);
+
+if (completedFlights.length === 0) {
+historyList.innerHTML = '';
+emptyHistory.classList.remove('hidden');
+return;
+}
+
+emptyHistory.classList.add('hidden');
+historyList.innerHTML = '';
+
+completedFlights.reverse().forEach(flight => {
+const div = document.createElement('div');
+div.className = 'history-item';
+
+const operationsHtml = Object.entries(flight.operations)
+.map(([op, time]) => `
+<div class="history-operation">
+<span>${op}</span>
+<span style="color: #059669; font-family: monospace;">${time}</span>
+</div>
+`).join('');
+
+div.innerHTML = `
+<div class="history-header">
+<div>
+<h3 style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Vuelo ${flight.flightNumber}</h3>
+<p style="color: #6b7280; font-size: 14px;">${flight.date}</p>
+<p style="color: #6b7280; font-size: 14px;">${flight.startTime} - ${flight.endTime}</p>
+</div>
+<button onclick="deleteFlight(${flight.id})" class="btn-icon" style="background: #fee2e2; color: #dc2626;" title="Eliminar vuelo">
+<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<polyline points="3,6 5,6 21,6"></polyline>
+<path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"></path>
+</svg>
+</button>
+</div>
+<div class="history-operations">
+${operationsHtml}
+</div>
+<div style="margin-top: 12px; font-size: 14px; color: #6b7280;">
+${Object.keys(flight.operations).length} operaciones registradas
+</div>
+`;
+
+historyList.appendChild(div);
+});
+}
+
+// Eliminar vuelo
+function deleteFlight(flightId) {
+if (confirm('¿Estás seguro de que quieres eliminar este vuelo?')) {
+flights = flights.filter(f => f.id !== flightId);
+saveData();
+updateHistoryView();
+}
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+loadData();
+
+// Nuevo vuelo
+document.getElementById('newFlightBtn').addEventListener('click', () => {
+document.getElementById('newFlightBtn').classList.add('hidden');
+document.getElementById('newFlightForm').classList.remove('hidden');
+document.getElementById('flightNumber').focus();
+});
+
+// Cancelar nuevo vuelo
+document.getElementById('cancelNewFlight').addEventListener('click', () => {
+document.getElementById('newFlightBtn').classList.remove('hidden');
+document.getElementById('newFlightForm').classList.add('hidden');
+document.getElementById('flightNumber').value = '';
+});
+
+// Form de nuevo vuelo
+document.getElementById('flightForm').addEventListener('submit', (e) => {
+e.preventDefault();
+const flightNumber = document.getElementById('flightNumber').value.trim();
+if (flightNumber) {
+createFlight(flightNumber);
+}
+});
+
+// Continuar vuelo
+document.getElementById('continueFlightBtn').addEventListener('click', () => {
+showView('current');
+});
+
+// Ver historial
+document.getElementById('historyBtn').addEventListener('click', () => {
+showView('history');
+});
+
+// Volver
+document.getElementById('backBtn').addEventListener('click', () => {
+showView('list');
+});
+
+// Guardar
+document.getElementById('saveBtn').addEventListener('click', saveFlight);
+
+// PWA Install
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+deferredPrompt = e;
+document.getElementById('installBanner').style.display = 'block';
+});
+
+document.getElementById('installBanner').addEventListener('click', async () => {
+if (deferredPrompt) {
+deferredPrompt.prompt();
+const { outcome } = await deferredPrompt.userChoice;
+deferredPrompt = null;
+if (outcome === 'accepted') {
+document.getElementById('installBanner').style.display = 'none';
+}
+}
+});
+});
+
+// Manifest dinámico
+const manifest = {
+"name": "GHR BELUGA",
+"short_name": "GHR BELUGA",
+"description": "Aplicación para operaciones de vuelo",
+"start_url": "./",
+"display": "standalone",
+"background_color": "#2563eb",
+"theme_color": "#2563eb",
+"orientation": "portrait",
+"icons": [
+{
+"src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjMjU2M2ViIiByeD0iMjQiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CjxwYXRoIGQ9Im0xNy41IDE5LjUtLjUtMi41LS41LTIuNS01LTIuNS01LTIuNS0uNSAyLjUtLjUgMi41WiIvPgo8cGF0aCBkPSJtOSA1IDggOC0zLjUtMUw5IDVaIi8+Cjwvc3ZnPgo8L3N2Zz4=",
+"sizes": "192x192",
+"type": "image/svg+xml"
+},
+{
+"src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSIjMjU2M2ViIiByeD0iNjQiLz4KPHN2ZyB4PSIxMjgiIHk9IjEyOCIgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgo8cGF0aCBkPSJtMTcuNSAxOS41LS41LTIuNS0uNS0yLjUtNS0yLjUtNS0yLjUtLjUgMi41LS41IDIuNVoiLz4KPHBhdGggZD0ibTkgNSA4IDgtMy41LTFMOSA1WiIvPgo8L3N2Zz4KPC9zdmc+",
+"sizes": "512x512",
+"type": "image/svg+xml"
+}
+]
+};
+
+const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+const manifestURL = URL.createObjectURL(manifestBlob);
+document.getElementById('manifest-placeholder').href = manifestURL;
+</script>
+```
+
 </body>
 </html>
