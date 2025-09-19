@@ -473,10 +473,25 @@
             </div>
 
             <div id="historyView" class="hidden">
+                <div class="card" style="display: flex; gap: 12px; margin-bottom: 20px;">
+                    <button id="exportBtn" class="btn btn-success" style="flex: 1; padding: 12px; font-size: 14px;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5M12 17V3"></path>
+                        </svg>
+                        Exportar
+                    </button>
+                    <button id="importBtn" class="btn btn-primary" style="flex: 1; padding: 12px; font-size: 14px;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5M12 3v14"></path>
+                        </svg>
+                        Importar
+                    </button>
+                </div>
                 <div id="historyList"></div>
                 <div id="emptyHistory" class="hidden" style="text-align: center; color: #6b7280; padding: 40px 0;">
                     No hay vuelos completados aún
                 </div>
+                <input type="file" id="fileInput" accept="application/json" style="display:none;">
             </div>
         </div>
 
@@ -564,7 +579,9 @@
         // Actualizar botón continuar
         function updateContinueButton() {
             const btn = document.getElementById('continueFlightBtn');
-            if (currentFlight && !currentFlight.completed) {
+            const uncompletedFlight = flights.find(f => !f.completed);
+            if (uncompletedFlight) {
+                currentFlight = uncompletedFlight;
                 btn.classList.remove('hidden');
                 btn.innerHTML = `
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -574,6 +591,7 @@
                     Continuar Vuelo ${currentFlight.registrationNumber}
                 `;
             } else {
+                currentFlight = null;
                 btn.classList.add('hidden');
             }
         }
@@ -777,12 +795,20 @@
                             <p style="color: #6b7280; font-size: 14px;">Fecha: ${flight.date}</p>
                             <p style="color: #6b7280; font-size: 14px;">Tiempo: ${flight.startTime} - ${flight.endTime}</p>
                         </div>
-                        <button onclick="deleteFlight(${flight.id})" class="btn-icon" style="background: #fee2e2; color: #dc2626;" title="Eliminar vuelo">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <polyline points="3,6 5,6 21,6"></polyline>
-                                <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"></path>
-                            </svg>
-                        </button>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="editFlight(${flight.id})" class="btn-icon edit" title="Editar vuelo">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
+                            <button onclick="deleteFlight(${flight.id})" class="btn-icon minus" title="Eliminar vuelo">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                    <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="history-details">
                         ${detailsHtml}
@@ -799,6 +825,16 @@
             });
         }
 
+        // Editar vuelo
+        function editFlight(flightId) {
+            const flightToEdit = flights.find(f => f.id === flightId);
+            if (flightToEdit) {
+                currentFlight = flightToEdit;
+                currentFlight.completed = false; // Vuelo en edición
+                showView('current');
+            }
+        }
+
         // Eliminar vuelo
         function deleteFlight(flightId) {
             if (confirm('¿Estás seguro de que quieres eliminar este vuelo?')) {
@@ -806,6 +842,49 @@
                 saveData();
                 updateHistoryView();
             }
+        }
+        
+        // Exportar datos a JSON
+        function exportData() {
+            const dataStr = JSON.stringify(flights, null, 2);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ghr-beluga-vuelos-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('Historial exportado con éxito!');
+        }
+
+        // Importar datos desde JSON
+        function importData() {
+            const fileInput = document.getElementById('fileInput');
+            fileInput.click();
+            fileInput.onchange = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedFlights = JSON.parse(e.target.result);
+                        if (Array.isArray(importedFlights)) {
+                            flights = [...flights, ...importedFlights];
+                            saveData();
+                            updateHistoryView();
+                            alert('Vuelos importados con éxito!');
+                        } else {
+                            throw new Error('Formato de archivo incorrecto.');
+                        }
+                    } catch (error) {
+                        alert('Error al importar el archivo: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
         }
 
         // Generar opciones para los selects de la tripulación
@@ -873,6 +952,7 @@
                 document.getElementById('continueFlightBtn').classList.add('hidden');
                 document.getElementById('historyBtn').classList.add('hidden');
                 document.getElementById('newFlightForm').classList.remove('hidden');
+                document.getElementById('flightForm').reset();
                 document.getElementById('registrationNumber').focus();
             });
             
@@ -882,7 +962,6 @@
                 document.getElementById('continueFlightBtn').classList.remove('hidden');
                 document.getElementById('historyBtn').classList.remove('hidden');
                 document.getElementById('newFlightForm').classList.add('hidden');
-                document.getElementById('flightForm').reset();
             });
 
             // Form de nuevo vuelo
@@ -902,7 +981,12 @@
                     wingwalker2: document.getElementById('wingwalker2').value.trim() || 'N/A'
                 };
                 if (flightData.registrationNumber) {
-                    createFlight(flightData);
+                    // Check for ongoing flight before creating a new one
+                    if (flights.some(f => !f.completed)) {
+                        alert('Por favor, guarda o cancela el vuelo en curso antes de crear uno nuevo.');
+                    } else {
+                        createFlight(flightData);
+                    }
                 }
             });
 
@@ -923,6 +1007,10 @@
 
             // Guardar
             document.getElementById('saveBtn').addEventListener('click', saveFlight);
+
+            // Exportar e Importar
+            document.getElementById('exportBtn').addEventListener('click', exportData);
+            document.getElementById('importBtn').addEventListener('click', importData);
             
             // PWA Install
             let deferredPrompt;
