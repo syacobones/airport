@@ -253,7 +253,7 @@
         .history-item {
             background: white;
             border-radius: 12px;
-            padding: 16px;
+            padding: 20px;
             margin-bottom: 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
@@ -261,8 +261,34 @@
         .history-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 12px;
+        }
+
+        .history-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 16px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .detail-value {
+            font-family: monospace;
+            font-size: 12px;
         }
 
         .history-operations {
@@ -271,6 +297,7 @@
             background: #f9fafb;
             border-radius: 8px;
             padding: 12px;
+            margin-top: 16px;
         }
 
         .history-operation {
@@ -282,6 +309,7 @@
             background: white;
             border-radius: 6px;
             font-size: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .bottom-nav {
@@ -301,10 +329,29 @@
         .hidden {
             display: none !important;
         }
+
+        .install-banner {
+            background: #059669;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        @media (display-mode: standalone) {
+            .install-banner {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
+        <div id="installBanner" class="install-banner">
+            📱 Toca aquí para instalar GHR BELUGA como app
+        </div>
+
         <div class="header">
             <h1>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -313,11 +360,6 @@
                 </svg>
                 GHR BELUGA
             </h1>
-            <div class="header-logos">
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjUiIHZpZXdCb3g9IjAgMCAyNSAyNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0wIDAuMTgyMzE3SDIuOTY2NzRWNC4xNjU3OThIMjEuODI4NlYwLjE4MjMxN0gyNC43OTQ0VjcuMzcxOTkzSDIxLjgyODZWMTIuMjk3NUgxOC44NjM5VjI0Ljg2MTFIMTUuODk4NlYxMi4yOTc1SDUuOTI4MDJWNy4zNzE5OTNIMi45NjY3NFYxMi4yOTc1SDUuOTI4MDJWMTkuOTM0M0gyLjYwMDM4VjI0Ljg2MTFIMjIuMTM5NVYxOS45MzQzSDE4LjgzMzlWMTAuNTUyN0gxOS45MjQ2VjcuMzcxOTkzSDE1Ljg5ODZWMTUuNTI1MjEwLjc3OTg2VjEwLjU1MjdIMTguODYzOVY3LjM3MTk5M0gxNS44OTg2VjQuMTY1Nzk4SDIxLjgyODZWNy4zNzE5OTNIMjQuNzk0NFYxMS41MjVIMjEuODI4NlYxNy44MjMzSDE4LjgzMzlWMTkuOTM0M0gxNS44OTg2VjEwLjU1MjdIMTcuMDg4NFYxMS40MTI4SDE3LjA4ODRWMTIuMjk3NUgxOS42ODE1VjExLjUyNUgxOS42ODE1VjE2Ljk1MzNIMTcuMDc5NFYyMS41NzI3aDUtLjUwNTV2LTYuNzQzMmwtLjM1NDcxLTQuOTMyMVYxMy45OTU1aDcuMzI5OTRWMTUuMTczNEwyMy41MzQ3IDE4Ljg5MzJMOS42MTEwMyAxNy42MTExaDIuMjU3ODhWMjEuNzczMkwxNC4yMTM2IDE2Ljk4MzVIMTguNzUzNlYxNy40ODU4TDEzLjUxMTggMjEuMzkxM0gxNS43NzM1VjI1LjUxODdIMjQuMjk1NlYyNC4wOTE1VjI4LjA2ODhIMjcuMjQyOVYzMC4wMjIyVjI4LjA5NzlMMzAuMDQ5NiAyNC4wOTM4aDEuNDQzODdWMjIuMDcyM0gzMC4xODQ3VjI1LjU1NDlIMjYuOTU2MlYyNC4yODk3aDIuMTQ1NTlWMjIuNTU1OUwyNS4yMTkyIDI2LjUzODdIMjIuNDkwMVYyNC45OTI5bC4zNDU1My0uNDQ2MzVWMjMuOTE0OUgyMS45MTk5VjI2LjU5MDRIMjAuNjI2VjI0LjIyOTZIMTguNDkxNVYyMS42MTY0SDE3LjgyNjNWMTkuOTAyVjE4LjU5NjNIMTkuNjcxMVYxNy42NjgzVjIwLjA4NjVIMjEuOTI1MVYxOS45NzYzSDE3LjkxNzlWMTguODIzNkgyNS4wMTc4VjE2Ljk1MzNIMjguMDY2NVYxOC44MjM2SDI2LjA5NzVWMTYuOTUzM0gzMS4yNjY3VjE3Ljk0OTdIMjguNTU5NFYyMy41NTI1SDMyLjA2NjVWMjEuOTIzTDI3LjE4OTMgMjcuNDMyNkwxOS45ODIgMjUuMTMwMkM5LjE2NTMgMjMuNjA1MSAyLjUzMTcgMjMuMTUzOSAxLjgzMDE2IDIyLjg4MjRDMC40NTU5NjggMjIuMzQzNSAxLjA1NDk5IDIxLjcwNDUgMS41NTczNSAyMS44NzhDMS45NDg0IDIyLjYxOTggMi43MzExNSAyMy45NjA2IDMuMjYwOTkgMjQuNjM5NGMyLjM1Nzg1IDMuMDgzMjkgMy4wNjM5NiAyLjg3OTQ3IDIuNjAzOTYgMi4wNzI1OGwtMS44NzMwMy0zLjIyNjc4TDIuOTY2NzQgMjIuOTY2N0gyLjU1MDg5di0zLjU0NTEySDEuODI2MzN2LTUuMzMzMjVIMy44OTc2NlYxMS41MjVIMi42MDAzOFYxMC41NTI3SDIuOTY2NzRWNy4zNzE5OTNINy4xMjI2NVYxMC41NTI3SDExLjA4ODZWMTIuNTUxNkgxMC41MTk2TDEyLjY5MTUgOC4zMTQyN0gxMC43MzYxVjEwLjU1MjdINy43NzE2NVY0LjE2NTc5OEgxMi42ODI4VjcuMTkzODJINy4yOTMzNlY5LjAwMjczSDcuNzEwODQ0VjExLjUyNUg1LjU4NTM5VjcuNDI1MzZINy44MjUzNlY2LjY0MDMzSDE0LjgyNjdWOS4wMDI3M0g5LjcxOTY0VjExLjUyNUgxMS40MjQ4VjE0LjMyNTRIMTQuMDM0N1YyMS41NzI3SDE5LjgzOTNWMTQuMzI1NEgxNy4xMzkzVjEyLjU1MTZIMjAuNDc1NlYyMC4wNzUyVjE0LjMyNTRIMTcuOTQ0VjEyLjU1MTZIMjEuNzMzOVYxNC4zMjU0SDI0LjQ4MDNWMTIuNTUxNkgxNy40NzIyVjIwLjA4MjR2Ljk1MjYyMkwxNy45NDQgMjAuOTQxM0wyMC40NTA4IDIyLjAwMzFWMjEuNTA0N0wyMS40NDY2IDIwLjA4MjRWMjIuNDY0OUgyNC43OTQ0VjIwLjA4MjRIMjAuNzQwNFYxNi4xNTI4SDE3LjQxNDdWMTguODMyN0gyMC43NDA0VjIwLjA4MjR6IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="Logo de WFS" class="header-logo">
-                
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzOCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI3LjA5MzggMTguODIzNkMyNy4wOTM4IDE4LjUyOTIgMjYuOTk3NSAxOC4xODUgMjYuODAxMyAxNy44NTQ1QzI2LjYwNTEgMTcuNTQ5MSAyNi4zMTA1IDE3LjMxODkgMjYuMDA4NCAxNy4wOTc3QzI1LjcwNjQgMTYuODc2NSAyNS4yNzc1IDE2LjcwODQgMjQuODI4OCAxNi41OTY4QzI0LjM4MDEgMTYuNDgzOCAyMy45MDM1IDE2LjQyMTYgMjMuNDIxMSAxNi40MjE2SDIuNTY2NDFWMTMuNzIyN0gyMi44OTU5QzI1LjQyNzYgMTMuNzIyNyAyNy40MTgyIDEzLjE0NTYgMjguODY1IDEyLjAwMzRDNDAuNzQzMSAzLjU0MjE0IDQyLjgwMTEgMC4xMjg1MjMgNDIuMjE5NCAwLjA0NTcxODhDNDIuMDk2IDAuMDQ1NzE4OCA0MC4yMjI3IDcuMjAzMjUgMzkuMDkzOCA5Ljg3MzYyTDM2LjE4MjMgMTYuOTgzNUgzOS4zNzQ1TDQyLjgyMjkgOC45NDE2NUM0My4xMzgzIDguMTY0NTcgNDIuNTQ0NSA2LjQxODE2IDQxLjE1MjUgNS4xMjczM0MzOC4zNzc5IDIuNTI4MTQgMzMuNjA4MiAxLjMxMjYyIDMzLjYwODIgMS4zMTI2MkMxNS4yNDY1IDMuMjUxNzYgNy44ODkwMSAxMC4zNTYyIDEyLjI0OTggMTguNDY3NkMxMC43NzE1IDIwLjcxMTUgOS42ODYwNyAyMi45NjYgOS42ODM0MSAyMi45NjZWMjMuNzExN0MxMC4yODM5IDIzLjQ1MSAxMS4wOTQ3IDIzLjEyOTEgMTIuMDQwMyAyMi42OTM2QzEzLjgwMzQgMjEuODYxNyAxNS41MDk1IDIxLjA0OTUgMTYuNzIyOCAyMC4zNTM1QzE5LjUxMTkgMTkuMjU3NyAyMS43NzY5IDE3LjM3NyAyMy4yODU2IDE0LjY1MjJDMjQuMzA5MSAxMi4xNjQxIDI0LjYyNTggOS4zODE5NyAyNC41NTUyIDYuNTQxNjdDMjQuNTQxOSA2LjI3ODkyIDI0LjQzOCA2LjA3MjU2IDI0LjI2NDQgNS44NjY5NkMyNC4xMjU4IDUuNzQ1NzkgMjMuODU1IDUuNjUzNTkgMjMuNTkzMSA1LjYyNDg5QzIzLjUyMjUgNS42MDI1NyAyMy4zODA1IDUuNTgwMzggMjMuMjk2NiA1LjU4MDU1TDIzLjEyMjkgNS43NjQ4N0MxNS41MTU5IDEwLjgzNjQgMTIuODIxMSAxNi4wMDMyIDguMDM3ODIgMjEuNzAyMUM3LjI5NDM5IDIyLjU0NSA2LjMxMjkyIDIzLjI1MjQgNS41Njk0OSAyMy42NDQ4QzUuMDc2OTIgMjQuMDEwMyA0LjY1NzI5IDI0LjE4OTIgNC41NDkxNiAyNC4xODkyQzQuMzM3NTYgMjQuMTg5MiA0LjUxMjgxIDI0LjY1MzggNS4zMTUyMSAyNS43MTZMMTYuNTkwNSAyOS45OTk5QzE3LjM5MjkgMzAuODU2MSAxNy4xNzEzIDMxLjIwMzcgMTYuNDY1NiAzMS4yMDM3TDEuNTU3NDUgMzAuMTkwNEMtMC4yMzUxNzUgMzAuMDI1MyAtNy4yNjQxOSAyMy43MTAzIDAgMjEuNjYzMUMzLjY4NDc1IDE3LjQ3ODUgOS40MzM1NiAxNC4xMzI1IDExLjcyNCAxMi4yOTExTDExLjA5NjUgMTEuMzI5MUMxMi43OTc5IDguMDY5NiAxNS4zMTI1IDUuMzk1NTMgMTguMjYxNiAzLjgzODEyQzIwLjM3NTYgMi43MTg5NiAyMi42MTQ2IDIuMTIzMjkgMjQuNzI5NyAyLjA3NzFDMjUuNTMyIDEuODI5MTYgMjMuNjA5MiAxLjI5Mzk5IDIxLjY3MjQgMi4xMjMyOUMyMS4zNjcxIDIuMjE1MTggMjEuMjEwNyAyLjMzMDU1IDIxLjAxMDUgMi40Nzg3QzIwLjY4MDEgMi43MjU5NiAyMC4zNjI2IDIuODM2NDkgMjAuMDkxNSAyLjkwNTE1QzE5LjU2MTEgMy4wOTQ5NyAxOS4xMDggMy4zNjM0IDE4Ljg4NyAzLjU2MzU1QzE3LjgzMSA0LjUzNjE5IDE3LjIwOCA1LjQ5ODIxIDE3LjAzNDQgNi4yMzI4NEMxNi45Njk4IDYuNTAwNjEgMTYuOTg3IDYuNjg4OSAxNy4wNjk4IDYuNzA1NTFDMTcuMTYxNCA2Ljc2NTkyIDE3LjM1NSA2LjczMzQxIDE3LjUxNzIgNi41NjA5MkMxNy42MTMxIDYuNDQ5MjkgMTcuODI3NCA2LjMwNjIzIDE4LjA3NzUgNi4xMDk4M0MxOC41MDQyIDUuNzU0NzYgMTkuMDIzNSA1LjMwNDkgMTkuNjExMiA0LjkyMzQ5QzE5LjkzNDMgNC43NjE5MiAyMC4yOTYxIDQuNjIyMiAyMC43MjI2IDQuNTMxOTJDMTcuMTYwNiA5Ljg3MzYyIDE3LjUzNjEgMjAuNzY3OSAyOS4wMzcyIDI3LjE0MTZDMzAuMTE1MyAyOC41MzM3IDMxLjE2MjkgMjkuNTQxMyAzMS4xNjI5IDI5LjU0MTNIMzEuNzYxMVYyOS4xOTM2QzMwLjM3NzYgMjcuNTU2NCAyOS4yMTI1IDI1Ljk5OTEgMjkuMTM0OCAyNS44NTYzQzI3LjkyODMgMjMuMzQ0NSAyNy4wOTM4IDE4LjkyIDI3LjA5MzggMTguODIzNlptMi42NDAyOC0xMi42MjA2Yy0yLjA3MzIyIDQuNDE2ODctNi41NzYyOCA2LjMzMzY5LTEwLjE4MzUgNy4xNzA5M0wxMi41NTA0IDEwLjkwNzdWNi43NjMxOUw1LjMzMzEzIDExLjU1ODRMMTAuMjg5NyA4LjczODk3TDE1LjI0NjUgNC4wNjEyMkwxNy45MzIyIDcuMjk4NjVMNDAuNjQ1IDguODEzNzZIMzYuNzEzOVYxMC40NzY4TDMzLjUwMDcgOS42MTkzNUwzMi43NzIyIDguNDQ1NkwyOS43NDQxIDExLjcwOTlMMjcuMzgwNSAxMS4wNTE2eiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==" alt="Logo de Airbus" class="header-logo">
-            </div>
         </div>
 
         <div class="content">
@@ -332,11 +374,11 @@
                             <div style="display: flex; gap: 12px;">
                                 <div class="form-group" style="flex: 1;">
                                     <label class="form-label">Vuelo Llegada</label>
-                                    <input type="text" id="arrivalFlight" class="form-input" placeholder="Ej: F-GHRB">
+                                    <input type="text" id="arrivalFlight" class="form-input" placeholder="Ej: BGA9212">
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label class="form-label">Vuelo Salida</label>
-                                    <input type="text" id="departureFlight" class="form-input" placeholder="Ej: F-GHRB">
+                                    <input type="text" id="departureFlight" class="form-input" placeholder="Ej: BGA9213">
                                 </div>
                             </div>
                             <div style="display: flex; gap: 12px;">
@@ -677,6 +719,49 @@
                 const div = document.createElement('div');
                 div.className = 'history-item';
 
+                const detailsHtml = `
+                    <div class="detail-item">
+                        <span class="detail-label">Vuelo Llegada:</span>
+                        <span class="detail-value">${flight.arrivalFlight || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Vuelo Salida:</span>
+                        <span class="detail-value">${flight.departureFlight || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Aeropuerto Llegada:</span>
+                        <span class="detail-value">${flight.arrivalAirport || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Aeropuerto Salida:</span>
+                        <span class="detail-value">${flight.departureAirport || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">STA:</span>
+                        <span class="detail-value">${flight.sta || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">STD:</span>
+                        <span class="detail-value">${flight.std || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Coordinador:</span>
+                        <span class="detail-value">${flight.coordinator || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Conductor:</span>
+                        <span class="detail-value">${flight.driver || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Wingwalker 1:</span>
+                        <span class="detail-value">${flight.wingwalker1 || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Wingwalker 2:</span>
+                        <span class="detail-value">${flight.wingwalker2 || 'N/A'}</span>
+                    </div>
+                `;
+
                 const operationsHtml = Object.entries(flight.operations)
                     .map(([op, time]) => `
                         <div class="history-operation">
@@ -689,9 +774,8 @@
                     <div class="history-header">
                         <div>
                             <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Vuelo ${flight.registrationNumber}</h3>
-                            <p style="color: #6b7280; font-size: 14px;">Registro: ${flight.registrationNumber || 'N/A'}</p>
-                            <p style="color: #6b7280; font-size: 14px;">Coordinador: ${flight.coordinator || 'N/A'}</p>
                             <p style="color: #6b7280; font-size: 14px;">Fecha: ${flight.date}</p>
+                            <p style="color: #6b7280; font-size: 14px;">Tiempo: ${flight.startTime} - ${flight.endTime}</p>
                         </div>
                         <button onclick="deleteFlight(${flight.id})" class="btn-icon" style="background: #fee2e2; color: #dc2626;" title="Eliminar vuelo">
                             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -700,10 +784,13 @@
                             </svg>
                         </button>
                     </div>
+                    <div class="history-details">
+                        ${detailsHtml}
+                    </div>
                     <div class="history-operations">
                         ${operationsHtml}
                     </div>
-                    <div style="margin-top: 12px; font-size: 14px; color: #6b7280;">
+                    <div style="margin-top: 12px; font-size: 14px; color: #6b7280; text-align: center;">
                         ${Object.keys(flight.operations).length} operaciones registradas
                     </div>
                 `;
@@ -836,6 +923,25 @@
 
             // Guardar
             document.getElementById('saveBtn').addEventListener('click', saveFlight);
+            
+            // PWA Install
+            let deferredPrompt;
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                deferredPrompt = e;
+                document.getElementById('installBanner').style.display = 'block';
+            });
+
+            document.getElementById('installBanner').addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                    if (outcome === 'accepted') {
+                        document.getElementById('installBanner').style.display = 'none';
+                    }
+                }
+            });
         });
 
         // Manifest dinámico
@@ -868,4 +974,3 @@
     </script>
 </body>
 </html>
-```
