@@ -1,745 +1,720 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GHR BELUGA</title>
-<link rel="manifest" href="#" id="manifest-placeholder">
-<meta name="theme-color" content="#2563eb">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="GHR BELUGA">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHR BELUGA</title>
+    <link rel="manifest" href="#" id="manifest-placeholder">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="GHR BELUGA">
 
-```
-<!-- Iconos para diferentes dispositivos -->
-<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiBmaWxsPSIjMjU2M2ViIiByeD0iMjAiLz4KPHN2ZyB4PSI0MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0ibTE3LjUgMTkuNS0uNS0yLjUtLjUtMi41LTUtMi41LTUtMi41LS41IDIuNS0uNSAyLjVaIi8+CjxwYXRoIGQ9Im05IDUgOCA4LTMuNS0xTDkgNVoiLz4KPHN2Zz4KPHN2Zz4KPC9zdmc+">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiBmaWxsPSIjMjU2M2ViIiByeD0iMjAiLz4KPHN2ZyB4PSI0MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0ibTE3LjUgMTkuNS0uNS0yLjUtLjUtMi41LTUtMi41LTUtMi41LS41IDIuNS0uNSAyLjVaIi8+CjxwYXRoIGQ9Im05IDUgOCA4LTMuNS0xTDkgNVoiLz4KPHN2Zz4KPHN2Zz4KPC9zdmc+">
 
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-min-height: 100vh;
-padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
 
-.app-container {
-max-width: 400px;
-margin: 0 auto;
-background: #f5f5f5;
-min-height: 100vh;
-position: relative;
-}
+        .app-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            min-height: 100vh;
+            position: relative;
+        }
 
-.header {
-background: #2563eb;
-color: white;
-padding: 20px;
-text-align: center;
-box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
 
-.header h1 {
-font-size: 24px;
-font-weight: bold;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
-}
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 8px; /* Espacio debajo del título principal */
+        }
 
-.content {
-padding: 20px;
-padding-bottom: 100px;
-}
+        .header-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
 
-.btn {
-width: 100%;
-padding: 16px;
-border-radius: 12px;
-border: none;
-font-weight: 600;
-font-size: 16px;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-margin-bottom: 12px;
-transition: all 0.2s;
-}
+        .header-logo {
+            height: 30px; /* Tamaño de los logos */
+        }
 
-.btn:active {
-transform: scale(0.98);
-}
+        .content {
+            padding: 20px;
+            padding-bottom: 100px;
+        }
 
-.btn-primary {
-background: #2563eb;
-color: white;
-}
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
 
-.btn-success {
-background: #059669;
-color: white;
-}
+        .btn:active {
+            transform: scale(0.98);
+        }
 
-.btn-warning {
-background: #d97706;
-color: white;
-}
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
 
-.btn-danger {
-background: #dc2626;
-color: white;
-}
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
 
-.card {
-background: white;
-border-radius: 12px;
-padding: 20px;
-margin-bottom: 16px;
-box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+        .btn-warning {
+            background: #d97706;
+            color: white;
+        }
 
-.form-group {
-margin-bottom: 16px;
-}
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
 
-.form-label {
-display: block;
-font-weight: 600;
-margin-bottom: 8px;
-color: #374151;
-}
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
 
-.form-input {
-width: 100%;
-padding: 12px;
-border: 2px solid #e5e7eb;
-border-radius: 8px;
-font-size: 16px;
-transition: border-color 0.2s;
-}
+        .form-group {
+            margin-bottom: 16px;
+        }
 
-.form-input:focus {
-outline: none;
-border-color: #2563eb;
-}
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
 
-.operation-item {
-background: white;
-border-radius: 12px;
-padding: 16px;
-margin-bottom: 12px;
-box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-border-left: 4px solid #2563eb;
-}
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
 
-.operation-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 12px;
-}
+        .form-input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
 
-.operation-title {
-font-weight: 600;
-color: #1f2937;
-}
+        .operation-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid #2563eb;
+        }
 
-.operation-time {
-color: #059669;
-font-family: 'Courier New', monospace;
-font-size: 14px;
-font-weight: 600;
-}
+        .operation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
 
-.operation-controls {
-display: flex;
-align-items: center;
-gap: 8px;
-flex-wrap: wrap;
-}
+        .operation-title {
+            font-weight: 600;
+            color: #1f2937;
+        }
 
-.btn-sm {
-padding: 8px 12px;
-font-size: 14px;
-min-width: auto;
-margin: 0;
-}
+        .operation-time {
+            color: #059669;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: 600;
+        }
 
-.btn-icon {
-width: 32px;
-height: 32px;
-border-radius: 8px;
-border: none;
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-transition: all 0.2s;
-}
+        .operation-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
 
-.btn-icon:active {
-transform: scale(0.9);
-}
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 14px;
+            min-width: auto;
+            margin: 0;
+        }
 
-.btn-icon.minus {
-background: #fee2e2;
-color: #dc2626;
-}
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-.btn-icon.plus {
-background: #dcfce7;
-color: #16a34a;
-}
+        .btn-icon:active {
+            transform: scale(0.9);
+        }
 
-.btn-icon.edit {
-background: #dbeafe;
-color: #2563eb;
-}
+        .btn-icon.minus {
+            background: #fee2e2;
+            color: #dc2626;
+        }
 
-.payload-input {
-width: 100px;
-padding: 8px;
-border: 2px solid #e5e7eb;
-border-radius: 6px;
-font-size: 14px;
-margin-right: 8px;
-}
+        .btn-icon.plus {
+            background: #dcfce7;
+            color: #16a34a;
+        }
 
-.flight-info {
-background: linear-gradient(135deg, #2563eb, #1d4ed8);
-color: white;
-border-radius: 12px;
-padding: 20px;
-margin-bottom: 20px;
-}
+        .btn-icon.edit {
+            background: #dbeafe;
+            color: #2563eb;
+        }
 
-.flight-info h2 {
-font-size: 20px;
-margin-bottom: 8px;
-}
+        .payload-input {
+            width: 100px;
+            padding: 8px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-right: 8px;
+        }
 
-.flight-info p {
-opacity: 0.9;
-margin-bottom: 4px;
-}
+        .flight-info {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-.history-item {
-background: white;
-border-radius: 12px;
-padding: 16px;
-margin-bottom: 16px;
-box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+        .flight-info h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
 
-.history-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 12px;
-}
+        .flight-info p {
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
 
-.history-operations {
-max-height: 200px;
-overflow-y: auto;
-background: #f9fafb;
-border-radius: 8px;
-padding: 12px;
-}
+        .history-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
 
-.history-operation {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 8px;
-margin-bottom: 4px;
-background: white;
-border-radius: 6px;
-font-size: 14px;
-}
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
 
-.bottom-nav {
-position: fixed;
-bottom: 0;
-left: 50%;
-transform: translateX(-50%);
-width: 100%;
-max-width: 400px;
-background: white;
-padding: 12px 20px;
-box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-display: flex;
-gap: 12px;
-}
+        .history-operations {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 12px;
+        }
 
-.hidden {
-display: none !important;
-}
+        .history-operation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 4px;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+        }
 
-.install-banner {
-background: #059669;
-color: white;
-padding: 16px;
-text-align: center;
-cursor: pointer;
-}
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 12px 20px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 12px;
+        }
 
-@media (display-mode: standalone) {
-.install-banner {
-display: none;
-}
-}
-</style>
-```
+        .hidden {
+            display: none !important;
+        }
 
+        @media (display-mode: standalone) {
+            .install-banner {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="app-container">
-<div id="installBanner" class="install-banner">
-📱 Toca aquí para instalar GHR BELUGA como app
-</div>
+    <div class="app-container">
+        <div class="header">
+            <h1>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m17.5 19.5-.5-2.5-.5-2.5-5-2.5-5-2.5-.5 2.5-.5 2.5Z"/>
+                    <path d="m9 5 8 8-3.5-1L9 5Z"/>
+                </svg>
+                GHR BELUGA
+            </h1>
+            <div class="header-logos">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUiIGhlaWdodD0iMjUiIHZpZXdCb3g9IjAgMCAyNSAyNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0wIDAuMTgyMzE3SDIuOTY2NzRWNC4xNjU3OThIMjEuODI4NlYwLjE4MjMxN0gyNC43OTQ0VjcuMzcxOTkzSDIxLjgyODZWMTIuMjk3NUgxOC44NjM5VjI0Ljg2MTFIMTUuODk4NlYxMi4yOTc1SDUuOTI4MDJWNy4zNzE5OTNIMi45NjY3NFYxMi4yOTc1SDUuOTI4MDJWMTkuOTM0M0gyLjYwMDM4VjI0Ljg2MTFIMjIuMTM5NVYxOS45MzQzSDE4Ljg2MzlWMTAuNTUyN0gxOS45MjQ2VjcuMzcxOTkzSDE1Ljg5ODZWMTAuNTUyN0gxOC44NjM5VjcuMzcxOTkzSDE1Ljg5ODZWNC4xNjU3OThIMjEuODI4NlY3LjM3MTk5M0gyNC43OTQ0VjExLjUyNUgyMS44Mjg2VjE3LjgyMzNIMjQuNzk0NFYyMS41NzI3SDIxLjgyODZWMTkuOTM0M0gxOC44NjM5VjIxLjU3MjdIMTUuODk4NlYyNC44NjExSDUuOTI4MDJWMTkuOTM0M0gyLjYwMDM4VjE1LjU4MDlIMi45NjY3NFYxOS45MzQzSDUuOTI4MDJWMTUuNTgwOUg4Ljg5MzIzVjIwLjA1NzRINC4xNjY3NFYyNC44NjExSDkuMjc5OTlWMTUuNTgwOUg4Ljg5MzIzVjExLjUyNUgyLjYwMDM4VjEzLjI4NTdIMi45NjY3NFYxMS41MjVoMi45NjEzMVYxMy4yODU3SDUuOTI4MDJWOC42MjgyM0gzLjg5NzY2VjUuMTA3NzlINC43NDI2NFY4LjYyODIzSDcuNzExMDZWMTMuMjg1N0g3LjQxNzU3VjE3LjgyMzNINy4xMjI2NVYyMS41NzI3SDE0LjExNDdWMTcuODIzM0gxNy4wNzk0VjIxLjU3MjdIMjAuMDQ1NFYyNC44NjExSDE5LjY4MDVWMjAuMDgyM0gxNi43MTQ5VjIzLjU1MjVIMjEuNDQ2NlYyMS41NzI3aDMuMzQ2NVYyMC4wODIzaC0uNjk0MzZ2LTQuNTAxNWgtMS41MDU5VjE1LjU4MDlIMjQuNzk0NFYxMy4yODU3SDIxLjgyODZWMTQuMzM0N0gxNS44OTg2VjE3LjgyMzNIMTUuNTA2MlYxOS41Njc3SDE3LjA3OTRWMTQuMzM0N0gxMi43ODQzVjkuMjA5MTZIMTAuNzk2N1YxMy4yODU3SDcuODMxMzVWOS4yMDkxNmgzLjk2MjY5VjcuMzcxOTkzSDguODkzMjNWMTIuNjc0SDEwLjE5NTFWNi44ODk1M0gzLjI2Njc0VjEwLjU1MjdoMy4wNTgzMVY4LjYyODIzSDMuMjU5NzRWMTEuNTI1SDYuMzE4MDdWOC42MjgyM0g3LjEyMjY1VjQuMTY1Nzk4SDkuNjkyNlY4LjYyODIzSDExLjQ2MTRWMTEuNTI1SDE0LjEzODVWMTMuMjU0OEgxMC4xOTUxVjE3LjgyMzNIMTcuMDc5NFYxMS45NzU1aC0uMTA3NDN2LTQuNTkxOUgxOS4wNzQ4VjcuMTkzODJIMTYuNDg4NlY0LjE2NTc5OEgxMS44MjA2VjcuMTkzODJIMTcuNTk5NVY3Ljk5NTMxTDE0LjM2MjMgMTIuMjkwOUwxMS4xNzM4IDcuODAxNDVIMTIuNzgzNkwxNC41MzMxIDkuMTYxNzJMOC44MTkzNCAxNy40NDI2VjEwLjE2NDZIMTAuNzQ2OFYxMi43MzM0SDYuODU4ODlWMTcuOTQwNUwxMS41NjIzIDExLjEwOTdIMTAuNTE5NkwxMi42OTE1IDguMzE0MjdIMTAuNzM2MVYxMC41NTI3SDcuNzcxNjVWNC4xNjU3OThIMTIuNjgyOFY3LjE5MzgySDcuMjkzMzZWOS4wMDI3M0g3LjcwODQ0VjExLjUyNUg1LjU4NTM5VjcuNDI1MzZINy44MjUzNlY2LjY0MDMzSDE0LjgyNjdWOS4wMDI3M0g5LjcxOTY0VjExLjUyNUgxMS40MjQ4VjE0LjMyNTRIMTQuMDM0N1YyMS41NzI3SDE5LjgzOTNWMTQuMzI1NEgxNy4xMzkzVjEyLjU1MTZIMjAuNDc1NlYyMC4wODI0VjE0LjMyNTRIMTcuOTQ0VjEyLjU1MTZIMjEuNzMzOVYxNC4zMjU0SDI0LjQ4MDNWMTIuNTUxNkgxNy40NzIyVjIwLjA4MjR2Ljk1MjYyMkwxNy45NDQgMjAuOTQxM0wyMC40NTA4IDIyLjAwMzFWMjEuNTA0N0wyMS40NDY2IDIwLjA4MjRWMjIuNDY0OUgyNC43OTQ0VjIwLjA4MjRIMjAuNzQwNFYxNi4xNTI4SDE3LjQxNDdWMTguODMyN0gyMC43NDA0VjIwLjA4MjR6IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="Logo de WFS" class="header-logo">
+                
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzOCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI3LjA5MzggMTguODIzNkMyNy4wOTM4IDE4LjUyOTIgMjYuOTk3NSAxOC4xODUgMjYuODAxMyAxNy44NTQ1QzI2LjYwNTEgMTcuNTQ5MSAyNi4zMTA1IDE3LjMxODkgMjYuMDA4NCAxNy4wOTc3QzI1LjcwNjQgMTYuODc2NSAyNS4yNzc1IDE2LjcwODQgMjQuODI4OCAxNi41OTY4QzI0LjM4MDEgMTYuNDgzOCAyMy45MDM1IDE2LjQyMTYgMjMuNDIxMSAxNi40MjE2SDIuNTY2NDFWMTMuNzIyN0gyMi44OTU5QzI1LjQyNzYgMTMuNzIyNyAyNy40MTgyIDEzLjE0NTYgMjguODY1IDEyLjAwMzRDNDAuNzQzMSAzLjU0MjE0IDQyLjg0MTkgMC4wNDU3MTg4IDQyLjIxOTQgMC4wNDU3MTg4QzQyLjA5NiAwLjA0NTcxODggNDAuMjIyNyA3LjIwMzI1IDM5LjA5MzggOS44NzM2MkwzNi4xODIzIDE2Ljk4MzVIMzkuMzc0NUw0Mi44MjI5IDguOTQxNjVDNDMuMTM4MyA4LjE2NDU3IDQyLjU0NDUgNi40MTgxNiA0MS4xNTI1IDUuMTI3MzNDMzguMzc3OSAyLjUyODE0IDMzLjYwODIgMS4zMTI2MiAzMy42MDgyIDEuMzEyNjJDMTUuMjQ2NSAzLjI1MTc2IDcuODg5MDEgMTAuMzU2MiAxMi4yNDk4IDE4LjQ2NzZDMTAuNzcxNSAyMC43MTE1IDkuNjg2MDcgMjIuOTY2IDkuNjgzNDEgMjIuOTY2VjIzLjcxMTdDMTAuMjgzOSAyMy40NTEgMTEuMDk0NyAyMy4xMjkxIDEyLjA0MDMgMjIuNjkzNkMxMy44MDM0IDIxLjg2MTcgMTUuNTA5NSAyMS4wNDk1IDE2LjcyMjggMjAuMzUzNUMxOS41MTE5IDE5LjI1NzcgMjEuNzc2OSAxNy4zNzcgMjMuMjg1NiAxNC42NTIyQzI0LjMwOTEgMTIuMTY0MSAyNC42MjU4IDkuMzgxOTcgMjQuNTU1MiA2LjU0MTY3QzI0LjU0MTkgNi4yNzg5MiAyNC40MzggNi4wNzI1NiAyNC4yNjQ0IDUuODY2OTZDMjQuMTI1OCA1Ljc0NTc5IDIzLjg1NSA1LjY1MzU5IDIzLjU5MzEgNS42MjQ4OUMyMy41MjI1IDUuNjAyNTcgMjMuMzgwNSA1LjU4MDM4IDIzLjI5NjYgNS41ODA1NUwyMy4xMjI5IDUuNzY0ODdDMTUuNTE1OSAxMC44MzY0IDEyLjgyMTEgMTYuMDAzMiA4LjAzNzgyIDIxLjcwMjFDNy4yOTQzOSAyMi41NDUgNi4zMTI5MiAyMy4yNTI0IDUuNTY5NDkgMjMuNjQ0OEM1LjA3NjkyIDI0LjAxMDMgNC42NTcyOSAyNC4xODkyIDQuNTQ5MTYgMjQuMTg5MkM0LjMzNzU2IDI0LjE4OTIgNC41MTI4MSAyNC42NTM4IDUuMzE1MjEgMjUuNzE2TDE2LjU5MDUgMjkuOTk5OUMxNy4zOTI5IDMwLjg1NjEgMTcuMTcxMyAzMS4yMDM3IDE2LjQ2NTYgMzEuMjAzN0wxLjU1NzQ1IDMwLjE5MDRDLTAuMjM1MTc1IDMwLjAyNTMgLTcuMjY0MTkgMjMuNzEwMyAwIDIxLjY2MzFDMy42ODQ3NSAxNy40Nzg1IDkuNDMzNTYgMTQuMTMyNSAxMS43MjQgMTIuMjkxMkwxMS4wOTY1IDExLjMyOTFDMTIuNzk3OSA4LjA2OTYgMTUuMzEyNSA1LjM5NTUzIDE4LjI2MTYgMy44MzgxMkMyMC4zNzU2IDIuNzE4OTYgMjIuNjE0NiAyLjEyMzI5IDI0LjcyOTcgMi4wNzcxQzI1LjUzMiAxLjgyOTE2IDIzLjYwOTIgMS4yOTM5OSAyMS42NzI0IDIuMTIzMjlDMjEuMzY3MSAyLjIxNTE4IDIxLjIxMDcgMi4zMzA1NSAyMS4wMTA1IDIuNDc4N0MyMC42ODAxIDIuNzI1OTYgMjAuMzYyNiAyLjgzNjQ5IDIwLjA5MTUgMi45MDUxNUMxOS41NjExIDMuMDk0OTcgMTkuMTA4IDMuMzYzNCAxOC44ODcgMy41NjM1NUMxNy44MzEgNC41MzYxOSAxNy4yMDggNS40OTgyMSAxNy4wMzQ0IDYuMjMyODRDMTYuOTY5OCA2LjUwMDYxIDE2Ljk4NyA2LjY4ODkgMTcuMDY5OCA2LjcwNTUxQzE3LjE2MTQgNi43NjU5MiAxNy4zNTUgNi43NTYxIDE3LjUxNzIgNi41NjA5MkMxNy42MTMxIDYuNDQ5MjkgMTcuODI3NCA2LjMwNjIzIDE4LjA3NzUgNi4xMDk4M0MxOC41MDQyIDUuNzU0NzYgMTkuMDIzNSA1LjMwNDkgMTkuNjExMiA0LjkyMzQ5QzE5LjkzNDMgNC43NjE5MiAyMC4yOTYxIDQuNjIyMiAyMC43MjI2IDQuNTMxOTJDMTcuMTYwNiA5Ljg3MzYyIDE3LjUzMjcgMjAuNzY3OSAyOS4wMzcyIDI3LjE0MTZDMzAuMTE1MyAyOC41MzM3IDMxLjE2MjkgMjkuNTQxMyAzMS4xNjI5IDI5LjU0MTNIMzEuNzYxMVYyOS4xOTM2QzMwLjM3NzYgMjcuNTU2NCAyOS4yMTI1IDI1Ljk5OTEgMjkuMTM0OCAyNS44NTYzQzI3LjkyODMgMjMuMzQ0NSAyNy4wOTM4IDE4LjkyIDI3LjA5MzggMTguODIzNloiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=" alt="Logo de Airbus" class="header-logo">
+            </div>
+        </div>
 
-```
-<div class="header">
-<h1>
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-<path d="m17.5 19.5-.5-2.5-.5-2.5-5-2.5-5-2.5-.5 2.5-.5 2.5Z"/>
-<path d="m9 5 8 8-3.5-1L9 5Z"/>
-</svg>
-GHR BELUGA
-</h1>
-</div>
+        <div class="content">
+            <div id="listView">
+                <div id="newFlightForm" class="hidden">
+                    <div class="card">
+                        <form id="flightForm">
+                            <div class="form-group">
+                                <label class="form-label">Número de Vuelo</label>
+                                <input type="text" id="flightNumber" class="form-input" placeholder="Ej: 1847" required>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button type="submit" class="btn btn-primary" style="flex: 1;">Crear Vuelo</button>
+                                <button type="button" id="cancelNewFlight" class="btn" style="background: #e5e7eb; color: #374151;">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-<div class="content">
-<!-- Vista Lista -->
-<div id="listView">
-<div id="newFlightForm" class="hidden">
-<div class="card">
-<form id="flightForm">
-<div class="form-group">
-<label class="form-label">Número de Vuelo</label>
-<input type="text" id="flightNumber" class="form-input" placeholder="Ej: 1847" required>
-</div>
-<div style="display: flex; gap: 12px;">
-<button type="submit" class="btn btn-primary" style="flex: 1;">Crear Vuelo</button>
-<button type="button" id="cancelNewFlight" class="btn" style="background: #e5e7eb; color: #374151;">Cancelar</button>
-</div>
-</form>
-</div>
-</div>
+                <button id="newFlightBtn" class="btn btn-primary">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Nuevo Vuelo
+                </button>
 
-<button id="newFlightBtn" class="btn btn-primary">
-<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<line x1="12" y1="5" x2="12" y2="19"></line>
-<line x1="5" y1="12" x2="19" y2="12"></line>
-</svg>
-Nuevo Vuelo
-</button>
+                <button id="continueFlightBtn" class="btn btn-warning hidden">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12,6 12,12 16,14"></polyline>
+                    </svg>
+                    Continuar Vuelo
+                </button>
 
-<button id="continueFlightBtn" class="btn btn-warning hidden">
-<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<circle cx="12" cy="12" r="10"></circle>
-<polyline points="12,6 12,12 16,14"></polyline>
-</svg>
-Continuar Vuelo
-</button>
+                <button id="historyBtn" class="btn btn-success">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11 2 2m-2-2v10a1 1 0 0 0 1 1h3m-6 0a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h2z"/>
+                    </svg>
+                    Ver Historial (<span id="historyCount">0</span>)
+                </button>
+            </div>
 
-<button id="historyBtn" class="btn btn-success">
-<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<path d="m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11 2 2m-2-2v10a1 1 0 0 0 1 1h3m-6 0a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h2z"/>
-</svg>
-Ver Historial (<span id="historyCount">0</span>)
-</button>
-</div>
+            <div id="currentFlightView" class="hidden">
+                <div id="flightInfo" class="flight-info">
+                    <h2 id="currentFlightTitle">Vuelo</h2>
+                    <p id="currentFlightDate">Fecha:</p>
+                    <p id="currentFlightTime">Inicio:</p>
+                </div>
 
-<!-- Vista Vuelo Actual -->
-<div id="currentFlightView" class="hidden">
-<div id="flightInfo" class="flight-info">
-<h2 id="currentFlightTitle">Vuelo</h2>
-<p id="currentFlightDate">Fecha:</p>
-<p id="currentFlightTime">Inicio:</p>
-</div>
+                <div id="operationsList"></div>
+            </div>
 
-<div id="operationsList"></div>
-</div>
+            <div id="historyView" class="hidden">
+                <div id="historyList"></div>
+                <div id="emptyHistory" class="hidden" style="text-align: center; color: #6b7280; padding: 40px 0;">
+                    No hay vuelos completados aún
+                </div>
+            </div>
+        </div>
 
-<!-- Vista Historial -->
-<div id="historyView" class="hidden">
-<div id="historyList"></div>
-<div id="emptyHistory" class="hidden" style="text-align: center; color: #6b7280; padding: 40px 0;">
-No hay vuelos completados aún
-</div>
-</div>
-</div>
+        <div id="bottomNav" class="bottom-nav hidden">
+            <button id="backBtn" class="btn btn-primary" style="flex: 1;">← Volver</button>
+            <button id="saveBtn" class="btn btn-success hidden" style="flex: 1;">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="m9 12 2 2 4-4"></path>
+                    <path d="M21 12c.552 0 1-.448 1-1V8a2 2 0 0 0-2-2h-5L9 2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2z"></path>
+                </svg>
+                Guardar
+            </button>
+        </div>
+    </div>
 
-<div id="bottomNav" class="bottom-nav hidden">
-<button id="backBtn" class="btn btn-primary" style="flex: 1;">← Volver</button>
-<button id="saveBtn" class="btn btn-success hidden" style="flex: 1;">
-<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<path d="m9 12 2 2 4-4"></path>
-<path d="M21 12c.552 0 1-.448 1-1V8a2 2 0 0 0-2-2h-5L9 2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2z"></path>
-</svg>
-Guardar
-</button>
-</div>
-</div>
+    <script>
+        // PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:text/javascript,')
+            .catch(() => {});
+        }
 
-<script>
-// PWA Service Worker
-if ('serviceWorker' in navigator) {
-navigator.serviceWorker.register('data:text/javascript,')
-.catch(() => {});
-}
+        // Variables globales
+        let flights = [];
+        let currentFlight = null;
+        let currentView = 'list';
 
-// Variables globales
-let flights = [];
-let currentFlight = null;
-let currentView = 'list';
+        const operations = [
+            'OPERATIVA', 'PAYLOAD', 'LLEGADA', 'SALIDA', 'ATA', 'PARADA MOTORES',
+            'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
+            'REAR JACK UP', 'FUEL', 'ACU ON', 'ACU OFF', 'REAR JACK DOWN',
+            'FRONT JACK DOWN', 'START TOWING', 'END TOWING', 'STARTUP', 'TAXI', 'TAKEOFF'
+        ];
 
-const operations = [
-'OPERATIVA', 'PAYLOAD', 'LLEGADA', 'SALIDA', 'ATA', 'PARADA MOTORES',
-'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
-'REAR JACK UP', 'FUEL', 'ACU ON', 'ACU OFF', 'REAR JACK DOWN',
-'FRONT JACK DOWN', 'START TOWING', 'END TOWING', 'STARTUP', 'TAXI', 'TAKEOFF'
-];
+        // Cargar datos
+        function loadData() {
+            const saved = localStorage.getItem('ghrBelugaFlights');
+            if (saved) {
+                flights = JSON.parse(saved);
+            }
+            updateHistoryCount();
+        }
 
-// Cargar datos
-function loadData() {
-const saved = localStorage.getItem('ghrBelugaFlights');
-if (saved) {
-flights = JSON.parse(saved);
-}
-updateHistoryCount();
-}
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('ghrBelugaFlights', JSON.stringify(flights));
+            updateHistoryCount();
+        }
 
-// Guardar datos
-function saveData() {
-localStorage.setItem('ghrBelugaFlights', JSON.stringify(flights));
-updateHistoryCount();
-}
+        // Actualizar contador de historial
+        function updateHistoryCount() {
+            document.getElementById('historyCount').textContent = flights.filter(f => f.completed).length;
+        }
 
-// Actualizar contador de historial
-function updateHistoryCount() {
-document.getElementById('historyCount').textContent = flights.filter(f => f.completed).length;
-}
+        // Cambiar vista
+        function showView(view) {
+            document.querySelectorAll('#listView, #currentFlightView, #historyView').forEach(v => {
+                v.classList.add('hidden');
+            });
 
-// Cambiar vista
-function showView(view) {
-document.querySelectorAll('#listView, #currentFlightView, #historyView').forEach(v => {
-v.classList.add('hidden');
-});
+            if (view === 'list') {
+                document.getElementById('listView').classList.remove('hidden');
+                document.getElementById('bottomNav').classList.add('hidden');
+                updateContinueButton();
+            } else if (view === 'current') {
+                document.getElementById('currentFlightView').classList.remove('hidden');
+                document.getElementById('bottomNav').classList.remove('hidden');
+                document.getElementById('saveBtn').classList.remove('hidden');
+                updateCurrentFlightView();
+            } else if (view === 'history') {
+                document.getElementById('historyView').classList.remove('hidden');
+                document.getElementById('bottomNav').classList.remove('hidden');
+                document.getElementById('saveBtn').classList.add('hidden');
+                updateHistoryView();
+            }
 
-if (view === 'list') {
-document.getElementById('listView').classList.remove('hidden');
-document.getElementById('bottomNav').classList.add('hidden');
-updateContinueButton();
-} else if (view === 'current') {
-document.getElementById('currentFlightView').classList.remove('hidden');
-document.getElementById('bottomNav').classList.remove('hidden');
-document.getElementById('saveBtn').classList.remove('hidden');
-updateCurrentFlightView();
-} else if (view === 'history') {
-document.getElementById('historyView').classList.remove('hidden');
-document.getElementById('bottomNav').classList.remove('hidden');
-document.getElementById('saveBtn').classList.add('hidden');
-updateHistoryView();
-}
+            currentView = view;
+        }
 
-currentView = view;
-}
+        // Actualizar botón continuar
+        function updateContinueButton() {
+            const btn = document.getElementById('continueFlightBtn');
+            if (currentFlight && !currentFlight.completed) {
+                btn.classList.remove('hidden');
+                btn.innerHTML = `
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12,6 12,12 16,14"></polyline>
+                    </svg>
+                    Continuar Vuelo ${currentFlight.flightNumber}
+                `;
+            } else {
+                btn.classList.add('hidden');
+            }
+        }
 
-// Actualizar botón continuar
-function updateContinueButton() {
-const btn = document.getElementById('continueFlightBtn');
-if (currentFlight && !currentFlight.completed) {
-btn.classList.remove('hidden');
-btn.innerHTML = `
-<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<circle cx="12" cy="12" r="10"></circle>
-<polyline points="12,6 12,12 16,14"></polyline>
-</svg>
-Continuar Vuelo ${currentFlight.flightNumber}
-`;
-} else {
-btn.classList.add('hidden');
-}
-}
+        // Crear nuevo vuelo
+        function createFlight(flightNumber) {
+            currentFlight = {
+                id: Date.now(),
+                flightNumber: flightNumber.trim(),
+                date: new Date().toLocaleDateString('es-ES'),
+                startTime: new Date().toLocaleTimeString('es-ES'),
+                operations: {},
+                completed: false
+            };
+            showView('current');
+        }
 
-// Crear nuevo vuelo
-function createFlight(flightNumber) {
-currentFlight = {
-id: Date.now(),
-flightNumber: flightNumber.trim(),
-date: new Date().toLocaleDateString('es-ES'),
-startTime: new Date().toLocaleTimeString('es-ES'),
-operations: {},
-completed: false
-};
-showView('current');
-}
+        // Registrar operación
+        function recordOperation(operation) {
+            if (!currentFlight) return;
 
-// Registrar operación
-function recordOperation(operation) {
-if (!currentFlight) return;
+            const currentTime = new Date().toLocaleTimeString('es-ES');
+            currentFlight.operations[operation] = currentTime;
+            updateCurrentFlightView();
+        }
 
-const currentTime = new Date().toLocaleTimeString('es-ES');
-currentFlight.operations[operation] = currentTime;
-updateCurrentFlightView();
-}
+        // Registrar payload
+        function recordPayload(value) {
+            if (!currentFlight || !value.trim()) return;
 
-// Registrar payload
-function recordPayload(value) {
-if (!currentFlight || !value.trim()) return;
+            currentFlight.operations['PAYLOAD'] = value.trim();
+            updateCurrentFlightView();
+        }
 
-currentFlight.operations['PAYLOAD'] = value.trim();
-updateCurrentFlightView();
-}
+        // Ajustar tiempo
+        function adjustTime(operation, minutes) {
+            if (!currentFlight?.operations[operation]) return;
 
-// Ajustar tiempo
-function adjustTime(operation, minutes) {
-if (!currentFlight?.operations[operation]) return;
+            const currentTime = currentFlight.operations[operation];
+            const [hours, mins, secs] = currentTime.split(':').map(Number);
 
-const currentTime = currentFlight.operations[operation];
-const [hours, mins, secs] = currentTime.split(':').map(Number);
+            let totalMinutes = hours * 60 + mins + minutes;
+            if (totalMinutes < 0) totalMinutes = 0;
+            if (totalMinutes >= 24 * 60) totalMinutes = 24 * 60 - 1;
 
-let totalMinutes = hours * 60 + mins + minutes;
-if (totalMinutes < 0) totalMinutes = 0;
-if (totalMinutes >= 24 * 60) totalMinutes = 24 * 60 - 1;
+            const newHours = Math.floor(totalMinutes / 60);
+            const newMins = totalMinutes % 60;
+            const newTime = `${newHours.toString().padStart(2, '0')}:${newMins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
-const newHours = Math.floor(totalMinutes / 60);
-const newMins = totalMinutes % 60;
-const newTime = `${newHours.toString().padStart(2, '0')}:${newMins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            currentFlight.operations[operation] = newTime;
+            updateCurrentFlightView();
+        }
 
-currentFlight.operations[operation] = newTime;
-updateCurrentFlightView();
-}
+        // Actualizar vista de vuelo actual
+        function updateCurrentFlightView() {
+            if (!currentFlight) return;
 
-// Actualizar vista de vuelo actual
-function updateCurrentFlightView() {
-if (!currentFlight) return;
+            document.getElementById('currentFlightTitle').textContent = `Vuelo ${currentFlight.flightNumber}`;
+            document.getElementById('currentFlightDate').textContent = `Fecha: ${currentFlight.date}`;
+            document.getElementById('currentFlightTime').textContent = `Inicio: ${currentFlight.startTime}`;
 
-document.getElementById('currentFlightTitle').textContent = `Vuelo ${currentFlight.flightNumber}`;
-document.getElementById('currentFlightDate').textContent = `Fecha: ${currentFlight.date}`;
-document.getElementById('currentFlightTime').textContent = `Inicio: ${currentFlight.startTime}`;
+            const operationsList = document.getElementById('operationsList');
+            operationsList.innerHTML = '';
 
-const operationsList = document.getElementById('operationsList');
-operationsList.innerHTML = '';
+            operations.forEach(operation => {
+                const div = document.createElement('div');
+                div.className = 'operation-item';
 
-operations.forEach(operation => {
-const div = document.createElement('div');
-div.className = 'operation-item';
+                const hasValue = currentFlight.operations[operation];
 
-const hasValue = currentFlight.operations[operation];
+                div.innerHTML = `
+                    <div class="operation-header">
+                        <div class="operation-title">${operation}</div>
+                        ${hasValue ? `<div class="operation-time">${hasValue}</div>` : ''}
+                    </div>
+                    <div class="operation-controls">
+                        ${operation === 'PAYLOAD' ? `
+                            <input type="text" id="payload-${operation}" class="payload-input" placeholder="Ej: 12.5 ton">
+                            <button onclick="recordPayload(document.getElementById('payload-${operation}').value); document.getElementById('payload-${operation}').value = '';" class="btn btn-sm btn-primary">Guardar</button>
+                        ` : `
+                            <button onclick="recordOperation('${operation}')" class="btn btn-sm ${hasValue ? 'btn-success' : 'btn-primary'}">
+                                ${hasValue ? 'Actualizar' : 'Registrar'}
+                            </button>
+                            ${hasValue ? `
+                                <button onclick="adjustTime('${operation}', -1)" class="btn-icon minus" title="Restar 1 minuto">-</button>
+                                <button onclick="adjustTime('${operation}', 1)" class="btn-icon plus" title="Sumar 1 minuto">+</button>
+                            ` : ''}
+                        `}
+                    </div>
+                `;
 
-div.innerHTML = `
-<div class="operation-header">
-<div class="operation-title">${operation}</div>
-${hasValue ? `<div class="operation-time">${hasValue}</div>` : ''}
-</div>
-<div class="operation-controls">
-${operation === 'PAYLOAD' ? `
-<input type="text" id="payload-${operation}" class="payload-input" placeholder="Ej: 12.5 ton">
-<button onclick="recordPayload(document.getElementById('payload-${operation}').value); document.getElementById('payload-${operation}').value = '';" class="btn btn-sm btn-primary">Guardar</button>
-` : `
-<button onclick="recordOperation('${operation}')" class="btn btn-sm ${hasValue ? 'btn-success' : 'btn-primary'}">
-${hasValue ? 'Actualizar' : 'Registrar'}
-</button>
-${hasValue ? `
-<button onclick="adjustTime('${operation}', -1)" class="btn-icon minus" title="Restar 1 minuto">-</button>
-<button onclick="adjustTime('${operation}', 1)" class="btn-icon plus" title="Sumar 1 minuto">+</button>
-` : ''}
-`}
-</div>
-`;
+                operationsList.appendChild(div);
+            });
+        }
 
-operationsList.appendChild(div);
-});
-}
+        // Guardar vuelo
+        function saveFlight() {
+            if (!currentFlight) return;
 
-// Guardar vuelo
-function saveFlight() {
-if (!currentFlight) return;
+            currentFlight.completed = true;
+            currentFlight.endTime = new Date().toLocaleTimeString('es-ES');
 
-currentFlight.completed = true;
-currentFlight.endTime = new Date().toLocaleTimeString('es-ES');
+            const existingIndex = flights.findIndex(f => f.id === currentFlight.id);
+            if (existingIndex >= 0) {
+                flights[existingIndex] = currentFlight;
+            } else {
+                flights.push(currentFlight);
+            }
 
-const existingIndex = flights.findIndex(f => f.id === currentFlight.id);
-if (existingIndex >= 0) {
-flights[existingIndex] = currentFlight;
-} else {
-flights.push(currentFlight);
-}
+            saveData();
+            currentFlight = null;
+            showView('list');
+        }
 
-saveData();
-currentFlight = null;
-showView('list');
-}
+        // Actualizar vista de historial
+        function updateHistoryView() {
+            const historyList = document.getElementById('historyList');
+            const emptyHistory = document.getElementById('emptyHistory');
 
-// Actualizar vista de historial
-function updateHistoryView() {
-const historyList = document.getElementById('historyList');
-const emptyHistory = document.getElementById('emptyHistory');
+            const completedFlights = flights.filter(f => f.completed);
 
-const completedFlights = flights.filter(f => f.completed);
+            if (completedFlights.length === 0) {
+                historyList.innerHTML = '';
+                emptyHistory.classList.remove('hidden');
+                return;
+            }
 
-if (completedFlights.length === 0) {
-historyList.innerHTML = '';
-emptyHistory.classList.remove('hidden');
-return;
-}
+            emptyHistory.classList.add('hidden');
+            historyList.innerHTML = '';
 
-emptyHistory.classList.add('hidden');
-historyList.innerHTML = '';
+            completedFlights.reverse().forEach(flight => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
 
-completedFlights.reverse().forEach(flight => {
-const div = document.createElement('div');
-div.className = 'history-item';
+                const operationsHtml = Object.entries(flight.operations)
+                    .map(([op, time]) => `
+                        <div class="history-operation">
+                            <span>${op}</span>
+                            <span style="color: #059669; font-family: monospace;">${time}</span>
+                        </div>
+                    `).join('');
 
-const operationsHtml = Object.entries(flight.operations)
-.map(([op, time]) => `
-<div class="history-operation">
-<span>${op}</span>
-<span style="color: #059669; font-family: monospace;">${time}</span>
-</div>
-`).join('');
+                div.innerHTML = `
+                    <div class="history-header">
+                        <div>
+                            <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Vuelo ${flight.flightNumber}</h3>
+                            <p style="color: #6b7280; font-size: 14px;">${flight.date}</p>
+                            <p style="color: #6b7280; font-size: 14px;">${flight.startTime} - ${flight.endTime}</p>
+                        </div>
+                        <button onclick="deleteFlight(${flight.id})" class="btn-icon" style="background: #fee2e2; color: #dc2626;" title="Eliminar vuelo">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <polyline points="3,6 5,6 21,6"></polyline>
+                                <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="history-operations">
+                        ${operationsHtml}
+                    </div>
+                    <div style="margin-top: 12px; font-size: 14px; color: #6b7280;">
+                        ${Object.keys(flight.operations).length} operaciones registradas
+                    </div>
+                `;
 
-div.innerHTML = `
-<div class="history-header">
-<div>
-<h3 style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Vuelo ${flight.flightNumber}</h3>
-<p style="color: #6b7280; font-size: 14px;">${flight.date}</p>
-<p style="color: #6b7280; font-size: 14px;">${flight.startTime} - ${flight.endTime}</p>
-</div>
-<button onclick="deleteFlight(${flight.id})" class="btn-icon" style="background: #fee2e2; color: #dc2626;" title="Eliminar vuelo">
-<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<polyline points="3,6 5,6 21,6"></polyline>
-<path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"></path>
-</svg>
-</button>
-</div>
-<div class="history-operations">
-${operationsHtml}
-</div>
-<div style="margin-top: 12px; font-size: 14px; color: #6b7280;">
-${Object.keys(flight.operations).length} operaciones registradas
-</div>
-`;
+                historyList.appendChild(div);
+            });
+        }
 
-historyList.appendChild(div);
-});
-}
+        // Eliminar vuelo
+        function deleteFlight(flightId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este vuelo?')) {
+                flights = flights.filter(f => f.id !== flightId);
+                saveData();
+                updateHistoryView();
+            }
+        }
 
-// Eliminar vuelo
-function deleteFlight(flightId) {
-if (confirm('¿Estás seguro de que quieres eliminar este vuelo?')) {
-flights = flights.filter(f => f.id !== flightId);
-saveData();
-updateHistoryView();
-}
-}
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
 
-// Event listeners
-document.addEventListener('DOMContentLoaded', function() {
-loadData();
+            // Nuevo vuelo
+            document.getElementById('newFlightBtn').addEventListener('click', () => {
+                document.getElementById('newFlightBtn').classList.add('hidden');
+                document.getElementById('newFlightForm').classList.remove('hidden');
+                document.getElementById('flightNumber').focus();
+            });
 
-// Nuevo vuelo
-document.getElementById('newFlightBtn').addEventListener('click', () => {
-document.getElementById('newFlightBtn').classList.add('hidden');
-document.getElementById('newFlightForm').classList.remove('hidden');
-document.getElementById('flightNumber').focus();
-});
+            // Cancelar nuevo vuelo
+            document.getElementById('cancelNewFlight').addEventListener('click', () => {
+                document.getElementById('newFlightBtn').classList.remove('hidden');
+                document.getElementById('newFlightForm').classList.add('hidden');
+                document.getElementById('flightNumber').value = '';
+            });
 
-// Cancelar nuevo vuelo
-document.getElementById('cancelNewFlight').addEventListener('click', () => {
-document.getElementById('newFlightBtn').classList.remove('hidden');
-document.getElementById('newFlightForm').classList.add('hidden');
-document.getElementById('flightNumber').value = '';
-});
+            // Form de nuevo vuelo
+            document.getElementById('flightForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const flightNumber = document.getElementById('flightNumber').value.trim();
+                if (flightNumber) {
+                    createFlight(flightNumber);
+                }
+            });
 
-// Form de nuevo vuelo
-document.getElementById('flightForm').addEventListener('submit', (e) => {
-e.preventDefault();
-const flightNumber = document.getElementById('flightNumber').value.trim();
-if (flightNumber) {
-createFlight(flightNumber);
-}
-});
+            // Continuar vuelo
+            document.getElementById('continueFlightBtn').addEventListener('click', () => {
+                showView('current');
+            });
 
-// Continuar vuelo
-document.getElementById('continueFlightBtn').addEventListener('click', () => {
-showView('current');
-});
+            // Ver historial
+            document.getElementById('historyBtn').addEventListener('click', () => {
+                showView('history');
+            });
 
-// Ver historial
-document.getElementById('historyBtn').addEventListener('click', () => {
-showView('history');
-});
+            // Volver
+            document.getElementById('backBtn').addEventListener('click', () => {
+                showView('list');
+            });
 
-// Volver
-document.getElementById('backBtn').addEventListener('click', () => {
-showView('list');
-});
+            // Guardar
+            document.getElementById('saveBtn').addEventListener('click', saveFlight);
+        });
 
-// Guardar
-document.getElementById('saveBtn').addEventListener('click', saveFlight);
+        // Manifest dinámico
+        const manifest = {
+            "name": "GHR BELUGA",
+            "short_name": "GHR BELUGA",
+            "description": "Aplicación para operaciones de vuelo",
+            "start_url": "./",
+            "display": "standalone",
+            "background_color": "#2563eb",
+            "theme_color": "#2563eb",
+            "orientation": "portrait",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjMjU2M2ViIiByeD0iMjQiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CjxwYXRoIGQ9Im0xNy41IDE5LjUtLjUtMi41LS41LTIuNS01LTIuNS01LTIuNS0uNSAyLjUtLjUgMi41WiIvPgo8cGF0aCBkPSJtOSA1IDggOC0zLjUtMUw5IDVaIi8+Cjwvc3ZnPgo8L3N2Zz4=",
+                    "sizes": "192x192",
+                    "type": "image/svg+xml"
+                },
+                {
+                    "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSIjMjU2M2ViIiByeD0iNjQiLz4KPHN2ZyB4PSIxMjgiIHk9IjEyOCIgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgo8cGF0aCBkPSJtMTcuNSAxOS41LS41LTIuNS0uNS0yLjUtNS0yLjUtNS0yLjUtLjUgMi41LS41IDIuNVoiLz4KPHBhdGggZD0ibTkgNSA4IDgtMy41LTFMOSA1WiIvPgo8L3N2Zz4KPC9zdmc+",
+                    "sizes": "512x512",
+                    "type": "image/svg+xml"
+                }
+            ]
+        };
 
-// PWA Install
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-deferredPrompt = e;
-document.getElementById('installBanner').style.display = 'block';
-});
-
-document.getElementById('installBanner').addEventListener('click', async () => {
-if (deferredPrompt) {
-deferredPrompt.prompt();
-const { outcome } = await deferredPrompt.userChoice;
-deferredPrompt = null;
-if (outcome === 'accepted') {
-document.getElementById('installBanner').style.display = 'none';
-}
-}
-});
-});
-
-// Manifest dinámico
-const manifest = {
-"name": "GHR BELUGA",
-"short_name": "GHR BELUGA",
-"description": "Aplicación para operaciones de vuelo",
-"start_url": "./",
-"display": "standalone",
-"background_color": "#2563eb",
-"theme_color": "#2563eb",
-"orientation": "portrait",
-"icons": [
-{
-"src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjMjU2M2ViIiByeD0iMjQiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CjxwYXRoIGQ9Im0xNy41IDE5LjUtLjUtMi41LS41LTIuNS01LTIuNS01LTIuNS0uNSAyLjUtLjUgMi41WiIvPgo8cGF0aCBkPSJtOSA1IDggOC0zLjUtMUw5IDVaIi8+Cjwvc3ZnPgo8L3N2Zz4=",
-"sizes": "192x192",
-"type": "image/svg+xml"
-},
-{
-"src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSIjMjU2M2ViIiByeD0iNjQiLz4KPHN2ZyB4PSIxMjgiIHk9IjEyOCIgd2lkdGg9IjI1NiIgaGVpZ2h0PSIyNTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgo8cGF0aCBkPSJtMTcuNSAxOS41LS41LTIuNS0uNS0yLjUtNS0yLjUtNS0yLjUtLjUgMi41LS41IDIuNVoiLz4KPHBhdGggZD0ibTkgNSA4IDgtMy41LTFMOSA1WiIvPgo8L3N2Zz4KPC9zdmc+",
-"sizes": "512x512",
-"type": "image/svg+xml"
-}
-]
-};
-
-const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-const manifestURL = URL.createObjectURL(manifestBlob);
-document.getElementById('manifest-placeholder').href = manifestURL;
-</script>
-```
-
+        const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        document.getElementById('manifest-placeholder').href = manifestURL;
+    </script>
 </body>
 </html>
