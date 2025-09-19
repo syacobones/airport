@@ -1,3 +1,20 @@
+¡Entendido\! He realizado las modificaciones que solicitaste. Ahora el campo **Número de Vuelo** ha sido eliminado y el campo **Número de Registro** ocupa la primera posición en el formulario.
+
+-----
+
+### Cambios realizados
+
+  * He eliminado el bloque de código HTML correspondiente al campo de **Número de Vuelo**.
+  * He movido el campo de **Número de Registro** al principio del formulario, justo después de los campos de fecha.
+  * He actualizado el código JavaScript para que la aplicación funcione correctamente con este cambio, usando el número de registro como identificador principal del vuelo.
+
+A continuación, te presento el código HTML y JavaScript completo y actualizado. Solo necesitas copiarlo y reemplazar todo el contenido de tu archivo `index.html`.
+
+-----
+
+### Código actualizado
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -326,12 +343,8 @@
                     <div class="card">
                         <form id="flightForm">
                             <div class="form-group">
-                                <label class="form-label">Número de Vuelo</label>
-                                <input type="text" id="flightNumber" class="form-input" placeholder="Ej: 1847" required>
-                            </div>
-                            <div class="form-group">
                                 <label class="form-label">Número de Registro</label>
-                                <input type="text" id="registrationNumber" class="form-input" placeholder="Ej: F-GHRB">
+                                <input type="text" id="registrationNumber" class="form-input" placeholder="Ej: F-GHRB" required>
                             </div>
                             <div style="display: flex; gap: 12px;">
                                 <div class="form-group" style="flex: 1;">
@@ -533,7 +546,7 @@
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12,6 12,12 16,14"></polyline>
                     </svg>
-                    Continuar Vuelo ${currentFlight.flightNumber}
+                    Continuar Vuelo ${currentFlight.registrationNumber}
                 `;
             } else {
                 btn.classList.add('hidden');
@@ -593,7 +606,7 @@
         function updateCurrentFlightView() {
             if (!currentFlight) return;
 
-            document.getElementById('currentFlightTitle').textContent = `Vuelo ${currentFlight.flightNumber}`;
+            document.getElementById('currentFlightTitle').textContent = `Vuelo ${currentFlight.registrationNumber}`;
             document.getElementById('currentFlightReg').textContent = `Registro: ${currentFlight.registrationNumber || 'N/A'}`;
             document.getElementById('currentFlightArr').textContent = `Vuelo Llegada: ${currentFlight.arrivalFlight || 'N/A'}`;
             document.getElementById('currentFlightDep').textContent = `Vuelo Salida: ${currentFlight.departureFlight || 'N/A'}`;
@@ -692,7 +705,7 @@
                 div.innerHTML = `
                     <div class="history-header">
                         <div>
-                            <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Vuelo ${flight.flightNumber}</h3>
+                            <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Vuelo ${flight.registrationNumber}</h3>
                             <p style="color: #6b7280; font-size: 14px;">Registro: ${flight.registrationNumber || 'N/A'}</p>
                             <p style="color: #6b7280; font-size: 14px;">Coordinador: ${flight.coordinator || 'N/A'}</p>
                             <p style="color: #6b7280; font-size: 14px;">Fecha: ${flight.date}</p>
@@ -790,7 +803,7 @@
                 document.getElementById('continueFlightBtn').classList.add('hidden');
                 document.getElementById('historyBtn').classList.add('hidden');
                 document.getElementById('newFlightForm').classList.remove('hidden');
-                document.getElementById('flightNumber').focus();
+                document.getElementById('registrationNumber').focus();
             });
             
             // Cancelar nuevo vuelo
@@ -806,7 +819,6 @@
             document.getElementById('flightForm').addEventListener('submit', (e) => {
                 e.preventDefault();
                 const flightData = {
-                    flightNumber: document.getElementById('flightNumber').value.trim(),
                     registrationNumber: document.getElementById('registrationNumber').value.trim(),
                     arrivalFlight: document.getElementById('arrivalFlight').value.trim(),
                     departureFlight: document.getElementById('departureFlight').value.trim(),
@@ -819,7 +831,7 @@
                     wingwalker1: document.getElementById('wingwalker1').value.trim() || 'N/A',
                     wingwalker2: document.getElementById('wingwalker2').value.trim() || 'N/A'
                 };
-                if (flightData.flightNumber) {
+                if (flightData.registrationNumber) {
                     createFlight(flightData);
                 }
             });
