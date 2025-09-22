@@ -181,7 +181,7 @@ function adjustTime(op, minutes) {
 
 function updateCurrentFlightView() {
   const info = document.getElementById('currentFlightInfo');
-  info.innerHTML = `<h3 class="text-lg font-bold">Vuelo ${currentFlight.registrationNumber}</h3>
+  info.innerHTML = `<h3 class="text-lg font-bold">GHR ${currentFlight.registrationNumber}</h3>
     <p class="text-sm text-slate-600">${currentFlight.arrivalFlight || ''} → ${currentFlight.departureFlight || ''}</p>
     <p class="text-sm text-slate-500">Aeropuerto Llegada: ${currentFlight.arrivalAirport} · Aeropuerto Salida: ${currentFlight.departureAirport}</p>`;
   const list = document.getElementById('operationsList');
