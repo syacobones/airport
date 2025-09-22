@@ -456,7 +456,7 @@ function shareViaWhatsApp(flightId) {
 🚶‍♂️ Wingwalker 1: ${flight.wingwalker1}
 🚶‍♂️ Wingwalker 2: ${flight.wingwalker2}
 
-⚙️ *OPERACIONES*
+⚙️ *HORAS*
 ${Object.entries(flight.operations).map(([op, data]) => 
   `• ${op}: ${data.utc || data.value || '-'}`).join('\n')}
 
