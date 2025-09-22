@@ -9,10 +9,10 @@ const airportOptions = ["", "Toulouse TLS", "Hamburgo XFW", "Bremen BRE", "Saint
 
 // Orden actualizado: Fuel y ACU van debajo de Parada Motores
 const operations = [
-  'EQUIPOS LISTOS', 'PAYLOAD', 'LLEGADA', 'SALIDA', 'ATA', 'PARADA MOTORES',
+  'EQUIPOS LISTOS', 'PAYLOAD', 'ATA', 'PARADA MOTORES',
   'FUEL', 'ACU',
   'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
-  'REAR JACK UP', 'FRONT JACK DOWN',
+  'REAR JACK UP', 'REAR JACK DOWN', 'FRONT JACK DOWN',
   'START TOWING DEPARTURE', 'END TOWING DEPARTURE', 'STARTUP', 'TAXI', 'TAKEOFF'
 ];
 
