@@ -438,7 +438,7 @@ function shareViaWhatsApp(flightId) {
   const flight = flights.find(f => f.id == flightId);
   if (!flight) return;
   
-  const message = `📋 *REPORTE VUELO BELUGA*
+  const message = `📋 *GROUND HANDLING REPORT*
 🔢 GHR: ${flight.registrationNumber}
 📅 ${flight.date} • ${flight.startTime}
 
@@ -460,7 +460,7 @@ function shareViaWhatsApp(flightId) {
 ${Object.entries(flight.operations).map(([op, data]) => 
   `• ${op}: ${data.utc || data.value || '-'}`).join('\n')}
 
-_Generado por GHR BELUGA_`;
+_Generado por ${flight.coordinator}_`;
 
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
