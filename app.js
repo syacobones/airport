@@ -345,7 +345,7 @@ function startCountdown() {
     const pad = (num) => String(num).padStart(2, '0');
 
     countdownEl.innerHTML = `
-        <p class="text-xs font-semibold text-blue-800">Tiempo para STD (UTC)</p>
+        <p class="text-xs font-semibold text-blue-800">STD</p>
         <p class="text-lg font-bold text-blue-900 tabular-nums">- ${pad(hours)}:${pad(minutes)}:${pad(seconds)}</p>
     `;
   }, 1000);
@@ -487,4 +487,5 @@ document.addEventListener('DOMContentLoaded', () => {
   window.closeViews = closeViews;
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
+
 });
