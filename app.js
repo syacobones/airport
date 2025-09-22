@@ -440,7 +440,7 @@ function shareViaWhatsApp(flightId) {
   
   const message = `📋 *GROUND HANDLING REPORT*
 🔢 GHR: ${flight.registrationNumber}
-📅 ${flight.date} • ${flight.startTime}
+📅 ${flight.date} 
 
 ✈️ *VUELOS*
 🛬 Llegada: ${flight.arrivalFlight || 'N/A'}
