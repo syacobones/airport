@@ -42,7 +42,7 @@ function showForm() {
     <form id="flightForm" class="space-y-3">
       <div>
         <label class="block text-sm font-medium text-slate-700">GHR Numero</label>
-        <input id="registrationNumber" type="text" class="w-full border p-2 rounded" placeholder="Ej: GHR-001" required>
+        <input id="registrationNumber" type="text" class="w-full border p-2 rounded" placeholder="Ej: GHR 1860" required>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div>
