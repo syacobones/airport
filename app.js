@@ -57,11 +57,11 @@ function showForm() {
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div>
           <label class="block text-sm font-medium text-slate-700">Vuelo Llegada</label>
-          <input id="arrivalFlight" type="text" class="w-full border p-2 rounded" placeholder="Ej: BGA9212">
+          <input id="arrivalFlight" type="text" class="w-full border p-2 rounded" placeholder="Ej: BGA116H">
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700">Vuelo Salida</label>
-          <input id="departureFlight" type="text" class="w-full border p-2 rounded" placeholder="Ej: BGA9213">
+          <input id="departureFlight" type="text" class="w-full border p-2 rounded" placeholder="Ej: BGA163H">
         </div>
       </div>
       <div class="grid grid-cols-2 gap-2">
