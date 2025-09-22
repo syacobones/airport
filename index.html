@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GHR BELUGA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-600 to-slate-800 min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="w-full max-w-xl mx-auto text-center">
+    <div class="flex flex-col items-center mb-6">
+      <img src="airbus.PNG" alt="Airbus Logo" class="h-20 mb-4 drop-shadow-lg">
+      <img src="wfs.webp" alt="WFS Logo" class="h-16 drop-shadow">
+    </div>
+
+    <h1 class="text-white text-4xl font-extrabold mb-2">GHR BELUGA</h1>
+    <p class="text-slate-200 mb-6">Registro de Operaciones</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <button id="newFlightBtn" class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-2xl shadow-md transition">
+        <i data-lucide="plus"></i> Nuevo Vuelo
+      </button>
+
+      <button id="continueFlightBtn" class="hidden flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 rounded-2xl shadow-md transition">
+        <i data-lucide="play"></i> Continuar Vuelo
+      </button>
+
+      <button id="historyBtn" class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-2xl shadow-md transition">
+        <i data-lucide="clock"></i> Ver Historial (<span id="historyCount">0</span>)
+      </button>
+    </div>
+
+    <div id="viewsContainer" class="hidden bg-white rounded-2xl p-6 shadow-xl max-h-96 overflow-y-auto"></div>
+  </div>
+
+  <script src="app.js"></script>
+  <script> if (window.lucide) lucide.createIcons(); </script>
+  
+  <!-- Estilos adicionales para impresión -->
+  <style>
+    @media print {
+      body { background: white !important; }
+      .no-print { display: none !important; }
+      .print-content { 
+        background: white !important; 
+        box-shadow: none !important; 
+        border-radius: 0 !important;
+        max-width: 100% !important;
+        padding: 20px !important;
+      }
+    }
+  </style>
+</body>
+</html>
