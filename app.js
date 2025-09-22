@@ -528,7 +528,7 @@ Vuelo Salida: ${flight.departureFlight || 'N/A'}
 Para ver el reporte completo con todas las operaciones, por favor consulta el archivo adjunto.
 
 Saludos,
-Equipo GHR BELUGA`);
+Equipo de WFS`);
   
   const mailtoUrl = `mailto:?subject=${subject}&body=${body}`;
   window.location.href = mailtoUrl;
