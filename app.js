@@ -11,7 +11,7 @@ const airportOptions = ["", "Toulouse TLS", "Hamburgo XFW", "Bremen BRE", "Saint
 
 const operations = [
   'EQUIPOS LISTOS', 'PAYLOAD', 'ATA', 'PARADA MOTORES', 'FUEL', 'ACU',
-  'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
+  'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'ACU ON', 'ACU OFF', 'FRONT JACK UP',
   'REAR JACK UP', 'REAR JACK DOWN', 'FRONT JACK DOWN', 'START TOWING DEPARTURE',
   'END TOWING DEPARTURE', 'STARTUP', 'TAXI', 'TAKEOFF'
 ];
@@ -489,3 +489,4 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showCurrentFlight = showCurrentFlight;
 
 });
+
