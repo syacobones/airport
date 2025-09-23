@@ -430,7 +430,7 @@ function copyReportText(flightId) {
         const value = data ? (data.utc || data.value || '-') : '-';
         return `- ${op}: ${value}`;
     }).join('\n');
-    const textReport = `REPORTE VUELO BELUGA\nGHR: ${flight.registrationNumber}\nFecha: ${flight.date} - ${flight.startTime}\n\nVUELOS:\n- Llegada: ${flight.arrivalFlight || 'N/A'}\n- Salida: ${flight.departureFlight || 'N/A'}\n\nAEROPUERTOS:\n- Llegada: ${flight.arrivalAirport}\n- Salida: ${flight.departureAirport}\n\nEQUIPO:\n- Coordinador: ${flight.coordinator}\n- Conductor: ${flight.driver}\n- Wingwalker 1: ${flight.wingwalker1}\n- Wingwalker 2: ${flight.wingwalker2}\n\nOPERACIONES REGISTRADAS:\n${operationsText}\n\nGenerado por GHR BELUGA - ${new Date().toLocaleDateString('es-ES')}`;
+    const textReport = `REPORTE VUELO BELUGA\nGHR: ${flight.registrationNumber}\nFecha: ${flight.date} - ${flight.startTime}\n\nVUELOS:\n- Llegada: ${flight.arrivalFlight || 'N/A'}\n- Salida: ${flight.departureFlight || 'N/A'}\n\nAEROPUERTOS:\n- Llegada: ${flight.arrivalAirport}\n- Salida: ${flight.departureAirport}\n\nEQUIPO:\n- Coordinador: ${flight.coordinator}\n- Conductor: ${flight.driver}\n- Wingwalker 1: ${flight.wingwalker1}\n- Wingwalker 2: ${flight.wingwalker2}\n\nOPERACIONES REGISTRADAS:\n${operationsText}\n\nGenerado por ${flight.coordinator} - ${new Date().toLocaleDateString('es-ES')}`;
     navigator.clipboard.writeText(textReport).then(() => { alert('✅ Reporte copiado al portapapeles.'); }).catch(() => alert('❌ No se pudo copiar el reporte.'));
 }
 
@@ -489,4 +489,5 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showCurrentFlight = showCurrentFlight;
 
 });
+
 
