@@ -1,4 +1,4 @@
-// app.js - Versión FINAL con plantilla PDF WFS generada por código
+// app.js - Versión FINAL con formato WFS, nuevos campos y todas las funcionalidades
 let flights = [];
 let currentFlight = null;
 let isEditing = false;
@@ -11,7 +11,6 @@ const airportOptions = ["", "Toulouse TLS", "Hamburgo XFW", "Bremen BRE", "Saint
 const externalCrewOptions = ["", "Soledad", "Fernando", "Gustavo", "Germán", "Iñaki", "Jon", "David"];
 const aircraftOptions = ["","Airbus Beluga ST - F-GSTA (Avión Nº 1)","Airbus Beluga ST - F-GSTB (Avión Nº 2)","Airbus Beluga ST - F-GSTC (Avión Nº 3)","Airbus Beluga ST - F-GSTD (Avión Nº 4)","Airbus Beluga ST - F-GSTF (Avión Nº 5)","Airbus Beluga XL - F-GXLG (Avión Nº 1)","Airbus Beluga XL - F-GXLH (Avión Nº 2)","Airbus Beluga XL - F-GXLI (Avión Nº 3)","Airbus Beluga XL - F-GXLJ (Avión Nº 4)","Airbus Beluga XL - F-GXLN (Avión Nº 5)","Airbus Beluga XL - F-GXLO (Avión Nº 6)"];
 
-// MODIFICADO: Nuevos items de operaciones
 const operations = [
   'EQUIPOS LISTOS', 'PAYLOAD', 'ATA', 'PARADA MOTORES', 'FUEL (STARTING)', 'FUEL (END)', 'ACU ON', 'ACU OFF',
   'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
@@ -306,10 +305,7 @@ function showStatistics() {
     c.classList.remove('hidden');
     const completedFlights = flights.filter(f => f.completed).sort((a, b) => b.id - a.id);
     if (completedFlights.length === 0) {
-        c.innerHTML = `
-            <h2 class="text-2xl font-bold mb-4">Estadísticas</h2>
-            <p class="text-gray-500 text-center py-8">No hay vuelos completados para mostrar estadísticas.</p>
-            <button onclick="closeViews()" class="w-full bg-gray-200 hover:bg-gray-300 py-2 rounded-md mt-4">Cerrar</button>`;
+        c.innerHTML = `<h2 class="text-2xl font-bold mb-4">Estadísticas</h2><p class="text-gray-500 text-center py-8">No hay vuelos completados para mostrar estadísticas.</p><button onclick="closeViews()" class="w-full bg-gray-200 hover:bg-gray-300 py-2 rounded-md mt-4">Cerrar</button>`;
         return;
     }
     const statsRows = completedFlights.map(flight => {
