@@ -471,7 +471,7 @@ async function downloadWfsPdf(flightId) {
             addText(`${flight.operations['END TOWING DEPARTURE']?.utc || '--:--'} / ${flight.operations['TAKEOFF']?.utc || '--:--'}`, 398, 154, { align: 'center' });
             
             // Operaciones
-            addText(flight.operations['EQUIPOS LISTOS']?.utc, 221, 241);
+            addText(flight.operations['EQUIPOS LISTOS']?.utc, 235, 241);
             addText(flight.operations['GPU ON']?.utc, 192, 205);
             addText(flight.operations['GPU OFF']?.utc, 221, 205);
             addText(flight.operations['FUEL (STARTING)']?.utc, 190, 213);
@@ -592,3 +592,4 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
+
