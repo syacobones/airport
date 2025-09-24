@@ -432,36 +432,45 @@ function downloadElegantPDF(flightId) {
 async function downloadWfsPdf(flightId) {
     const flight = flights.find(f => f.id == flightId);
     if (!flight) return;
+
     try {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+
+        const addText = (text, x, y, options = {}) => {
+            const { size = 8, align = 'left' } = options;
+            doc.setFontSize(size);
+            doc.text(text || '', x, y, { align: align });
+        };
+        
         const img = new Image();
-        img.src = './ghr-wfs-template.png'; // Make sure this image is in the same folder
+        img.src = './ghr-wfs-template.png';
         img.onload = () => {
             doc.addImage(img, 'PNG', 0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
-
-            const addText = (text, x, y, options = {}) => {
-                const { size = 9, align = 'left' } = options;
-                doc.setFontSize(size);
-                doc.text(text || '', x, y, { align: align });
-            };
 
             const planeNumberMatch = flight.aircraft.match(/\(Avión Nº (\d+)\)/);
             const planeNumber = planeNumberMatch ? planeNumberMatch[1] : '';
 
+            // Fila 1: GHR, Aircraft, Plane Number
             addText(flight.registrationNumber, 123, 100);
-            addText(flight.aircraft.split(' - ')[1].split(' (')[0], 367, 118, { size: 8 });
-            addText(planeNumber, 429, 118, { size: 8 });
-            addText(new Date().toLocaleDateString('es-ES'), 76, 144);
+            addText(flight.aircraft.split(' - ')[1].split(' (')[0], 367, 118);
+            addText(planeNumber, 429, 118);
+            
+            // Fila 2: Date, Flight In, STA, From, Flight Out, STD, To
+            addText(flight.date, 76, 144);
             addText(flight.arrivalFlight, 134, 144);
             addText(flight.sta, 165, 144);
-            addText(flight.arrivalAirport, 210, 144);
+            addText((flight.arrivalAirport || '').slice(-3), 210, 144); // FROM (Last 3 letters)
             addText(flight.departureFlight, 269, 144);
             addText(flight.std, 309, 144);
-            addText(flight.departureAirport, 347, 144);
+            addText((flight.departureAirport || '').slice(-3), 347, 144); // TO (Last 3 letters)
+            
+            // Fila 3: Payload, ATA/End Towing, End Towing Dep/Takeoff
             addText(flight.operations['PAYLOAD']?.value, 114, 154);
-            addText(`${flight.operations['ATA']?.utc || '--:--'} / ${flight.operations['END TOWING']?.utc || '--:--'}`, 200, 154);
-            addText(`${flight.operations['END TOWING DEPARTURE']?.utc || '--:--'} / ${flight.operations['TAKEOFF']?.utc || '--:--'}`, 348, 154);
+            addText(`${flight.operations['ATA']?.utc || '--:--'} / ${flight.operations['END TOWING']?.utc || '--:--'}`, 245, 154, { align: 'center' });
+            addText(`${flight.operations['END TOWING DEPARTURE']?.utc || '--:--'} / ${flight.operations['TAKEOFF']?.utc || '--:--'}`, 398, 154, { align: 'center' });
+            
+            // Operaciones
             addText(flight.operations['EQUIPOS LISTOS']?.utc, 221, 241);
             addText(flight.operations['GPU ON']?.utc, 192, 205);
             addText(flight.operations['GPU OFF']?.utc, 221, 205);
@@ -481,8 +490,9 @@ async function downloadWfsPdf(flightId) {
             addText(flight.operations['STARTUP']?.utc, 200, 505);
             addText(flight.operations['TAXI']?.utc, 250, 505);
 
-            const crewLine = `Coordinador: ${flight.coordinator || 'N/A'}, Conductor: ${flight.driver || 'N/A'}, W1: ${flight.wingwalker1 || 'N/A'}, W2: ${flight.wingwalker2 || 'N/A'}`;
-            addText(crewLine, 75, 513, { size: 8 });
+            // Crew Info (sin roles)
+            const crewLine = [flight.coordinator, flight.driver, flight.wingwalker1, flight.wingwalker2].filter(Boolean).join(', ');
+            addText(crewLine, 75, 515, { size: 8 });
 
             doc.save(`GHR-WFS-${flight.registrationNumber}.pdf`);
         };
