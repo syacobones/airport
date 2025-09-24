@@ -1,4 +1,4 @@
-// app.js - Versión COMPLETA con Ground Coordinator, Loadmaster y Estadísticas
+// app.js - Versión COMPLETA con formato WFS PDF, nuevos campos y estadísticas
 let flights = [];
 let currentFlight = null;
 let isEditing = false;
@@ -9,9 +9,11 @@ const driverOptions = ["", "Fidel Botey", "Juan Gamez", "Paco Jerez", "Gaspar Fr
 const wingwalkerOptions = ["", ...coordinatorOptions.slice(1), ...driverOptions.slice(1)];
 const airportOptions = ["", "Toulouse TLS", "Hamburgo XFW", "Bremen BRE", "Saint-Nazaire SNR", "Chester CEG"];
 const externalCrewOptions = ["", "Soledad", "Fernando", "Gustavo", "Germán", "Iñaki", "Jon", "David"];
+const aircraftOptions = ["","Airbus Beluga ST - F-GSTA (Avión Nº 1)","Airbus Beluga ST - F-GSTB (Avión Nº 2)","Airbus Beluga ST - F-GSTC (Avión Nº 3)","Airbus Beluga ST - F-GSTD (Avión Nº 4)","Airbus Beluga ST - F-GSTF (Avión Nº 5)","Airbus Beluga XL - F-GXLG (Avión Nº 1)","Airbus Beluga XL - F-GXLH (Avión Nº 2)","Airbus Beluga XL - F-GXLI (Avión Nº 3)","Airbus Beluga XL - F-GXLJ (Avión Nº 4)","Airbus Beluga XL - F-GXLN (Avión Nº 5)","Airbus Beluga XL - F-GXLO (Avión Nº 6)"];
 
+// MODIFICADO: Nuevos items de operaciones
 const operations = [
-  'EQUIPOS LISTOS', 'PAYLOAD', 'ATA', 'PARADA MOTORES', 'FUEL', 'ACU',
+  'EQUIPOS LISTOS', 'PAYLOAD', 'ATA', 'PARADA MOTORES', 'FUEL (STARTING)', 'FUEL (END)', 'ACU ON', 'ACU OFF',
   'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
   'REAR JACK UP', 'REAR JACK DOWN', 'FRONT JACK DOWN', 'START TOWING DEPARTURE',
   'END TOWING DEPARTURE', 'STARTUP', 'TAXI', 'TAKEOFF'
@@ -43,7 +45,8 @@ function showForm(flightToEdit = null) {
   c.innerHTML = `
     <h2 class="text-2xl font-bold mb-4 text-slate-800">${isEditing ? 'Editar Detalles del Vuelo' : 'Nuevo Vuelo'}</h2>
     <form id="flightForm" class="space-y-4">
-      <div><label class="block text-sm font-medium text-slate-700">GHR Numero</label><input id="registrationNumber" type="text" class="w-full border p-2 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="Ej: GHR 1860" required value="${flightToEdit?.registrationNumber || ''}"></div>
+      <div><label class="block text-sm font-medium text-slate-700">GHR Numero</label><input id="registrationNumber" type="text" class="w-full border p-2 rounded-md" placeholder="Ej: GHR 1860" required value="${flightToEdit?.registrationNumber || ''}"></div>
+      <div><label class="block text-sm font-medium text-slate-700">Aircraft</label><select id="aircraft" class="w-full border p-2 rounded-md"></select></div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div><label class="block text-sm font-medium text-slate-700">Aeropuerto de Llegada</label><select id="arrivalAirport" class="w-full border p-2 rounded-md"></select></div>
         <div><label class="block text-sm font-medium text-slate-700">Aeropuerto de Salida</label><select id="departureAirport" class="w-full border p-2 rounded-md"></select></div>
@@ -70,15 +73,17 @@ function showForm(flightToEdit = null) {
         <div><label class="block text-sm font-medium text-slate-700">Loadmaster</label><select id="loadmaster" class="w-full border p-2 rounded-md"></select></div>
       </div>
       <div class="flex gap-2 mt-4">
-        <button type="submit" class="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded-md transition duration-300">${isEditing ? 'Guardar Cambios' : 'Crear Vuelo'}</button>
+        <button type="submit" class="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 rounded-md">${isEditing ? 'Guardar Cambios' : 'Crear Vuelo'}</button>
         <button id="cancelBtn" type="button" class="flex-1 bg-gray-200 hover:bg-gray-300 py-2 rounded-md">Cancelar</button>
       </div>
     </form>`;
 
   generateCrewOptions();
   generateAirportOptions();
+  generateAircraftOptions();
 
   if (isEditing) {
+    document.getElementById('aircraft').value = flightToEdit.aircraft || '';
     document.getElementById('arrivalAirport').value = flightToEdit.arrivalAirport;
     document.getElementById('departureAirport').value = flightToEdit.departureAirport;
     document.getElementById('coordinator').value = flightToEdit.coordinator;
@@ -93,6 +98,7 @@ function showForm(flightToEdit = null) {
     e.preventDefault();
     const data = {
       registrationNumber: document.getElementById('registrationNumber').value.trim(),
+      aircraft: document.getElementById('aircraft').value.trim(),
       arrivalFlight: document.getElementById('arrivalFlight').value.trim(),
       departureFlight: document.getElementById('departureFlight').value.trim(),
       arrivalAirport: document.getElementById('arrivalAirport').value.trim() || 'N/A',
@@ -211,12 +217,8 @@ function updateCurrentFlightView() {
     const row = document.createElement('div');
     row.className = 'p-3 bg-gray-50 rounded-lg flex justify-between items-center';
     let content = `<span class="font-medium text-slate-700">${op}</span><div class="flex items-center gap-2">`;
-    if (op === 'EQUIPOS LISTOS') {
-      content += `<input type="time" value="${opData?.utc || ''}" class="op-input-time border p-1 rounded-md">`;
-    } else if (op === 'PAYLOAD') {
+    if (op === 'PAYLOAD') {
       content += `<input type="text" placeholder="Ej: 14300kg" value="${opData?.value || ''}" class="op-input-text border p-1 rounded-md w-28">`;
-    } else if (op === 'FUEL' || op === 'ACU') {
-      content += `<label class="ml-2 text-sm"><input type="radio" name="${op}" value="YES" ${opData?.value === 'YES' ? 'checked' : ''}> SÍ</label><label class="ml-2 text-sm"><input type="radio" name="${op}" value="NO" ${opData?.value === 'NO' ? 'checked' : ''}> NO</label>`;
     } else {
       content += `<span class="text-green-700 font-mono text-sm min-w-[50px] text-center">${opData?.utc || '--:--'}</span><button class="record-btn px-2 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">${opData ? '✓' : '+'}</button>`;
       if (opData?.utc) {
@@ -226,18 +228,17 @@ function updateCurrentFlightView() {
     content += `</div>`;
     row.innerHTML = content;
     list.appendChild(row);
-    const timeInput = row.querySelector('.op-input-time');
-    if (timeInput) timeInput.addEventListener('change', e => { currentFlight.operations[op] = { utc: e.target.value }; saveData(); });
+
     const textInput = row.querySelector('.op-input-text');
-    if (textInput) textInput.addEventListener('change', e => { currentFlight.operations[op] = { value: e.target.value }; saveData(); });
-    row.querySelectorAll(`input[name="${op}"]`).forEach(radio => {
-      radio.addEventListener('change', e => { currentFlight.operations[op] = { value: e.target.value }; saveData(); });
-    });
-    const recordBtn = row.querySelector('.record-btn');
-    if (recordBtn) recordBtn.addEventListener('click', () => { recordOperation(op); saveData(); });
-    row.querySelectorAll('.adjust-time-btn').forEach(btn => {
-      btn.addEventListener('click', () => { adjustTime(btn.dataset.op, parseInt(btn.dataset.amount)); saveData(); });
-    });
+    if (textInput) {
+        textInput.addEventListener('change', e => { currentFlight.operations[op] = { value: e.target.value }; saveData(); });
+    } else {
+        const recordBtn = row.querySelector('.record-btn');
+        if (recordBtn) recordBtn.addEventListener('click', () => { recordOperation(op); saveData(); });
+        row.querySelectorAll('.adjust-time-btn').forEach(btn => {
+            btn.addEventListener('click', () => { adjustTime(btn.dataset.op, parseInt(btn.dataset.amount)); saveData(); });
+        });
+    }
   });
 }
 
@@ -314,32 +315,12 @@ function showStatistics() {
     const statsRows = completedFlights.map(flight => {
         const turnaroundTime = calculateDuration('ATA', 'TAKEOFF', flight.operations);
         const towingTime = calculateDuration('END TOWING', 'END TOWING DEPARTURE', flight.operations);
-        return `
-            <tr class="border-b">
-                <td class="py-2 px-4 font-semibold text-blue-800">${flight.registrationNumber}</td>
-                <td class="py-2 px-4 text-center">${turnaroundTime}</td>
-                <td class="py-2 px-4 text-center">${towingTime}</td>
-            </tr>
-        `;
+        return `<tr class="border-b"><td class="py-2 px-4 font-semibold text-blue-800">${flight.registrationNumber}</td><td class="py-2 px-4 text-center">${turnaroundTime}</td><td class="py-2 px-4 text-center">${towingTime}</td></tr>`;
     }).join('');
     c.innerHTML = `
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold text-slate-800">Estadísticas de Operaciones</h2>
-            <button onclick="closeViews()" class="text-gray-500 hover:text-gray-800">&times;</button>
-        </div>
+        <div class="flex justify-between items-center mb-4"><h2 class="text-2xl font-bold text-slate-800">Estadísticas de Operaciones</h2><button onclick="closeViews()" class="text-gray-500 hover:text-gray-800">&times;</button></div>
         <div class="max-h-96 overflow-y-auto">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-gray-100 sticky top-0">
-                    <tr>
-                        <th class="py-2 px-4">Vuelo</th>
-                        <th class="py-2 px-4 text-center">Turnaround (ATA → Takeoff)</th>
-                        <th class="py-2 px-4 text-center">Remolque (Towing → Towing)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${statsRows}
-                </tbody>
-            </table>
+            <table class="w-full text-sm text-left"><thead class="bg-gray-100 sticky top-0"><tr><th class="py-2 px-4">Vuelo</th><th class="py-2 px-4 text-center">Turnaround (ATA → Takeoff)</th><th class="py-2 px-4 text-center">Remolque (Towing → Towing)</th></tr></thead><tbody>${statsRows}</tbody></table>
         </div>`;
 }
 
@@ -363,7 +344,7 @@ function sendFlightReport(flightId) {
         <button onclick="shareViaWhatsApp('${flight.id}')" class="w-full bg-green-500 text-white p-3 rounded-lg flex items-center justify-center gap-2 hover:bg-green-600"><i data-lucide="send"></i> WhatsApp</button>
         <button onclick="copyReportText('${flight.id}')" class="w-full bg-blue-600 text-white p-3 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700"><i data-lucide="clipboard"></i> Copiar Texto</button>
         <button onclick="downloadElegantPDF('${flight.id}')" class="w-full bg-red-700 text-white p-3 rounded-lg flex items-center justify-center gap-2 hover:bg-red-800"><i data-lucide="file-down"></i> Descargar PDF</button>
-        <button onclick="printReport()" class="w-full bg-gray-700 text-white p-3 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-800"><i data-lucide="printer"></i> Imprimir</button>
+        <button onclick="downloadWfsPdf('${flight.id}')" class="w-full bg-gray-700 text-white p-3 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-800"><i data-lucide="file-check-2"></i> FORMATO WFS</button>
     </div>
     <button onclick="showHistory()" class="w-full mt-3 bg-gray-200 hover:bg-gray-300 py-2 rounded-md">Volver al Historial</button>`;
   lucide.createIcons();
@@ -410,7 +391,7 @@ function startCountdown() {
 function generateFlightReportHTML(flight) {
     const operationsText = operations.map(op => {
         const data = flight.operations[op];
-        return `<tr><td class="border px-3 py-2 font-medium">${op}</td><td class="border px-3 py-2 font-mono">${data ? (data.utc || data.value) : '-'}</td></tr>`;
+        return `<tr><td class="border px-3 py-2 font-medium">${op}</td><td class="border px-3 py-2 font-mono">${data ? (data.utc || data.value || '-') : '-'}</td></tr>`;
     }).join('');
     return `<div class="text-center mb-4"><h1 class="text-xl font-bold text-blue-800">REPORTE DE VUELO BELUGA</h1><div class="text-lg font-semibold text-gray-700 mt-1">GHR ${flight.registrationNumber}</div><div class="text-sm text-gray-500">${flight.date} • ${flight.startTime}</div></div><div class="grid grid-cols-2 gap-x-6 gap-y-2 mb-4 text-sm"><div><strong>Llegada:</strong> ${flight.arrivalFlight||'N/A'}</div><div><strong>Salida:</strong> ${flight.departureFlight||'N/A'}</div><div><strong>STA:</strong> ${flight.sta||'N/A'}</div><div><strong>STD:</strong> ${flight.std||'N/A'}</div><div><strong>Apt. Llegada:</strong> ${flight.arrivalAirport}</div><div><strong>Apt. Salida:</strong> ${flight.departureAirport}</div><div><strong>Coordinador:</strong> ${flight.coordinator}</div><div><strong>Conductor:</strong> ${flight.driver}</div><div><strong>Wingwalker 1:</strong> ${flight.wingwalker1}</div><div><strong>Wingwalker 2:</strong> ${flight.wingwalker2}</div><hr class="col-span-2 my-1"><div><strong>Ground Coordinator:</strong> ${flight.groundCoordinator || 'N/A'}</div><div><strong>Loadmaster:</strong> ${flight.loadmaster || 'N/A'}</div></div><h3 class="font-bold mb-2 text-md">OPERACIONES REGISTRADAS</h3><table class="w-full border-collapse border border-gray-300 text-sm"><thead class="bg-gray-100"><tr><th class="border px-3 py-2 text-left">Operación</th><th class="border px-3 py-2 text-left">Tiempo/Valor</th></tr></thead><tbody>${operationsText}</tbody></table><div class="text-center mt-4 text-xs text-gray-400">Generado por GHR BELUGA • ${new Date().toLocaleString('es-ES')}</div>`;
 }
@@ -451,6 +432,90 @@ function downloadElegantPDF(flightId) {
     doc.text(footerText, pageWidth / 2, pageHeight - 10, { align: "center" });
     doc.save(`Reporte-${flight.registrationNumber}.pdf`);
 }
+
+// ==========================================================
+// NUEVA FUNCIÓN: Genera el PDF con el formato oficial de WFS
+// ==========================================================
+async function downloadWfsPdf(flightId) {
+    const flight = flights.find(f => f.id == flightId);
+    if (!flight) return;
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+
+        // Cargar la imagen de fondo
+        const img = new Image();
+        img.src = './ghr-wfs-template.png'; // Asegúrate de que la imagen se llame así
+        img.onload = () => {
+            doc.addImage(img, 'PNG', 0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
+            
+            // Función para añadir texto en las coordenadas
+            const addText = (text, x, y) => {
+                doc.text(text || '', x, y);
+            };
+
+            // Extraer solo el número del avión
+            const planeNumberMatch = flight.aircraft.match(/\(Avión Nº (\d+)\)/);
+            const planeNumber = planeNumberMatch ? planeNumberMatch[1] : '';
+
+            // Rellenar los datos
+            doc.setFontSize(10);
+            addText(flight.registrationNumber, 123, 100);
+            addText(flight.aircraft.split(' - ')[1].split(' (')[0], 367, 118); // REG
+            addText(planeNumber, 429, 118);
+            addText(flight.date, 76, 142);
+            addText(flight.arrivalFlight, 134, 142);
+            addText(flight.sta, 165, 142);
+            addText(flight.arrivalAirport, 210, 142); // FROM
+            addText(flight.departureFlight, 269, 142); // FLIGHT OUT
+            addText(flight.std, 309, 142);
+            addText(flight.departureAirport, 347, 142); // TO
+            addText(flight.operations['PAYLOAD']?.value, 114, 152);
+
+            const ataEndTowing = `${flight.operations['ATA']?.utc || ''} / ${flight.operations['END TOWING']?.utc || ''}`;
+            addText(ataEndTowing, 200, 152);
+            
+            const endTowingDepTakeoff = `${flight.operations['END TOWING DEPARTURE']?.utc || ''} / ${flight.operations['TAKEOFF']?.utc || ''}`;
+            addText(endTowingDepTakeoff, 348, 152);
+
+            addText(flight.operations['EQUIPOS LISTOS']?.utc, 221, 239);
+            addText(flight.operations['GPU ON']?.utc, 192, 203);
+            addText(flight.operations['GPU OFF']?.utc, 221, 203);
+            addText(flight.operations['FUEL (STARTING)']?.utc, 190, 211);
+            addText(flight.operations['FUEL (END)']?.utc, 217, 210);
+            addText(flight.operations['ACU ON']?.utc, 194, 220);
+            addText(flight.operations['ACU OFF']?.utc, 225, 220);
+            
+            addText(flight.operations['START TOWING']?.utc, 71, 301);
+            addText(flight.operations['END TOWING']?.utc, 115, 301);
+            addText(flight.operations['START TOWING DEPARTURE']?.utc, 155, 301);
+            addText(flight.operations['END TOWING DEPARTURE']?.utc, 200, 301);
+            
+            addText(flight.operations['FRONT JACK UP']?.utc, 74, 273);
+            addText(flight.operations['REAR JACK UP']?.utc, 116, 273);
+            addText(flight.operations['FRONT JACK DOWN']?.utc, 156, 273);
+            addText(flight.operations['REAR JACK DOWN']?.utc, 201, 273);
+            
+            addText(flight.operations['PARADA MOTORES']?.utc, 113, 503);
+            addText(flight.operations['STARTUP']?.utc, 200, 503);
+            addText(flight.operations['TAXI']?.utc, 250, 503);
+
+            const crew = `Coordinador: ${flight.coordinator}, Conductor: ${flight.driver}, Wingwalker 1: ${flight.wingwalker1}, Wingwalker 2: ${flight.wingwalker2}`;
+            addText(crew, 75, 511);
+
+            doc.save(`GHR-WFS-${flight.registrationNumber}.pdf`);
+        };
+        img.onerror = () => {
+            alert("No se pudo cargar la plantilla 'ghr-wfs-template.png'. Asegúrate de que el archivo existe en la carpeta y tiene el nombre correcto.");
+        };
+
+    } catch (e) {
+        console.error(e);
+        alert("Ocurrió un error al generar el PDF.");
+    }
+}
+
 
 function shareViaWhatsApp(flightId) {
     const flight = flights.find(f => f.id == flightId);
@@ -500,6 +565,12 @@ function generateAirportOptions() {
   });
 }
 
+function generateAircraftOptions() {
+    const sel = document.getElementById('aircraft');
+    if (!sel) return;
+    sel.innerHTML = aircraftOptions.map(v => `<option value="${v}">${v || 'Seleccionar...'}</option>`).join('');
+}
+
 function updateContinueButton() {
   const btn = document.getElementById('continueFlightBtn');
   const uncompleted = flights.find(f => !f.completed);
@@ -533,6 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.copyReportText = copyReportText;
   window.printReport = printReport;
   window.downloadElegantPDF = downloadElegantPDF;
+  window.downloadWfsPdf = downloadWfsPdf; // NUEVO: Exponer la función
   window.closeViews = closeViews;
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
