@@ -1,4 +1,4 @@
-// app.js - Versión COMPLETA con formato WFS PDF, nuevos campos y estadísticas
+// app.js - Versión FINAL con plantilla PDF WFS generada por código
 let flights = [];
 let currentFlight = null;
 let isEditing = false;
@@ -433,52 +433,33 @@ function downloadElegantPDF(flightId) {
     doc.save(`Reporte-${flight.registrationNumber}.pdf`);
 }
 
-// ==========================================================
-// NUEVA FUNCIÓN: Genera el PDF con el formato oficial de WFS
-// ==========================================================
 async function downloadWfsPdf(flightId) {
     const flight = flights.find(f => f.id == flightId);
     if (!flight) return;
-
     try {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
-
-        // Cargar la imagen de fondo
         const img = new Image();
-        img.src = './ghr-wfs-template.png'; // Asegúrate de que la imagen se llame así
+        img.src = './ghr-wfs-template.png';
         img.onload = () => {
             doc.addImage(img, 'PNG', 0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
-            
-            // Función para añadir texto en las coordenadas
-            const addText = (text, x, y) => {
-                doc.text(text || '', x, y);
-            };
-
-            // Extraer solo el número del avión
+            const addText = (text, x, y) => { doc.text(text || '', x, y); };
             const planeNumberMatch = flight.aircraft.match(/\(Avión Nº (\d+)\)/);
             const planeNumber = planeNumberMatch ? planeNumberMatch[1] : '';
-
-            // Rellenar los datos
             doc.setFontSize(10);
             addText(flight.registrationNumber, 123, 100);
-            addText(flight.aircraft.split(' - ')[1].split(' (')[0], 367, 118); // REG
+            addText(flight.aircraft.split(' - ')[1].split(' (')[0], 367, 118);
             addText(planeNumber, 429, 118);
             addText(flight.date, 76, 142);
             addText(flight.arrivalFlight, 134, 142);
             addText(flight.sta, 165, 142);
-            addText(flight.arrivalAirport, 210, 142); // FROM
-            addText(flight.departureFlight, 269, 142); // FLIGHT OUT
+            addText(flight.arrivalAirport, 210, 142);
+            addText(flight.departureFlight, 269, 142);
             addText(flight.std, 309, 142);
-            addText(flight.departureAirport, 347, 142); // TO
+            addText(flight.departureAirport, 347, 142);
             addText(flight.operations['PAYLOAD']?.value, 114, 152);
-
-            const ataEndTowing = `${flight.operations['ATA']?.utc || ''} / ${flight.operations['END TOWING']?.utc || ''}`;
-            addText(ataEndTowing, 200, 152);
-            
-            const endTowingDepTakeoff = `${flight.operations['END TOWING DEPARTURE']?.utc || ''} / ${flight.operations['TAKEOFF']?.utc || ''}`;
-            addText(endTowingDepTakeoff, 348, 152);
-
+            addText(`${flight.operations['ATA']?.utc || ''} / ${flight.operations['END TOWING']?.utc || ''}`, 200, 152);
+            addText(`${flight.operations['END TOWING DEPARTURE']?.utc || ''} / ${flight.operations['TAKEOFF']?.utc || ''}`, 348, 152);
             addText(flight.operations['EQUIPOS LISTOS']?.utc, 221, 239);
             addText(flight.operations['GPU ON']?.utc, 192, 203);
             addText(flight.operations['GPU OFF']?.utc, 221, 203);
@@ -486,36 +467,24 @@ async function downloadWfsPdf(flightId) {
             addText(flight.operations['FUEL (END)']?.utc, 217, 210);
             addText(flight.operations['ACU ON']?.utc, 194, 220);
             addText(flight.operations['ACU OFF']?.utc, 225, 220);
-            
             addText(flight.operations['START TOWING']?.utc, 71, 301);
             addText(flight.operations['END TOWING']?.utc, 115, 301);
             addText(flight.operations['START TOWING DEPARTURE']?.utc, 155, 301);
             addText(flight.operations['END TOWING DEPARTURE']?.utc, 200, 301);
-            
             addText(flight.operations['FRONT JACK UP']?.utc, 74, 273);
             addText(flight.operations['REAR JACK UP']?.utc, 116, 273);
             addText(flight.operations['FRONT JACK DOWN']?.utc, 156, 273);
             addText(flight.operations['REAR JACK DOWN']?.utc, 201, 273);
-            
             addText(flight.operations['PARADA MOTORES']?.utc, 113, 503);
             addText(flight.operations['STARTUP']?.utc, 200, 503);
             addText(flight.operations['TAXI']?.utc, 250, 503);
-
-            const crew = `Coordinador: ${flight.coordinator}, Conductor: ${flight.driver}, Wingwalker 1: ${flight.wingwalker1}, Wingwalker 2: ${flight.wingwalker2}`;
+            const crew = `Coordinador: ${flight.coordinator}, Conductor: ${flight.driver}, W1: ${flight.wingwalker1}, W2: ${flight.wingwalker2}`;
             addText(crew, 75, 511);
-
             doc.save(`GHR-WFS-${flight.registrationNumber}.pdf`);
         };
-        img.onerror = () => {
-            alert("No se pudo cargar la plantilla 'ghr-wfs-template.png'. Asegúrate de que el archivo existe en la carpeta y tiene el nombre correcto.");
-        };
-
-    } catch (e) {
-        console.error(e);
-        alert("Ocurrió un error al generar el PDF.");
-    }
+        img.onerror = () => { alert("No se pudo cargar la plantilla 'ghr-wfs-template.png'. Asegúrate de que el archivo existe y tiene el nombre correcto."); };
+    } catch (e) { console.error(e); alert("Ocurrió un error al generar el PDF."); }
 }
-
 
 function shareViaWhatsApp(flightId) {
     const flight = flights.find(f => f.id == flightId);
@@ -604,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.copyReportText = copyReportText;
   window.printReport = printReport;
   window.downloadElegantPDF = downloadElegantPDF;
-  window.downloadWfsPdf = downloadWfsPdf; // NUEVO: Exponer la función
+  window.downloadWfsPdf = downloadWfsPdf;
   window.closeViews = closeViews;
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
