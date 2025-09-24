@@ -16,7 +16,9 @@ const operations = [
   'EQUIPOS LISTOS', 'PAYLOAD', 'ATA', 'PARADA MOTORES', 'FUEL (STARTING)', 'FUEL (END)', 'ACU ON', 'ACU OFF',
   'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
   'REAR JACK UP', 'REAR JACK DOWN', 'FRONT JACK DOWN', 'START TOWING DEPARTURE',
-  'END TOWING DEPARTURE', 'STARTUP', 'TAXI', 'TAKEOFF'
+  'END TOWING DEPARTURE', 'STARTUP', 'TAXI', 'TAKEOFF',
+  'FOD CHECK COMPLETED', 'GSE CLEAN & SERVICEABLE', 'ACU NEEDED', 'GPU NEEDED',
+  'FUEL NEEDED', 'N/A REQUEST', 'WATER TRUCK SERVICES'
 ];
 
 function loadData() {
@@ -219,11 +221,14 @@ function updateCurrentFlightView() {
     let content = `<span class="font-medium text-slate-700">${op}</span><div class="flex items-center gap-2">`;
     if (op === 'PAYLOAD') {
       content += `<input type="text" placeholder="Ej: 14300kg" value="${opData?.value || ''}" class="op-input-text border p-1 rounded-md w-28">`;
+    } else if (op.includes('CHECK') || op.includes('NEEDED') || op.includes('REQUEST') || op.includes('SERVICES')) {
+        // These are YES/NO fields
+        content += `<span class="text-green-700 font-mono text-sm min-w-[50px] text-center">${opData?.value || '--'}</span><button class="toggle-yes-no-btn px-2 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700" data-op="${op}">${opData?.value === 'YES' ? 'NO' : (opData?.value === 'NO' ? 'YES' : 'YES')}</button>`;
     } else {
-      content += `<span class="text-green-700 font-mono text-sm min-w-[50px] text-center">${opData?.utc || '--:--'}</span><button class="record-btn px-2 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">${opData ? '✓' : '+'}</button>`;
-      if (opData?.utc) {
-        content += `<button class="adjust-time-btn bg-gray-200 rounded-full w-6 h-6" data-op="${op}" data-amount="-1" title="Restar 1 min">-</button><button class="adjust-time-btn bg-gray-200 rounded-full w-6 h-6" data-op="${op}" data-amount="1" title="Sumar 1 min">+</button>`;
-      }
+        content += `<span class="text-green-700 font-mono text-sm min-w-[50px] text-center">${opData?.utc || '--:--'}</span><button class="record-btn px-2 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">${opData ? '✓' : '+'}</button>`;
+        if (opData?.utc) {
+            content += `<button class="adjust-time-btn bg-gray-200 rounded-full w-6 h-6" data-op="${op}" data-amount="-1" title="Restar 1 min">-</button><button class="adjust-time-btn bg-gray-200 rounded-full w-6 h-6" data-op="${op}" data-amount="1" title="Sumar 1 min">+</button>`;
+        }
     }
     content += `</div>`;
     row.innerHTML = content;
@@ -238,9 +243,16 @@ function updateCurrentFlightView() {
         row.querySelectorAll('.adjust-time-btn').forEach(btn => {
             btn.addEventListener('click', () => { adjustTime(btn.dataset.op, parseInt(btn.dataset.amount)); saveData(); });
         });
+        const toggleBtn = row.querySelector('.toggle-yes-no-btn');
+        if (toggleBtn) toggleBtn.addEventListener('click', e => {
+            const currentVal = currentFlight.operations[op]?.value;
+            currentFlight.operations[op] = { value: currentVal === 'YES' ? 'NO' : 'YES' };
+            saveData();
+        });
     }
   });
 }
+
 
 function saveFlight() {
   if (countdownInterval) clearInterval(countdownInterval);
@@ -393,7 +405,7 @@ function generateFlightReportHTML(flight) {
         const data = flight.operations[op];
         return `<tr><td class="border px-3 py-2 font-medium">${op}</td><td class="border px-3 py-2 font-mono">${data ? (data.utc || data.value || '-') : '-'}</td></tr>`;
     }).join('');
-    return `<div class="text-center mb-4"><h1 class="text-xl font-bold text-blue-800">REPORTE DE VUELO BELUGA</h1><div class="text-lg font-semibold text-gray-700 mt-1">GHR ${flight.registrationNumber}</div><div class="text-sm text-gray-500">${flight.date} • ${flight.startTime}</div></div><div class="grid grid-cols-2 gap-x-6 gap-y-2 mb-4 text-sm"><div><strong>Llegada:</strong> ${flight.arrivalFlight||'N/A'}</div><div><strong>Salida:</strong> ${flight.departureFlight||'N/A'}</div><div><strong>STA:</strong> ${flight.sta||'N/A'}</div><div><strong>STD:</strong> ${flight.std||'N/A'}</div><div><strong>Apt. Llegada:</strong> ${flight.arrivalAirport}</div><div><strong>Apt. Salida:</strong> ${flight.departureAirport}</div><div><strong>Coordinador:</strong> ${flight.coordinator}</div><div><strong>Conductor:</strong> ${flight.driver}</div><div><strong>Wingwalker 1:</strong> ${flight.wingwalker1}</div><div><strong>Wingwalker 2:</strong> ${flight.wingwalker2}</div><hr class="col-span-2 my-1"><div><strong>Ground Coordinator:</strong> ${flight.groundCoordinator || 'N/A'}</div><div><strong>Loadmaster:</strong> ${flight.loadmaster || 'N/A'}</div></div><h3 class="font-bold mb-2 text-md">OPERACIONES REGISTRADAS</h3><table class="w-full border-collapse border border-gray-300 text-sm"><thead class="bg-gray-100"><tr><th class="border px-3 py-2 text-left">Operación</th><th class="border px-3 py-2 text-left">Tiempo/Valor</th></tr></thead><tbody>${operationsText}</tbody></table><div class="text-center mt-4 text-xs text-gray-400">Generado por GHR BELUGA • ${new Date().toLocaleString('es-ES')}</div>`;
+    return `<div class="text-center mb-4"><h1 class="text-xl font-bold text-blue-800">REPORTE DE VUELO BELUGA</h1><div class="text-lg font-semibold text-gray-700 mt-1">GHR ${flight.registrationNumber}</div><div class="text-sm text-gray-500">${flight.date} • ${flight.startTime}</div></div><div class="grid grid-cols-2 gap-x-6 gap-y-2 mb-4 text-sm"><div><strong>Llegada:</strong> ${flight.arrivalFlight||'N/A'}</div><div><strong>Salida:</strong> ${flight.departureFlight||'N/A'}</div><div><strong>STA:</strong> ${flight.sta||'N/A'}</div><div><strong>STD:</strong> ${flight.std||'N/A'}</div><div><strong>Apt. Llegada:</strong> ${flight.arrivalAirport}</div><div><strong>Apt. Salida:</strong> ${flight.departureAirport}</div><div><strong>Coordinador:</strong> ${flight.coordinator}</div><div><strong>Conductor:</strong> ${flight.driver}</div><div><strong>Wingwalker 1:</strong> ${flight.wingwalker1}</div><div><strong>Wingwalker 2:</strong> ${flight.wingwalker2}</div><hr class="col-span-2 my-1"><div><strong>Ground Coordinator:</strong> ${flight.groundCoordinator || 'N/A'}</div><div><strong>Loadmaster:</strong> ${flight.loadmaster || 'N/A'}</div></div><h3 class="font-bold mb-2 text-md">OPERACIONES REGISTRADAS</h3><table class="w-full border-collapse border border-gray-300 text-sm"><thead class="bg-gray-100"><tr><th class="border px-3 py-2 text-left">Operación</th><th class="border px-3 py-2 text-left">Tiempo/Valor</th></tr></thead><tbody>${operationsText}</tbody></table><div class="text-center mt-4 text-xs text-gray-400">Generado por GHR BELUGA • ${new Date().toLocaleDateString('es-ES')}</div>`;
 }
 
 function downloadElegantPDF(flightId) {
@@ -433,148 +445,402 @@ function downloadElegantPDF(flightId) {
     doc.save(`Reporte-${flight.registrationNumber}.pdf`);
 }
 
+// ==========================================================
+// NUEVA FUNCIÓN: Genera el PDF con el formato oficial de WFS
+// DIBUJA LA PLANTILLA DESDE CERO
+// ==========================================================
 async function downloadWfsPdf(flightId) {
     const flight = flights.find(f => f.id == flightId);
-    if (!flight) return;
+    if (!flight) {
+        alert("Vuelo no encontrado.");
+        return;
+    }
+
     try {
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
-        const img = new Image();
-        img.src = './ghr-wfs-template.png';
-        img.onload = () => {
-            doc.addImage(img, 'PNG', 0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
-            const addText = (text, x, y) => { doc.text(text || '', x, y); };
-            const planeNumberMatch = flight.aircraft.match(/\(Avión Nº (\d+)\)/);
-            const planeNumber = planeNumberMatch ? planeNumberMatch[1] : '';
-            doc.setFontSize(10);
-            addText(flight.registrationNumber, 123, 100);
-            addText(flight.aircraft.split(' - ')[1].split(' (')[0], 367, 118);
-            addText(planeNumber, 429, 118);
-            addText(flight.date, 76, 142);
-            addText(flight.arrivalFlight, 134, 142);
-            addText(flight.sta, 165, 142);
-            addText(flight.arrivalAirport, 210, 142);
-            addText(flight.departureFlight, 269, 142);
-            addText(flight.std, 309, 142);
-            addText(flight.departureAirport, 347, 142);
-            addText(flight.operations['PAYLOAD']?.value, 114, 152);
-            addText(`${flight.operations['ATA']?.utc || ''} / ${flight.operations['END TOWING']?.utc || ''}`, 200, 152);
-            addText(`${flight.operations['END TOWING DEPARTURE']?.utc || ''} / ${flight.operations['TAKEOFF']?.utc || ''}`, 348, 152);
-            addText(flight.operations['EQUIPOS LISTOS']?.utc, 221, 239);
-            addText(flight.operations['GPU ON']?.utc, 192, 203);
-            addText(flight.operations['GPU OFF']?.utc, 221, 203);
-            addText(flight.operations['FUEL (STARTING)']?.utc, 190, 211);
-            addText(flight.operations['FUEL (END)']?.utc, 217, 210);
-            addText(flight.operations['ACU ON']?.utc, 194, 220);
-            addText(flight.operations['ACU OFF']?.utc, 225, 220);
-            addText(flight.operations['START TOWING']?.utc, 71, 301);
-            addText(flight.operations['END TOWING']?.utc, 115, 301);
-            addText(flight.operations['START TOWING DEPARTURE']?.utc, 155, 301);
-            addText(flight.operations['END TOWING DEPARTURE']?.utc, 200, 301);
-            addText(flight.operations['FRONT JACK UP']?.utc, 74, 273);
-            addText(flight.operations['REAR JACK UP']?.utc, 116, 273);
-            addText(flight.operations['FRONT JACK DOWN']?.utc, 156, 273);
-            addText(flight.operations['REAR JACK DOWN']?.utc, 201, 273);
-            addText(flight.operations['PARADA MOTORES']?.utc, 113, 503);
-            addText(flight.operations['STARTUP']?.utc, 200, 503);
-            addText(flight.operations['TAXI']?.utc, 250, 503);
-            const crew = `Coordinador: ${flight.coordinator}, Conductor: ${flight.driver}, W1: ${flight.wingwalker1}, W2: ${flight.wingwalker2}`;
-            addText(crew, 75, 511);
-            doc.save(`GHR-WFS-${flight.registrationNumber}.pdf`);
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' }); // A4: 595.28 x 841.89 pt
+
+        // --- Configuración básica de fuentes y colores ---
+        doc.setFont("helvetica");
+        const defaultFontSize = 8;
+        doc.setFontSize(defaultFontSize);
+        const black = '#000000';
+        const gray = '#4a4a4a';
+        const lightGray = '#cccccc';
+        const blue = '#1f4e79';
+        const white = '#ffffff';
+
+        // Helper para dibujar texto centrado en un rango (x, y, width)
+        const drawCenteredText = (text, x, y, width) => {
+            if (!text) return;
+            const textWidth = doc.getTextWidth(text);
+            const textX = x + (width - textWidth) / 2;
+            doc.text(text, textX, y);
         };
-        img.onerror = () => { alert("No se pudo cargar la plantilla 'ghr-wfs-template.png'. Asegúrate de que el archivo existe y tiene el nombre correcto."); };
-    } catch (e) { console.error(e); alert("Ocurrió un error al generar el PDF."); }
-}
+        // Helper para dibujar texto alineado a la derecha en un rango (x, y, width)
+        const drawRightAlignedText = (text, x, y, width) => {
+            if (!text) return;
+            const textX = x + width;
+            doc.text(text, textX, y, { align: 'right' });
+        };
 
-function shareViaWhatsApp(flightId) {
-    const flight = flights.find(f => f.id == flightId);
-    if (!flight) return;
-    const operationsText = operations.map(op => {
-        const data = flight.operations[op];
-        const value = data ? (data.utc || data.value || '-') : '-';
-        return `• ${op}: ${value}`;
-    }).join('\n');
-    const message = `📋 *REPORTE VUELO BELUGA*\n📢 GHR: ${flight.registrationNumber}\n📅 ${flight.date} • ${flight.startTime}\n\n✈️ *VUELOS*\n🛬 Llegada: ${flight.arrivalFlight || 'N/A'}\n🛫 Salida: ${flight.departureFlight || 'N/A'}\n\n🏢 *AEROPUERTOS*\n📍 Llegada: ${flight.arrivalAirport}\n📍 Salida: ${flight.departureAirport}\n\n👥 *EQUIPO*\n👨‍💼 Coordinador: ${flight.coordinator}\n🚗 Conductor: ${flight.driver}\n🚶‍♂️ Wingwalker 1: ${flight.wingwalker1}\n🚶‍♂️ Wingwalker 2: ${flight.wingwalker2}\n\n-- Otra Empresa --\n👤 Ground Coordinator: ${flight.groundCoordinator || 'N/A'}\n👤 Loadmaster: ${flight.loadmaster || 'N/A'}\n\n⚙️ *OPERACIONES*\n${operationsText}\n\n_Generado por GHR BELUGA_`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-}
+        // --- Cabecera con logos y título ---
+        doc.setFillColor(blue);
+        doc.rect(0, 0, 595.28, 40, 'F'); // Banda azul superior
+        doc.setFontSize(12);
+        doc.setTextColor(white);
+        doc.text("GROUND HANDLING REPORT- BELUGA A300-600ST/BELUGA A330 XL", 170, 25);
+        
+        // Logo WFS - Asume que tienes el logo en './wfs.png' o similar
+        // Si no tienes el logo como imagen, tendrías que omitir esta parte
+        // o dibujar una forma simple. Para este ejemplo, lo omitiré.
+        // Si lo tienes, puedes cargarlo así:
+        // const wfsLogo = new Image();
+        // wfsLogo.src = './wfs.png'; // Reemplaza con la ruta correcta
+        // wfsLogo.onload = () => { doc.addImage(wfsLogo, 'PNG', 20, 10, 30, 20); };
+        doc.setFontSize(10);
+        doc.setTextColor(black);
+        doc.text("Worldwide Flight Services", 20, 55); // Placeholder para el texto WFS
+        doc.line(15, 60, 140, 60); // Subrayado
+        doc.setFontSize(7);
+        doc.text("Numero de registro", 20, 80);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.text("1650", 20, 90); // Este es un número fijo en la plantilla, ¿o debería ser el GHR del flight?
 
-function copyReportText(flightId) {
-    const flight = flights.find(f => f.id == flightId);
-    if (!flight) return;
-    const operationsText = operations.map(op => {
-        const data = flight.operations[op];
-        const value = data ? (data.utc || data.value || '-') : '-';
-        return `- ${op}: ${value}`;
-    }).join('\n');
-    const textReport = `REPORTE VUELO BELUGA\nGHR: ${flight.registrationNumber}\nFecha: ${flight.date} - ${flight.startTime}\n\nVUELOS:\n- Llegada: ${flight.arrivalFlight || 'N/A'}\n- Salida: ${flight.departureFlight || 'N/A'}\n\nAEROPUERTOS:\n- Llegada: ${flight.arrivalAirport}\n- Salida: ${flight.departureAirport}\n\nEQUIPO:\n- Coordinador: ${flight.coordinator}\n- Conductor: ${flight.driver}\n- Wingwalker 1: ${flight.wingwalker1}\n- Wingwalker 2: ${flight.wingwalker2}\n\n-- Otra Empresa --\n- Ground Coordinator: ${flight.groundCoordinator || 'N/A'}\n- Loadmaster: ${flight.loadmaster || 'N/A'}\n\nOPERACIONES REGISTRADAS:\n${operationsText}\n\nGenerado por GHR BELUGA - ${new Date().toLocaleDateString('es-ES')}`;
-    navigator.clipboard.writeText(textReport).then(() => { alert('✅ Reporte copiado al portapapeles.'); }).catch(() => alert('❌ No se pudo copiar el reporte.'));
-}
+        // --- Cuadro de información principal ---
+        doc.setDrawColor(black);
+        doc.setLineWidth(0.5);
+        doc.rect(15, 70, 565, 100); // Contorno principal de la sección superior
 
-function printReport() {
-    window.print();
-}
+        // Rectángulos y textos de la parte superior
+        doc.setFillColor(lightGray);
+        doc.rect(15, 70, 565, 10, 'F'); // Franja gris Operation Data
+        doc.setTextColor(black);
+        doc.setFontSize(8);
+        doc.text("OPERATION DATA", 25, 77);
+        doc.text("ACTIVITIES & SERVICES", 25, 182); // Franja gris Activities & Services
 
-function generateCrewOptions() {
-  const fill = (id, arr) => {
-    const sel = document.getElementById(id); if(!sel) return;
-    sel.innerHTML = arr.map(v => `<option value="${v}">${v || 'Seleccionar...'}</option>`).join('');
-  };
-  fill('coordinator', coordinatorOptions);
-  fill('driver', driverOptions);
-  fill('wingwalker1', wingwalkerOptions);
-  fill('wingwalker2', wingwalkerOptions);
-  fill('groundCoordinator', externalCrewOptions);
-  fill('loadmaster', externalCrewOptions);
-}
+        doc.rect(15, 95, 565, 10); // Línea debajo de Operation Data
+        doc.rect(15, 120, 565, 10); // Línea debajo de los vuelos
+        doc.rect(15, 145, 565, 10); // Línea debajo de Payload/ATA/TOWING
 
-function generateAirportOptions() {
-  ['arrivalAirport','departureAirport'].forEach(id => {
-    const sel = document.getElementById(id); if(!sel) return;
-    sel.innerHTML = airportOptions.map(v => `<option value="${v}">${v || 'Seleccionar...'}</option>`).join('');
-  });
-}
+        // Divisiones verticales
+        doc.line(70, 70, 70, 170); // vertical DATE
+        doc.line(125, 70, 125, 170); // vertical FLIGHT IN / FLIGHT NR
+        doc.line(160, 70, 160, 170); // vertical STA
+        doc.line(200, 70, 200, 170); // vertical FROM
+        doc.line(255, 70, 255, 170); // vertical FLIGHT OUT
+        doc.line(295, 70, 295, 170); // vertical STD
+        doc.line(335, 70, 335, 170); // vertical TO
 
-function generateAircraftOptions() {
-    const sel = document.getElementById('aircraft');
-    if (!sel) return;
-    sel.innerHTML = aircraftOptions.map(v => `<option value="${v}">${v || 'Seleccionar...'}</option>`).join('');
-}
+        doc.line(390, 70, 390, 170); // vertical REG
+        doc.line(440, 70, 440, 170); // vertical PLANE NR
+        doc.line(490, 70, 490, 170); // vertical CTOT
 
-function updateContinueButton() {
-  const btn = document.getElementById('continueFlightBtn');
-  const uncompleted = flights.find(f => !f.completed);
-  if (uncompleted) {
-    btn.classList.remove('hidden');
-    btn.innerHTML = `<i data-lucide="play-circle"></i> Continuar ${uncompleted.registrationNumber || ''}`;
-    btn.onclick = () => { currentFlight = uncompleted; showCurrentFlight(); };
-  } else {
-    btn.classList.add('hidden');
-  }
-  lucide.createIcons();
-}
+        // Textos fijos de la cabecera
+        doc.setFontSize(7);
+        doc.setFont("helvetica", "bold");
+        doc.text("DATE", 35, 87);
+        doc.text("FLIGHT IN", 85, 87);
+        doc.text("STA", 170, 87);
+        doc.text("FROM", 215, 87);
+        doc.text("FLIGHT OUT", 265, 87);
+        doc.text("STD", 305, 87);
+        doc.text("TO", 350, 87);
+        doc.text("REG", 405, 87);
+        doc.text("PLANE", 450, 87);
+        doc.text("NR", 455, 90);
+        doc.text("CTOT", 505, 87);
+        doc.text("No Pedido: A 9754571 G", 460, 77); // Texto fijo
+        doc.text("PAYLOAD", 30, 152);
+        doc.text("ATA", 130, 152);
 
-function closeViews() {
-    if (countdownInterval) clearInterval(countdownInterval);
-    document.getElementById('viewsContainer').classList.add('hidden');
-}
+        // --- Rellenar datos del vuelo ---
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadData();
-  document.getElementById('newFlightBtn').addEventListener('click', () => showForm());
-  document.getElementById('historyBtn').addEventListener('click', showHistory);
-  document.getElementById('statsBtn').addEventListener('click', showStatistics);
-  
-  window.editFlight = editFlight;
-  window.deleteFlight = deleteFlight;
-  window.showHistory = showHistory;
-  window.showStatistics = showStatistics;
-  window.sendFlightReport = sendFlightReport;
-  window.shareViaWhatsApp = shareViaWhatsApp;
-  window.copyReportText = copyReportText;
-  window.printReport = printReport;
-  window.downloadElegantPDF = downloadElegantPDF;
-  window.downloadWfsPdf = downloadWfsPdf;
-  window.closeViews = closeViews;
-  window.showForm = showForm;
-  window.showCurrentFlight = showCurrentFlight;
-});
+        // Número de registro GHR
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.text(flight.registrationNumber || '', 70, 80, { align: 'right' }); // GHR Number
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+
+        // DATE
+        drawCenteredText(flight.date || '', 15, 107, 55);
+        // FLIGHT IN
+        drawCenteredText(flight.arrivalFlight || '', 70, 107, 55);
+        // STA
+        drawCenteredText(flight.sta || '', 125, 107, 35);
+        // FROM
+        drawCenteredText(flight.arrivalAirport || '', 160, 107, 40);
+        // FLIGHT OUT
+        drawCenteredText(flight.departureFlight || '', 200, 107, 55);
+        // STD
+        drawCenteredText(flight.std || '', 255, 107, 35);
+        // TO
+        drawCenteredText(flight.departureAirport || '', 295, 107, 40);
+
+        // REG (del aircraft)
+        const regMatch = flight.aircraft.match(/ - (F-[A-Z0-9]+) /);
+        drawCenteredText(regMatch ? regMatch[1] : '', 390, 107, 50);
+        // PLANE NR (del aircraft)
+        const planeNumMatch = flight.aircraft.match(/\(Avión Nº (\d+)\)/);
+        drawCenteredText(planeNumMatch ? planeNumMatch[1] : '', 440, 107, 50);
+        
+        // CTOT - No hay campo para esto en la app, usar N/A
+        drawCenteredText('N/A', 490, 107, 50);
+
+
+        // PAYLOAD
+        drawCenteredText(flight.operations['PAYLOAD']?.value || '', 15, 132, 55);
+        // ATA
+        drawCenteredText(flight.operations['ATA']?.utc || '', 70, 132, 55);
+
+        // Horas en la segunda fila (19:28 / Hamburgo XFW etc)
+        // Fecha actual + hora ATA
+        const flightDate = flight.date.split('/').join('');
+        const arrivalTime = flight.operations['ATA']?.utc || ' ';
+        const departureTime = flight.operations['TAKEOFF']?.utc || ' '; // O 'END TOWING DEPARTURE'
+        
+        doc.setFontSize(7);
+        doc.text(flightDate, 35, 100); // Date
+        doc.text(arrivalTime, 100, 100); // Flight In time
+        doc.text(flight.sta, 170, 100); // STA
+        doc.text(flight.arrivalAirport, 215, 100); // From
+        doc.text(flight.departureFlight, 265, 100); // Flight Out
+        doc.text(flight.std, 305, 100); // STD
+        doc.text(flight.departureAirport, 350, 100); // To
+
+        // --- Sección Activities & Services ---
+        doc.setDrawColor(black);
+        doc.setFillColor(lightGray);
+        doc.rect(15, 175, 565, 10, 'F'); // Franja gris Activities & Services
+
+        // Tabla de operaciones (líneas y texto estático)
+        let currentY = 195;
+        const rowHeight = 10;
+        const col1Width = 100;
+        const col2Width = 25;
+        const col3Width = 25;
+        const col4Width = 60;
+        const col5Width = 25;
+        const col6Width = 25;
+        const col7Width = 60;
+        const textIndent = 5;
+
+        const drawOperationRow = (y, label, opKey, isYesNo = false) => {
+            doc.text(label, 20, y + 7);
+            doc.rect(120, y, col2Width, rowHeight); // YES
+            doc.rect(145, y, col3Width, rowHeight); // NO
+            doc.text("YES", 124, y + 7);
+            doc.text("NO", 149, y + 7);
+
+            const value = flight.operations[opKey]?.value;
+            const utc = flight.operations[opKey]?.utc;
+
+            if (isYesNo) {
+                if (value === 'YES') { doc.text('X', 130, y + 7); }
+                else if (value === 'NO') { doc.text('X', 155, y + 7); }
+            } else if (opKey === 'PAYLOAD') {
+                 // PAYLOAD ya se maneja arriba
+            } else { // Time operations
+                doc.text("STARTING", 185, y + 3);
+                doc.text("END", 230, y + 3);
+                doc.rect(180, y + 4, col4Width, rowHeight - 4); // STARTING TIME BOX
+                doc.rect(225, y + 4, col4Width, rowHeight - 4); // END TIME BOX
+                doc.text(flight.operations[opKey]?.utc || '', 185, y + 10);
+            }
+        };
+
+        // Header de la sección de operaciones de la izquierda
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.text("FOD CHECK COMPLETED", 20, 200);
+        doc.text("GSE CLEAN & SERVICEABLE", 20, 210);
+        doc.text("ACU NEEDED", 20, 220);
+        doc.text("GPU NEEDED", 20, 230);
+        doc.text("FUEL NEEDED", 20, 240);
+        doc.text("N/A REQUEST", 20, 250);
+        doc.text("WATER TRUCK SERVICES", 20, 260);
+
+        doc.text("NO", 120 + 25 + 5, 197); // NO Headers
+        doc.text("YES", 120 + 5, 197); // YES Headers
+        doc.text("NO", 120 + 25 + 5, 207);
+        doc.text("YES", 120 + 5, 207);
+        // ... y así para todos los demás YES/NO
+
+        // DIBUJAR CUADROS Y RELLENAR DATOS DE LA IZQUIERDA (YES/NO)
+        // Ejemplo para FOD CHECK COMPLETED
+        const drawYesNo = (opKey, yPos) => {
+            doc.rect(120, yPos, 25, 10); // YES box
+            doc.rect(145, yPos, 25, 10); // NO box
+            doc.text("YES", 124, yPos + 7);
+            doc.text("NO", 149, yPos + 7);
+            const val = flight.operations[opKey]?.value;
+            if (val === 'YES') { doc.text('X', 130, yPos + 7); }
+            else if (val === 'NO') { doc.text('X', 155, yPos + 7); }
+        };
+
+        drawYesNo('FOD CHECK COMPLETED', 193);
+        drawYesNo('GSE CLEAN & SERVICEABLE', 203);
+        drawYesNo('ACU NEEDED', 213);
+        drawYesNo('GPU NEEDED', 223);
+        drawYesNo('FUEL NEEDED', 233);
+        drawYesNo('N/A REQUEST', 243);
+        drawYesNo('WATER TRUCK SERVICES', 253);
+
+        // --- Secciones de Tiempos (Activities & Services) ---
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(7);
+
+        // Sección 'EQUIPOS LISTOS'
+        doc.text("EQUIPOS LISTOS:", 300, 240);
+        doc.rect(360, 235, 50, 10); // Caja para el tiempo
+        drawCenteredText(flight.operations['EQUIPOS LISTOS']?.utc || '', 360, 242, 50);
+
+        // Sección GPU ON/OFF
+        doc.text("GPU ON", 300, 203);
+        doc.text("GPU OFF", 300, 213);
+        doc.rect(360, 198, 50, 10); // GPU ON BOX
+        doc.rect(360, 208, 50, 10); // GPU OFF BOX
+        drawCenteredText(flight.operations['GPU ON']?.utc || '', 360, 205, 50);
+        drawCenteredText(flight.operations['GPU OFF']?.utc || '', 360, 215, 50);
+
+        // Sección FUEL
+        doc.text("FUEL (STARTING)", 300, 223);
+        doc.text("FUEL (END)", 300, 233);
+        doc.rect(360, 218, 50, 10); // FUEL STARTING BOX
+        doc.rect(360, 228, 50, 10); // FUEL END BOX
+        drawCenteredText(flight.operations['FUEL (STARTING)']?.utc || '', 360, 225, 50);
+        drawCenteredText(flight.operations['FUEL (END)']?.utc || '', 360, 235, 50);
+
+        // Sección ACU
+        doc.text("ACU ON", 450, 203);
+        doc.text("ACU OFF", 450, 213);
+        doc.rect(510, 198, 50, 10); // ACU ON BOX
+        doc.rect(510, 208, 50, 10); // ACU OFF BOX
+        drawCenteredText(flight.operations['ACU ON']?.utc || '', 510, 205, 50);
+        drawCenteredText(flight.operations['ACU OFF']?.utc || '', 510, 215, 50);
+
+        // CONES & DRAW CHOCKS
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.text("CONES & DRAW CHOCKS POSITIONING AT ILF", 300, 190);
+        // Aquí irían las imágenes si las tuvieras
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(7);
+        doc.text("Conos en el ILF 7 conos.", 300, 255);
+        doc.text("Conos en el ILF con vientos mas de 20 nudos: 10 conos (2 mas interior tren principal)", 300, 265);
+        doc.text("Calzos durante Night Stop: 12 calzos (todas ruedas calzadas).", 300, 275);
+
+
+        // --- ILS SETTINGS TIMES ARRIVAL ---
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.text("ILS SETTING TIMES ARRIVAL", 20, 280);
+        doc.rect(15, 273, 275, 20); // Caja principal
+        doc.text("FROM", 20, 287);
+        doc.text("TOWING", 120, 287);
+        doc.text("STARTING", 60, 283);
+        doc.text("END", 90, 283);
+        doc.text("STARTING", 160, 283);
+        doc.text("END", 190, 283);
+        doc.text("STARTING", 220, 283);
+        doc.text("END", 250, 283);
+
+        doc.rect(60, 287, 30, 10); // STARTING box
+        doc.rect(90, 287, 30, 10); // END box
+        doc.rect(160, 287, 30, 10); // STARTING box
+        doc.rect(190, 287, 30, 10); // END box
+        doc.rect(220, 287, 30, 10); // STARTING box
+        doc.rect(250, 287, 30, 10); // END box
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        drawCenteredText(flight.operations['FRONT JACK UP']?.utc || '', 60, 294, 30);
+        drawCenteredText(flight.operations['REAR JACK UP']?.utc || '', 90, 294, 30);
+        drawCenteredText(flight.operations['FRONT JACK DOWN']?.utc || '', 160, 294, 30);
+        drawCenteredText(flight.operations['REAR JACK DOWN']?.utc || '', 190, 294, 30);
+        drawCenteredText(flight.operations['START TOWING']?.utc || '', 220, 294, 30);
+        drawCenteredText(flight.operations['END TOWING']?.utc || '', 250, 294, 30);
+
+
+        // --- ILS SETTINGS TIMES DEPARTURE ---
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.text("ILS SETTING TIMES DEPARTURE", 20, 310);
+        doc.rect(15, 303, 275, 20); // Caja principal
+        doc.text("FROM", 20, 317);
+        doc.text("TOWING", 120, 317);
+        doc.text("STARTING", 60, 313);
+        doc.text("END", 90, 313);
+        doc.text("STARTING", 160, 313);
+        doc.text("END", 190, 313);
+        doc.text("STARTING", 220, 313);
+        doc.text("END", 250, 313);
+
+        doc.rect(60, 317, 30, 10); // STARTING box
+        doc.rect(90, 317, 30, 10); // END box
+        doc.rect(160, 317, 30, 10); // STARTING box
+        doc.rect(190, 317, 30, 10); // END box
+        doc.rect(220, 317, 30, 10); // STARTING box
+        doc.rect(250, 317, 30, 10); // END box
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        drawCenteredText(flight.operations['START TOWING DEPARTURE']?.utc || '', 60, 324, 30);
+        drawCenteredText(flight.operations['END TOWING DEPARTURE']?.utc || '', 90, 324, 30);
+        // Aquí irían los otros campos si los tuviera
+        drawCenteredText('N/A', 160, 324, 30);
+        drawCenteredText('N/A', 190, 324, 30);
+        drawCenteredText('N/A', 220, 324, 30);
+        drawCenteredText('N/A', 250, 324, 30);
+
+
+        // --- MANDATORY ARRIVAL WALK AROUND CHECK AND DAMAGE REPORT ---
+        doc.setFillColor(lightGray);
+        doc.rect(15, 335, 565, 10, 'F');
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.text("MANDATORY ARRIVAL WALK AROUND CHECK AND DAMAGE REPORT", 25, 342);
+        
+        doc.rect(15, 350, 565, 100); // Caja principal
+        doc.text("CHECK", 20, 357);
+        doc.text("CONFIRM", 100, 357);
+        doc.text("BRIEF DAMAGE INFORMATION (TIMING)", 300, 357);
+
+        // Líneas internas
+        doc.line(80, 350, 80, 450); // Vertical Check/Confirm
+        doc.line(170, 350, 170, 450); // Vertical Confirm/Damage
+        doc.line(15, 365, 580, 365); // Horizontal debajo de headers
+        doc.line(15, 380, 580, 380); // Horizontal
+        doc.line(15, 395, 580, 395); // Horizontal
+        doc.line(15, 410, 580, 410); // Horizontal
+        doc.line(15, 425, 580, 425); // Horizontal
+        doc.line(15, 440, 580, 440); // Horizontal
+
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(7);
+
+        const yOffsetDamage = 373;
+        const xYes = 110;
+        const xNo = 140;
+
+        // ACT DAMAGED
+        doc.text("ACT DAMAGED", 20, yOffsetDamage);
+        doc.rect(xYes, yOffsetDamage - 6, 15, 10);
+        doc.text("YES", xYes + 2, yOffsetDamage);
+        doc.rect(xNo, yOffsetDamage - 6, 15, 10);
+        doc.text("NO", xNo + 2, yOffsetDamage);
+        // Asumiendo que no hay un campo específico para esto, dejar en blanco
+        // Si hay un campo en flight.operations, se podría rellenar
+
+        // REPORTED IN TECH. LOG
+        doc.text("REPORTED IN TECH. LOG", 20, yOffsetDamage + 15);
+        doc.rect(xYes, yOffsetDamage + 15 - 6, 15, 10);
+        doc.text("YES", xYes + 2, yOffsetDamage + 15);
+        doc.rect(xNo, yOffsetDamage + 15 - 6, 15, 10);
+        doc.text("NO", xNo + 2, yOffsetDamage + 15
