@@ -457,7 +457,7 @@ async function downloadWfsPdf(flightId) {
             const planeNumber = planeNumberMatch ? planeNumberMatch[1] : '';
 
             // Fecha (Formato DD/MM/YYYY)
-            addText(new Date().toLocaleDateString('es-ES'), 76, 142); // Date (Current Date)
+            addText(new Date().toLocaleDateString('es-ES'), 76, 144); // Date (Current Date)
 
             // Fila 1: GHR, Aircraft, Plane Number
             addText(flight.registrationNumber, 123, 100); // GHR Numero
@@ -607,3 +607,4 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
+
