@@ -1,18 +1,34 @@
-// app.js - Versión COMPLETA con cuenta regresiva para STD
+// app.js - Version with Aircraft selection dropdown
 let flights = [];
 let currentFlight = null;
 let isEditing = false;
-let countdownInterval = null; // Variable global para controlar el intervalo del contador
+let countdownInterval = null;
 
 const coordinatorOptions = ["", "Sergio Iacobone", "Francisco Cartas", "Fernando Perez", "Paco Muñoz"];
 const driverOptions = ["", "Fidel Botey", "Juan Gamez", "Paco Jerez", "Gaspar Franco"];
 const wingwalkerOptions = ["", ...coordinatorOptions.slice(1), ...driverOptions.slice(1)];
 const airportOptions = ["", "Toulouse TLS", "Hamburgo XFW", "Bremen BRE", "Saint-Nazaire SNR", "Chester CEG"];
 
+// NEW: Aircraft options
+const aircraftOptions = [
+    "",
+    "F-GSTA Nº 1",
+    "F-GSTB Nº 2",
+    "F-GSTC Nº 3",
+    "F-GSTD Nº 4",
+    "F-GSTF Nº 5",
+    "F-GXLG Nº 1",
+    "F-GXLH Nº 2",
+    "F-GXLI Nº 3",
+    "F-GXLJ Nº 4",
+    "F-GXLN Nº 5",
+    "F-GXLO Nº 6"
+];
+
 const operations = [
   'EQUIPOS LISTOS', 'PAYLOAD', 'ATA', 'PARADA MOTORES', 'FUEL', 'ACU',
-  'START TOWING', 'END TOWING (AIBT)', 'GPU ON', 'GPU OFF', 'ACU ON', 'ACU OFF', 'FRONT JACK UP',
-  'REAR JACK UP', 'REAR JACK DOWN', 'FRONT JACK DOWN', 'START TOWING DEPARTURE (AOBT)',
+  'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
+  'REAR JACK UP', 'REAR JACK DOWN', 'FRONT JACK DOWN', 'START TOWING DEPARTURE',
   'END TOWING DEPARTURE', 'STARTUP', 'TAXI', 'TAKEOFF'
 ];
 
@@ -34,6 +50,7 @@ function updateHistoryCount() {
   if (el) el.textContent = flights.filter(f => f.completed).length;
 }
 
+// MODIFIED: Added the Aircraft dropdown to the form
 function showForm(flightToEdit = null) {
   if (countdownInterval) clearInterval(countdownInterval);
   isEditing = !!flightToEdit;
@@ -42,7 +59,14 @@ function showForm(flightToEdit = null) {
   c.innerHTML = `
     <h2 class="text-2xl font-bold mb-4 text-slate-800">${isEditing ? 'Editar Detalles del Vuelo' : 'Nuevo Vuelo'}</h2>
     <form id="flightForm" class="space-y-4">
-      <div><label class="block text-sm font-medium text-slate-700">GHR Numero</label><input id="registrationNumber" type="text" class="w-full border p-2 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="Ej: GHR 1860" required value="${flightToEdit?.registrationNumber || ''}"></div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700">GHR Numero</label>
+        <input id="registrationNumber" type="text" class="w-full border p-2 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="Ej: GHR 1860" required value="${flightToEdit?.registrationNumber || ''}">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700">Aircraft</label>
+        <select id="aircraft" class="w-full border p-2 rounded-md"></select>
+      </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div><label class="block text-sm font-medium text-slate-700">Aeropuerto de Llegada</label><select id="arrivalAirport" class="w-full border p-2 rounded-md"></select></div>
         <div><label class="block text-sm font-medium text-slate-700">Aeropuerto de Salida</label><select id="departureAirport" class="w-full border p-2 rounded-md"></select></div>
@@ -71,8 +95,10 @@ function showForm(flightToEdit = null) {
 
   generateCrewOptions();
   generateAirportOptions();
+  generateAircraftOptions(); // Call to populate the new dropdown
 
   if (isEditing) {
+    document.getElementById('aircraft').value = flightToEdit.aircraft || '';
     document.getElementById('arrivalAirport').value = flightToEdit.arrivalAirport;
     document.getElementById('departureAirport').value = flightToEdit.departureAirport;
     document.getElementById('coordinator').value = flightToEdit.coordinator;
@@ -81,10 +107,12 @@ function showForm(flightToEdit = null) {
     document.getElementById('wingwalker2').value = flightToEdit.wingwalker2;
   }
 
+  // MODIFIED: Add 'aircraft' to the data object
   document.getElementById('flightForm').addEventListener('submit', e => {
     e.preventDefault();
     const data = {
       registrationNumber: document.getElementById('registrationNumber').value.trim(),
+      aircraft: document.getElementById('aircraft').value.trim(),
       arrivalFlight: document.getElementById('arrivalFlight').value.trim(),
       departureFlight: document.getElementById('departureFlight').value.trim(),
       arrivalAirport: document.getElementById('arrivalAirport').value.trim() || 'N/A',
@@ -277,6 +305,69 @@ function showHistory() {
   }
 }
 
+function parseTimeToDate(timeString) {
+    if (!timeString || !timeString.includes(':')) return null;
+    const [hours, minutes] = timeString.split(':');
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+}
+
+function calculateDuration(startOp, endOp, operations) {
+    const startTime = parseTimeToDate(operations[startOp]?.utc);
+    const endTime = parseTimeToDate(operations[endOp]?.utc);
+    if (!startTime || !endTime) return 'N/A';
+    let diff = (endTime.getTime() - startTime.getTime()) / (1000 * 60);
+    if (diff < 0) {
+        diff += 24 * 60;
+    }
+    return `${Math.round(diff)} min`;
+}
+
+function showStatistics() {
+    if (countdownInterval) clearInterval(countdownInterval);
+    const c = document.getElementById('viewsContainer');
+    c.classList.remove('hidden');
+    const completedFlights = flights.filter(f => f.completed).sort((a, b) => b.id - a.id);
+    if (completedFlights.length === 0) {
+        c.innerHTML = `
+            <h2 class="text-2xl font-bold mb-4">Estadísticas</h2>
+            <p class="text-gray-500 text-center py-8">No hay vuelos completados para mostrar estadísticas.</p>
+            <button onclick="closeViews()" class="w-full bg-gray-200 hover:bg-gray-300 py-2 rounded-md mt-4">Cerrar</button>`;
+        return;
+    }
+    const statsRows = completedFlights.map(flight => {
+        const turnaroundTime = calculateDuration('ATA', 'TAKEOFF', flight.operations);
+        const towingTime = calculateDuration('END TOWING', 'END TOWING DEPARTURE', flight.operations);
+        return `
+            <tr class="border-b">
+                <td class="py-2 px-4 font-semibold text-blue-800">${flight.registrationNumber}</td>
+                <td class="py-2 px-4 text-center">${turnaroundTime}</td>
+                <td class="py-2 px-4 text-center">${towingTime}</td>
+            </tr>
+        `;
+    }).join('');
+    c.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-slate-800">Estadísticas de Operaciones</h2>
+            <button onclick="closeViews()" class="text-gray-500 hover:text-gray-800">&times;</button>
+        </div>
+        <div class="max-h-96 overflow-y-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-100 sticky top-0">
+                    <tr>
+                        <th class="py-2 px-4">Vuelo</th>
+                        <th class="py-2 px-4 text-center">Turnaround (ATA → Takeoff)</th>
+                        <th class="py-2 px-4 text-center">Remolque (Towing → Towing)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${statsRows}
+                </tbody>
+            </table>
+        </div>`;
+}
+
 function editFlight(flightId) {
     const flight = flights.find(f => f.id == flightId);
     if (!flight) return;
@@ -305,68 +396,58 @@ function sendFlightReport(flightId) {
 
 function startCountdown() {
   if (countdownInterval) clearInterval(countdownInterval);
-
   const stdTime = currentFlight?.std;
   const countdownEl = document.getElementById('stdCountdown');
   if (!stdTime) {
     if (countdownEl) countdownEl.innerHTML = `<p class="text-xs text-gray-600">No hay STD definido.</p>`;
     return;
   }
-
   const [stdHours, stdMinutes] = stdTime.split(':').map(Number);
   const now = new Date();
-  
   let targetDateUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), stdHours, stdMinutes));
-  
   if (targetDateUTC < now) {
     targetDateUTC.setUTCDate(targetDateUTC.getUTCDate() + 1);
   }
-
   countdownInterval = setInterval(() => {
     const countdownEl = document.getElementById('stdCountdown');
     if (!countdownEl) {
       clearInterval(countdownInterval);
       return;
     }
-    
     const now = new Date();
     const diff = targetDateUTC - now;
-
     if (diff <= 0) {
       countdownEl.innerHTML = `<p class="text-sm font-semibold text-red-600">STD Alcanzado</p>`;
       clearInterval(countdownInterval);
       return;
     }
-
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
     const seconds = Math.floor((diff / 1000) % 60);
-    
     const pad = (num) => String(num).padStart(2, '0');
-
     countdownEl.innerHTML = `
-        <p class="text-xs font-semibold text-blue-800">STD</p>
+        <p class="text-xs font-semibold text-blue-800">Tiempo para STD (UTC)</p>
         <p class="text-lg font-bold text-blue-900 tabular-nums">- ${pad(hours)}:${pad(minutes)}:${pad(seconds)}</p>
     `;
   }, 1000);
 }
 
+// MODIFIED: Add aircraft to the report
 function generateFlightReportHTML(flight) {
   const operationsText = Object.entries(flight.operations).length > 0 ? Object.entries(flight.operations).map(([op, data]) => `<tr><td class="border px-3 py-2 font-medium">${op}</td><td class="border px-3 py-2 font-mono">${data.utc || data.value || '-'}</td></tr>`).join('') : '<tr><td colspan="2" class="border px-3 py-2 text-center text-gray-500">No hay operaciones registradas</td></tr>';
-  return `<div class="text-center mb-4"><h1 class="text-xl font-bold text-blue-800">REPORTE DE VUELO BELUGA</h1><div class="text-lg font-semibold text-gray-700 mt-1">GHR ${flight.registrationNumber}</div><div class="text-sm text-gray-500">${flight.date} • ${flight.startTime}</div></div><div class="grid grid-cols-2 gap-x-6 gap-y-2 mb-4 text-sm"><div><strong>Llegada:</strong> ${flight.arrivalFlight||'N/A'}</div><div><strong>Salida:</strong> ${flight.departureFlight||'N/A'}</div><div><strong>STA:</strong> ${flight.sta||'N/A'}</div><div><strong>STD:</strong> ${flight.std||'N/A'}</div><div><strong>Apt. Llegada:</strong> ${flight.arrivalAirport}</div><div><strong>Apt. Salida:</strong> ${flight.departureAirport}</div><div><strong>Coordinador:</strong> ${flight.coordinator}</div><div><strong>Conductor:</strong> ${flight.driver}</div><div><strong>Wingwalker 1:</strong> ${flight.wingwalker1}</div><div><strong>Wingwalker 2:</strong> ${flight.wingwalker2}</div></div><h3 class="font-bold mb-2 text-md">OPERACIONES REGISTRADAS</h3><table class="w-full border-collapse border border-gray-300 text-sm"><thead class="bg-gray-100"><tr><th class="border px-3 py-2 text-left">Operación</th><th class="border px-3 py-2 text-left">Tiempo/Valor</th></tr></thead><tbody>${operationsText}</tbody></table><div class="text-center mt-4 text-xs text-gray-400">Generado por GHR BELUGA • ${new Date().toLocaleString('es-ES')}</div>`;
+  return `<div class="text-center mb-4"><h1 class="text-xl font-bold text-blue-800">REPORTE DE VUELO BELUGA</h1><div class="text-lg font-semibold text-gray-700 mt-1">GHR ${flight.registrationNumber}</div><div class="text-sm text-gray-500">${flight.date} • ${flight.startTime}</div></div><div class="grid grid-cols-2 gap-x-6 gap-y-2 mb-4 text-sm">
+  <div><strong>Aircraft:</strong> ${flight.aircraft || 'N/A'}</div>
+  <div><strong>Llegada:</strong> ${flight.arrivalFlight||'N/A'}</div><div><strong>Salida:</strong> ${flight.departureFlight||'N/A'}</div><div><strong>STA:</strong> ${flight.sta||'N/A'}</div><div><strong>STD:</strong> ${flight.std||'N/A'}</div><div><strong>Apt. Llegada:</strong> ${flight.arrivalAirport}</div><div><strong>Apt. Salida:</strong> ${flight.departureAirport}</div><div><strong>Coordinador:</strong> ${flight.coordinator}</div><div><strong>Conductor:</strong> ${flight.driver}</div><div><strong>Wingwalker 1:</strong> ${flight.wingwalker1}</div><div><strong>Wingwalker 2:</strong> ${flight.wingwalker2}</div></div><h3 class="font-bold mb-2 text-md">OPERACIONES REGISTRADAS</h3><table class="w-full border-collapse border border-gray-300 text-sm"><thead class="bg-gray-100"><tr><th class="border px-3 py-2 text-left">Operación</th><th class="border px-3 py-2 text-left">Tiempo/Valor</th></tr></thead><tbody>${operationsText}</tbody></table><div class="text-center mt-4 text-xs text-gray-400">Generado por GHR BELUGA • ${new Date().toLocaleString('es-ES')}</div>`;
 }
 
+// MODIFIED: Add aircraft to the PDF report
 function downloadElegantPDF(flightId) {
     const flight = flights.find(f => f.id == flightId);
     if (!flight) return;
-    if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
-        return alert("Error: La librería PDF no se ha podido cargar. Revisa tu conexión a internet.");
-    }
+    if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') { return alert("Error: La librería PDF no se ha podido cargar. Revisa tu conexión a internet."); }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    if (typeof doc.autoTable !== 'function') {
-        return alert("Error: El plugin de tablas para PDF no se ha podido cargar. Revisa tu conexión a internet.");
-    }
+    if (typeof doc.autoTable !== 'function') { return alert("Error: El plugin de tablas para PDF no se ha podido cargar. Revisa tu conexión a internet."); }
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 15;
     doc.setFont("helvetica", "bold");
@@ -378,30 +459,19 @@ function downloadElegantPDF(flightId) {
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.text("Detalles del Vuelo", margin, 45);
-    doc.autoTable({
-        startY: 50,
-        body: [['Vuelo Llegada', flight.arrivalFlight||'N/A'], ['Vuelo Salida', flight.departureFlight||'N/A'], ['Aeropuerto Llegada', flight.arrivalAirport], ['Aeropuerto Salida', flight.departureAirport], ['STA', flight.sta||'N/A'], ['STD', flight.std||'N/A']],
-        theme: 'grid', styles: { fontSize: 10 }
-    });
+    doc.autoTable({ startY: 50, body: [
+        ['Aircraft', flight.aircraft || 'N/A'],
+        ['Vuelo Llegada', flight.arrivalFlight||'N/A'], ['Vuelo Salida', flight.departureFlight||'N/A'], ['Aeropuerto Llegada', flight.arrivalAirport], ['Aeropuerto Salida', flight.departureAirport], ['STA', flight.sta||'N/A'], ['STD', flight.std||'N/A']], theme: 'grid', styles: { fontSize: 10 } });
     let finalY = doc.lastAutoTable.finalY + 10;
     doc.text("Equipo Asignado", margin, finalY);
-    doc.autoTable({
-        startY: finalY + 5,
-        body: [['Coordinador', flight.coordinator], ['Conductor', flight.driver], ['Wingwalker 1', flight.wingwalker1], ['Wingwalker 2', flight.wingwalker2]],
-        theme: 'grid', styles: { fontSize: 10 }
-    });
+    doc.autoTable({ startY: finalY + 5, body: [['Coordinador', flight.coordinator], ['Conductor', flight.driver], ['Wingwalker 1', flight.wingwalker1], ['Wingwalker 2', flight.wingwalker2]], theme: 'grid', styles: { fontSize: 10 } });
     finalY = doc.lastAutoTable.finalY + 10;
     doc.text("Operaciones Registradas", margin, finalY);
     const operationData = operations.map(op => {
         const data = flight.operations[op];
         return [op, data ? (data.utc || data.value || '-') : '-'];
     });
-    doc.autoTable({
-        startY: finalY + 5,
-        head: [['Operación', 'Tiempo / Valor Registrado']],
-        body: operationData,
-        theme: 'striped', styles: { fontSize: 10 }
-    });
+    doc.autoTable({ startY: finalY + 5, head: [['Operación', 'Tiempo / Valor Registrado']], body: operationData, theme: 'striped', styles: { fontSize: 10 } });
     const pageHeight = doc.internal.pageSize.getHeight();
     doc.setFontSize(10);
     doc.setTextColor(150);
@@ -410,6 +480,7 @@ function downloadElegantPDF(flightId) {
     doc.save(`Reporte-${flight.registrationNumber}.pdf`);
 }
 
+// MODIFIED: Add aircraft to WhatsApp and Clipboard messages
 function shareViaWhatsApp(flightId) {
     const flight = flights.find(f => f.id == flightId);
     if (!flight) return;
@@ -418,7 +489,7 @@ function shareViaWhatsApp(flightId) {
         const value = data ? (data.utc || data.value || '-') : '-';
         return `• ${op}: ${value}`;
     }).join('\n');
-    const message = `📋 *REPORTE VUELO BELUGA*\n📢 GHR: ${flight.registrationNumber}\n📅 ${flight.date} • ${flight.startTime}\n\n✈️ *VUELOS*\n🛬 Llegada: ${flight.arrivalFlight || 'N/A'}\n🛫 Salida: ${flight.departureFlight || 'N/A'}\n\n🏢 *AEROPUERTOS*\n📍 Llegada: ${flight.arrivalAirport}\n📍 Salida: ${flight.departureAirport}\n\n👥 *EQUIPO*\n👨‍💼 Coordinador: ${flight.coordinator}\n🚗 Conductor: ${flight.driver}\n🚶‍♂️ Wingwalker 1: ${flight.wingwalker1}\n🚶‍♂️ Wingwalker 2: ${flight.wingwalker2}\n\n⚙️ *OPERACIONES*\n${operationsText}\n\n_Generado por ${flight.coordinator}_`;
+    const message = `📋 *REPORTE VUELO BELUGA*\n📢 GHR: ${flight.registrationNumber}\n✈️ Aircraft: ${flight.aircraft || 'N/A'}\n📅 ${flight.date} • ${flight.startTime}\n\n✈️ *VUELOS*\n🛬 Llegada: ${flight.arrivalFlight || 'N/A'}\n🛫 Salida: ${flight.departureFlight || 'N/A'}\n\n🏢 *AEROPUERTOS*\n📍 Llegada: ${flight.arrivalAirport}\n📍 Salida: ${flight.departureAirport}\n\n👥 *EQUIPO*\n👨‍💼 Coordinador: ${flight.coordinator}\n🚗 Conductor: ${flight.driver}\n🚶‍♂️ Wingwalker 1: ${flight.wingwalker1}\n🚶‍♂️ Wingwalker 2: ${flight.wingwalker2}\n\n⚙️ *OPERACIONES*\n${operationsText}\n\n_Generado por GHR BELUGA_`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
 }
 
@@ -430,7 +501,7 @@ function copyReportText(flightId) {
         const value = data ? (data.utc || data.value || '-') : '-';
         return `- ${op}: ${value}`;
     }).join('\n');
-    const textReport = `REPORTE VUELO BELUGA\nGHR: ${flight.registrationNumber}\nFecha: ${flight.date} - ${flight.startTime}\n\nVUELOS:\n- Llegada: ${flight.arrivalFlight || 'N/A'}\n- Salida: ${flight.departureFlight || 'N/A'}\n\nAEROPUERTOS:\n- Llegada: ${flight.arrivalAirport}\n- Salida: ${flight.departureAirport}\n\nEQUIPO:\n- Coordinador: ${flight.coordinator}\n- Conductor: ${flight.driver}\n- Wingwalker 1: ${flight.wingwalker1}\n- Wingwalker 2: ${flight.wingwalker2}\n\nOPERACIONES REGISTRADAS:\n${operationsText}\n\nGenerado por ${flight.coordinator} - ${new Date().toLocaleDateString('es-ES')}`;
+    const textReport = `REPORTE VUELO BELUGA\nGHR: ${flight.registrationNumber}\nAircraft: ${flight.aircraft || 'N/A'}\nFecha: ${flight.date} - ${flight.startTime}\n\nVUELOS:\n- Llegada: ${flight.arrivalFlight || 'N/A'}\n- Salida: ${flight.departureFlight || 'N/A'}\n\nAEROPUERTOS:\n- Llegada: ${flight.arrivalAirport}\n- Salida: ${flight.departureAirport}\n\nEQUIPO:\n- Coordinador: ${flight.coordinator}\n- Conductor: ${flight.driver}\n- Wingwalker 1: ${flight.wingwalker1}\n- Wingwalker 2: ${flight.wingwalker2}\n\nOPERACIONES REGISTRADAS:\n${operationsText}\n\nGenerado por GHR BELUGA - ${new Date().toLocaleDateString('es-ES')}`;
     navigator.clipboard.writeText(textReport).then(() => { alert('✅ Reporte copiado al portapapeles.'); }).catch(() => alert('❌ No se pudo copiar el reporte.'));
 }
 
@@ -451,6 +522,13 @@ function generateAirportOptions() {
     const sel = document.getElementById(id); if(!sel) return;
     sel.innerHTML = airportOptions.map(v => `<option value="${v}">${v || 'Seleccionar...'}</option>`).join('');
   });
+}
+
+// NEW: Function to populate aircraft options
+function generateAircraftOptions() {
+    const sel = document.getElementById('aircraft');
+    if (!sel) return;
+    sel.innerHTML = aircraftOptions.map(v => `<option value="${v}">${v || 'Seleccionar...'}</option>`).join('');
 }
 
 function updateContinueButton() {
@@ -475,10 +553,12 @@ document.addEventListener('DOMContentLoaded', () => {
   loadData();
   document.getElementById('newFlightBtn').addEventListener('click', () => showForm());
   document.getElementById('historyBtn').addEventListener('click', showHistory);
+  document.getElementById('statsBtn').addEventListener('click', showStatistics);
   
   window.editFlight = editFlight;
   window.deleteFlight = deleteFlight;
   window.showHistory = showHistory;
+  window.showStatistics = showStatistics;
   window.sendFlightReport = sendFlightReport;
   window.shareViaWhatsApp = shareViaWhatsApp;
   window.copyReportText = copyReportText;
@@ -487,8 +567,4 @@ document.addEventListener('DOMContentLoaded', () => {
   window.closeViews = closeViews;
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
-
 });
-
-
-
