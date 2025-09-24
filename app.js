@@ -460,8 +460,8 @@ async function downloadWfsPdf(flightId) {
             addText(flight.date, 76, 144);
             addText(flight.arrivalFlight, 134, 144);
             addText(flight.sta, 165, 144);
-            addText((flight.arrivalAirport || '').slice(-3), 210, 144); // FROM (Last 3 letters)
-            addText(flight.departureFlight, 269, 144);
+            addText((flight.arrivalAirport || '').slice(-3), 192, 144); // FROM (Last 3 letters)
+            addText(flight.departureFlight, 257, 144);
             addText(flight.std, 309, 144);
             addText((flight.departureAirport || '').slice(-3), 347, 144); // TO (Last 3 letters)
             
@@ -592,6 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
+
 
 
 
