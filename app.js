@@ -11,8 +11,8 @@ const airportOptions = ["", "Toulouse TLS", "Hamburgo XFW", "Bremen BRE", "Saint
 
 const operations = [
   'EQUIPOS LISTOS', 'PAYLOAD', 'ATA', 'PARADA MOTORES', 'FUEL', 'ACU',
-  'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'ACU ON', 'ACU OFF', 'FRONT JACK UP',
-  'REAR JACK UP', 'REAR JACK DOWN', 'FRONT JACK DOWN', 'START TOWING DEPARTURE',
+  'START TOWING', 'END TOWING (AIBT)', 'GPU ON', 'GPU OFF', 'ACU ON', 'ACU OFF', 'FRONT JACK UP',
+  'REAR JACK UP', 'REAR JACK DOWN', 'FRONT JACK DOWN', 'START TOWING DEPARTURE (AOBT)',
   'END TOWING DEPARTURE', 'STARTUP', 'TAXI', 'TAKEOFF'
 ];
 
@@ -418,7 +418,7 @@ function shareViaWhatsApp(flightId) {
         const value = data ? (data.utc || data.value || '-') : '-';
         return `• ${op}: ${value}`;
     }).join('\n');
-    const message = `📋 *REPORTE VUELO BELUGA*\n📢 GHR: ${flight.registrationNumber}\n📅 ${flight.date} • ${flight.startTime}\n\n✈️ *VUELOS*\n🛬 Llegada: ${flight.arrivalFlight || 'N/A'}\n🛫 Salida: ${flight.departureFlight || 'N/A'}\n\n🏢 *AEROPUERTOS*\n📍 Llegada: ${flight.arrivalAirport}\n📍 Salida: ${flight.departureAirport}\n\n👥 *EQUIPO*\n👨‍💼 Coordinador: ${flight.coordinator}\n🚗 Conductor: ${flight.driver}\n🚶‍♂️ Wingwalker 1: ${flight.wingwalker1}\n🚶‍♂️ Wingwalker 2: ${flight.wingwalker2}\n\n⚙️ *OPERACIONES*\n${operationsText}\n\n_Generado por GHR BELUGA_`;
+    const message = `📋 *REPORTE VUELO BELUGA*\n📢 GHR: ${flight.registrationNumber}\n📅 ${flight.date} • ${flight.startTime}\n\n✈️ *VUELOS*\n🛬 Llegada: ${flight.arrivalFlight || 'N/A'}\n🛫 Salida: ${flight.departureFlight || 'N/A'}\n\n🏢 *AEROPUERTOS*\n📍 Llegada: ${flight.arrivalAirport}\n📍 Salida: ${flight.departureAirport}\n\n👥 *EQUIPO*\n👨‍💼 Coordinador: ${flight.coordinator}\n🚗 Conductor: ${flight.driver}\n🚶‍♂️ Wingwalker 1: ${flight.wingwalker1}\n🚶‍♂️ Wingwalker 2: ${flight.wingwalker2}\n\n⚙️ *OPERACIONES*\n${operationsText}\n\n_Generado por ${flight.coordinator}_`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
 }
 
@@ -489,5 +489,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showCurrentFlight = showCurrentFlight;
 
 });
+
 
 
