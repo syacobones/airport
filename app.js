@@ -487,8 +487,8 @@ async function downloadWfsPdf(flightId) {
             addText(flight.operations['FRONT JACK DOWN']?.utc, 156, 275);
             addText(flight.operations['REAR JACK DOWN']?.utc, 201, 275);
             addText(flight.operations['PARADA MOTORES']?.utc, 113, 508);
-            addText(flight.operations['STARTUP']?.utc, 200, 508);
-            addText(flight.operations['TAXI']?.utc, 250, 508);
+            addText(flight.operations['STARTUP']?.utc, 202, 508);
+            addText(flight.operations['TAXI']?.utc, 256, 508);
 
             // Crew Info (sin roles)
             const crewLine = [flight.coordinator, flight.driver, flight.wingwalker1, flight.wingwalker2].filter(Boolean).join(', ');
@@ -592,6 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
+
 
 
 
