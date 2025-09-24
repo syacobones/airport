@@ -452,9 +452,9 @@ async function downloadWfsPdf(flightId) {
             const planeNumber = planeNumberMatch ? planeNumberMatch[1] : '';
 
             // Fila 1: GHR, Aircraft, Plane Number
-            addText(flight.registrationNumber, 126, 104);
+            addText(flight.registrationNumber, 130, 104);
             addText(flight.aircraft.split(' - ')[1].split(' (')[0], 367, 120);
-            addText(planeNumber, 429, 118);
+            addText(planeNumber, 429, 120);
             
             // Fila 2: Date, Flight In, STA, From, Flight Out, STD, To
             addText(flight.date, 76, 144);
@@ -466,9 +466,9 @@ async function downloadWfsPdf(flightId) {
             addText((flight.departureAirport || '').slice(-3), 347, 144); // TO (Last 3 letters)
             
             // Fila 3: Payload, ATA/End Towing, End Towing Dep/Takeoff
-            addText(flight.operations['PAYLOAD']?.value, 115, 154);
-            addText(`${flight.operations['ATA']?.utc || '--:--'} / ${flight.operations['END TOWING']?.utc || '--:--'}`, 214, 154, { align: 'center' });
-            addText(`${flight.operations['END TOWING DEPARTURE']?.utc || '--:--'} / ${flight.operations['TAKEOFF']?.utc || '--:--'}`, 361, 154, { align: 'center' });
+            addText(flight.operations['PAYLOAD']?.value, 115, 155);
+            addText(`${flight.operations['ATA']?.utc || '--:--'} / ${flight.operations['END TOWING']?.utc || '--:--'}`, 214, 155, { align: 'center' });
+            addText(`${flight.operations['END TOWING DEPARTURE']?.utc || '--:--'} / ${flight.operations['TAKEOFF']?.utc || '--:--'}`, 361, 155, { align: 'center' });
             
             // Operaciones
             addText(flight.operations['EQUIPOS LISTOS']?.utc, 235, 241);
@@ -592,6 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
+
 
 
 
