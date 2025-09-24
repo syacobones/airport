@@ -452,8 +452,8 @@ async function downloadWfsPdf(flightId) {
             const planeNumber = planeNumberMatch ? planeNumberMatch[1] : '';
 
             // Fila 1: GHR, Aircraft, Plane Number
-            addText(flight.registrationNumber, 123, 100);
-            addText(flight.aircraft.split(' - ')[1].split(' (')[0], 367, 118);
+            addText(flight.registrationNumber, 126, 104);
+            addText(flight.aircraft.split(' - ')[1].split(' (')[0], 367, 120);
             addText(planeNumber, 429, 118);
             
             // Fila 2: Date, Flight In, STA, From, Flight Out, STD, To
@@ -592,4 +592,5 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
+
 
