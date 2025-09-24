@@ -478,10 +478,10 @@ async function downloadWfsPdf(flightId) {
             addText(flight.operations['FUEL (END)']?.utc, 217, 213);
             addText(flight.operations['ACU ON']?.utc, 194, 222);
             addText(flight.operations['ACU OFF']?.utc, 225, 222);
-            addText(flight.operations['START TOWING']?.utc, 71, 303);
-            addText(flight.operations['END TOWING']?.utc, 115, 303);
-            addText(flight.operations['START TOWING DEPARTURE']?.utc, 155, 303);
-            addText(flight.operations['END TOWING DEPARTURE']?.utc, 200, 303);
+            addText(flight.operations['START TOWING']?.utc, 71, 304);
+            addText(flight.operations['END TOWING']?.utc, 115, 304);
+            addText(flight.operations['START TOWING DEPARTURE']?.utc, 155, 304);
+            addText(flight.operations['END TOWING DEPARTURE']?.utc, 200, 304);
             addText(flight.operations['FRONT JACK UP']?.utc, 74, 278);
             addText(flight.operations['REAR JACK UP']?.utc, 116, 278);
             addText(flight.operations['FRONT JACK DOWN']?.utc, 156, 278);
@@ -592,6 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
+
 
 
 
