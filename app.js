@@ -12,11 +12,29 @@ const externalCrewOptions = ["", "Soledad", "Fernando", "Gustavo", "Germán", "I
 const aircraftOptions = ["","Airbus Beluga ST - F-GSTA (Avión Nº 1)","Airbus Beluga ST - F-GSTB (Avión Nº 2)","Airbus Beluga ST - F-GSTC (Avión Nº 3)","Airbus Beluga ST - F-GSTD (Avión Nº 4)","Airbus Beluga ST - F-GSTF (Avión Nº 5)","Airbus Beluga XL - F-GXLG (Avión Nº 1)","Airbus Beluga XL - F-GXLH (Avión Nº 2)","Airbus Beluga XL - F-GXLI (Avión Nº 3)","Airbus Beluga XL - F-GXLJ (Avión Nº 4)","Airbus Beluga XL - F-GXLN (Avión Nº 5)","Airbus Beluga XL - F-GXLO (Avión Nº 6)"];
 
 const operations = [
-  'EQUIPOS LISTOS', 'PAYLOAD', 'ATA', 'PARADA MOTORES', 'FUEL (STARTING)', 'FUEL (END)', 'ACU ON', 'ACU OFF',
-  'START TOWING', 'END TOWING', 'GPU ON', 'GPU OFF', 'FRONT JACK UP',
-  'REAR JACK UP', 'REAR JACK DOWN', 'FRONT JACK DOWN', 'START TOWING DEPARTURE',
-  'END TOWING DEPARTURE', 'STARTUP', 'TAXI', 'TAKEOFF'
+  'EQUIPOS LISTOS',
+  'PAYLOAD',
+  'ATA',
+  'PARADA MOTORES',
+  'START TOWING',
+  'END TOWING',
+  'GPU ON',
+  'FRONT JACK UP',
+  'REAR JACK UP',
+  'ACU ON',
+  'FUEL (STARTING)',
+  'FUEL (END)',
+  'ACU OFF',
+  'REAR JACK DOWN',
+  'FRONT JACK DOWN',
+  'GPU OFF',
+  'START TOWING DEPARTURE',
+  'END TOWING DEPARTURE',
+  'STARTUP',
+  'TAXI',
+  'TAKEOFF'
 ];
+
 
 function loadData() {
   const raw = localStorage.getItem('ghrBelugaFlights');
@@ -592,6 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
+
 
 
 
