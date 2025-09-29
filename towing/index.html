@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navegador de Rodaje - LEMD/LEGT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            touch-action: none; /* Evita el zoom con doble toque en móviles */
+        }
+        /* Animación para el punto de ubicación del usuario */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.6);
+                opacity: 0.7;
+            }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col h-screen overflow-hidden">
+
+    <header class="bg-gray-800 p-4 shadow-lg text-center">
+        <h1 class="text-xl md:text-2xl font-bold">Navegador de Rodaje</h1>
+        <p id="current-airport-name" class="text-sm text-gray-400">Selecciona un aeropuerto</p>
+    </header>
+
+    <div class="flex justify-center items-center p-2 bg-gray-800 border-b border-gray-700">
+        <div class="flex space-x-2">
+            <button id="lemd-btn" class="px-4 py-2 bg-blue-600 rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors">LEMD</button>
+            <button id="legt-btn" class="px-4 py-2 bg-gray-600 rounded-md font-semibold hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors">LEGT</button>
+        </div>
+    </div>
+
+    <main class="flex-grow relative overflow-hidden bg-gray-700">
+        <!-- Contenedor del mapa. La posición relativa es clave para posicionar el punto del usuario. -->
+        <div id="map-container" class="w-full h-full relative">
+            <img id="airport-chart" src="" alt="Carta del aeropuerto" class="w-full h-full object-contain">
+            
+            <!-- Punto que representa la ubicación del usuario -->
+            <div id="user-dot" class="absolute w-5 h-5 bg-blue-400 rounded-full border-2 border-white shadow-lg pulse" style="display: none; transform: translate(-50%, -50%);"></div>
+        </div>
+    </main>
+
+    <footer id="status-panel" class="bg-gray-800 p-3 text-center text-sm md:text-base border-t border-gray-700">
+        <p id="status-text">Iniciando geolocalización...</p>
+        <p id="coords-text" class="text-xs text-gray-400"></p>
+    </footer>
+
+    <!-- Modal para solicitar permisos de geolocalización -->
+    <div id="permission-modal" class="absolute inset-0 bg-gray-900 bg-opacity-95 flex-col justify-center items-center text-center p-8" style="display: none; z-index: 50;">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md border border-yellow-500/50">
+            <h2 class="text-2xl font-bold mb-4 text-yellow-400">Permiso de Ubicación Necesario</h2>
+            <p class="mb-4">Esta aplicación necesita acceder a tu ubicación para mostrar tu posición en la carta de rodaje.</p>
+            <p class="mb-6 text-sm text-gray-400">Por favor, habilita los permisos de ubicación en los ajustes de tu navegador para este sitio y luego recarga la página.</p>
+            <button id="reload-btn" class="w-full px-4 py-3 bg-blue-600 rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors">
+                Recargar Página
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- REFERENCIAS A ELEMENTOS DEL DOM ---
+            const lemdBtn = document.getElementById('lemd-btn');
+            const legtBtn = document.getElementById('legt-btn');
+            const airportChart = document.getElementById('airport-chart');
+            const userDot = document.getElementById('user-dot');
+            const statusText = document.getElementById('status-text');
+            const coordsText = document.getElementById('coords-text');
+            const mapContainer = document.getElementById('map-container');
+            const currentAirportName = document.getElementById('current-airport-name');
+            const permissionModal = document.getElementById('permission-modal');
+            const reloadBtn = document.getElementById('reload-btn');
+
+            // --- DATOS DE LOS AEROPUERTOS ---
+            const airports = {
+                'LEMD': {
+                    name: 'Adolfo Suárez Madrid-Barajas',
+                    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/LEMD_taxichart.svg/2000px-LEMD_taxichart.svg.png',
+                    bounds: {
+                        top: 40.505,
+                        bottom: 40.455,
+                        left: -3.599,
+                        right: -3.532
+                    }
+                },
+                'LEGT': {
+                    name: 'Base Aérea de Getafe',
+                    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/LEMD_taxichart.svg/2000px-LEMD_taxichart.svg.png',
+                    bounds: {
+                        top: 40.312,
+                        bottom: 40.288,
+                        left: -3.73,
+                        right: -3.705
+                    }
+                }
+            };
+
+            let currentAirportCode = null;
+
+            // --- FUNCIONES PRINCIPALES ---
+
+            function selectAirport(airportCode) {
+                if (currentAirportCode === airportCode) return;
+                
+                currentAirportCode = airportCode;
+                const airportData = airports[airportCode];
+                
+                airportChart.src = airportData.imageUrl;
+                currentAirportName.textContent = airportData.name;
+
+                if (airportCode === 'LEMD') {
+                    lemdBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                    lemdBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    legtBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                    legtBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                } else {
+                    legtBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                    legtBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    lemdBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                    lemdBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                }
+                
+                userDot.style.display = 'none';
+                statusText.textContent = `Aeropuerto ${airportCode} seleccionado. Esperando ubicación...`;
+            }
+
+            function onPositionUpdate(position) {
+                // Si llegamos aquí, es porque tenemos permiso. Ocultamos el modal.
+                permissionModal.style.display = 'none';
+
+                if (!currentAirportCode) {
+                    statusText.textContent = "Por favor, selecciona un aeropuerto para empezar.";
+                    return;
+                }
+                
+                const { latitude, longitude } = position.coords;
+                const airportData = airports[currentAirportCode];
+                const bounds = airportData.bounds;
+
+                statusText.textContent = "Ubicación actualizada.";
+                coordsText.textContent = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
+
+                if (latitude <= bounds.top && latitude >= bounds.bottom && longitude >= bounds.left && longitude <= bounds.right) {
+                    const percentX = (longitude - bounds.left) / (bounds.right - bounds.left);
+                    const percentY = (latitude - bounds.top) / (bounds.bottom - bounds.top);
+                    
+                    const mapWidth = mapContainer.clientWidth;
+                    const mapHeight = mapContainer.clientHeight;
+                    
+                    const pixelX = percentX * mapWidth;
+                    const pixelY = percentY * mapHeight;
+
+                    userDot.style.left = `${pixelX}px`;
+                    userDot.style.top = `${pixelY}px`;
+                    userDot.style.display = 'block';
+                } else {
+                    userDot.style.display = 'none';
+                    statusText.textContent = "Estás fuera del área del aeropuerto seleccionado.";
+                }
+            }
+
+            function onPositionError(error) {
+                let errorMessage = 'Error desconocido al obtener la ubicación.';
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = "Permiso de geolocalización denegado.";
+                        // Mostramos el modal para guiar al usuario
+                        permissionModal.style.display = 'flex';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = "La información de ubicación no está disponible.";
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = "La solicitud de ubicación ha caducado.";
+                        break;
+                }
+                statusText.textContent = errorMessage;
+                console.error(`Geolocation Error: ${errorMessage}`);
+            }
+
+            // --- INICIALIZACIÓN ---
+            
+            lemdBtn.addEventListener('click', () => selectAirport('LEMD'));
+            legtBtn.addEventListener('click', () => selectAirport('LEGT'));
+            
+            // Evento para el botón de recargar en el modal
+            reloadBtn.addEventListener('click', () => {
+                location.reload();
+            });
+            
+            selectAirport('LEMD');
+
+            if ('geolocation' in navigator) {
+                navigator.geolocation.watchPosition(
+                    onPositionUpdate, 
+                    onPositionError, 
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                statusText.textContent = 'La geolocalización no es compatible con tu navegador.';
+            }
+        });
+    </script>
+</body>
+</html>
+
