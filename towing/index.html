@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>App de Vuelo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,6 +11,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            /* Prevent scrolling of the whole page on touch devices */
             touch-action: none;
         }
         @keyframes pulse {
@@ -25,6 +26,17 @@
         }
         .pulse {
             animation: pulse 2s infinite;
+        }
+        /* Style for the map container to enable zoom/pan */
+        #map-container {
+            cursor: grab;
+        }
+        #map-container:active {
+            cursor: grabbing;
+        }
+        #map-content {
+            transform-origin: 0 0;
+            transition: transform 0.1s ease-out;
         }
     </style>
 </head>
@@ -62,18 +74,27 @@
             <div class="flex space-x-2">
                 <button id="lemd-btn" class="px-4 py-2 bg-blue-600 rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors">LEMD</button>
                 <button id="legt-btn" class="px-4 py-2 bg-gray-600 rounded-md font-semibold hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors">LEGT</button>
+                <button id="load-custom-chart-btn" class="px-4 py-2 bg-green-600 rounded-md font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors">Cargar Carta</button>
+                <button id="reset-view-btn" title="Restablecer Vista" class="p-2 bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.885-.666A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566z" clip-rule="evenodd" />
+                    </svg>
+                </button>
             </div>
         </div>
 
         <main class="flex-grow relative overflow-hidden bg-gray-700">
-            <div id="map-container" class="w-full h-full relative">
-                <img id="airport-chart" src="" alt="Carta del aeropuerto" class="w-full h-full object-contain transition-opacity duration-300">
-                <!-- Mensaje de error si la imagen no carga -->
-                <div id="image-error" class="absolute inset-0 flex-col justify-center items-center bg-gray-700 text-center p-4" style="display: none;">
-                    <p class="text-lg text-yellow-400">No se pudo cargar la carta</p>
-                    <p class="text-sm text-gray-300">Por favor, comprueba tu conexión a internet.</p>
+            <!-- Viewport for panning and zooming -->
+            <div id="map-container" class="w-full h-full">
+                <!-- Content that will be transformed (panned/zoomed) -->
+                <div id="map-content" class="w-full h-full relative">
+                    <img id="airport-chart" src="" alt="Carta del aeropuerto" class="w-full h-full object-contain">
+                    <div id="image-error" class="absolute inset-0 flex-col justify-center items-center bg-gray-700 text-center p-4" style="display: none;">
+                        <p class="text-lg text-yellow-400">No se pudo cargar la carta</p>
+                        <p class="text-sm text-gray-300">Asegúrate de que los ficheros .png están en la misma carpeta.</p>
+                    </div>
+                    <div id="user-dot" class="absolute w-5 h-5 bg-blue-400 rounded-full border-2 border-white shadow-lg pulse" style="display: none; transform: translate(-50%, -50%);"></div>
                 </div>
-                <div id="user-dot" class="absolute w-5 h-5 bg-blue-400 rounded-full border-2 border-white shadow-lg pulse" style="display: none; transform: translate(-50%, -50%);"></div>
             </div>
         </main>
 
@@ -83,7 +104,7 @@
         </footer>
 
         <div id="permission-modal" class="absolute inset-0 bg-gray-900 bg-opacity-95 flex-col justify-center items-center text-center p-8" style="display: none; z-index: 50;">
-            <div class="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md border border-yellow-500/50">
+             <div class="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md border border-yellow-500/50">
                 <h2 class="text-2xl font-bold mb-4 text-yellow-400">Permiso de Ubicación Necesario</h2>
                 <p class="mb-4">Esta aplicación necesita acceder a tu ubicación para mostrar tu posición en la carta de rodaje.</p>
                 <p class="mb-6 text-sm text-gray-400">Por favor, habilita los permisos de ubicación en los ajustes de tu navegador para este sitio y luego recarga la página.</p>
@@ -93,15 +114,32 @@
             </div>
         </div>
     </div>
+    
+    <input type="file" id="chart-file-input" accept="image/*" style="display: none;">
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- GESTIÓN DE VISTAS (Menú Principal vs. Towing App) ---
             const mainAppView = document.getElementById('main-app-view');
             const towingAppView = document.getElementById('towing-app-view');
             const showTowingBtn = document.getElementById('show-towing-btn');
             const backToMainBtn = document.getElementById('back-to-main-btn');
+            const lemdBtn = document.getElementById('lemd-btn');
+            const legtBtn = document.getElementById('legt-btn');
+            const loadCustomChartBtn = document.getElementById('load-custom-chart-btn');
+            const resetViewBtn = document.getElementById('reset-view-btn');
+            const chartFileInput = document.getElementById('chart-file-input');
+            const airportChart = document.getElementById('airport-chart');
+            const imageError = document.getElementById('image-error');
+            const userDot = document.getElementById('user-dot');
+            const statusText = document.getElementById('status-text');
+            const coordsText = document.getElementById('coords-text');
+            const currentAirportName = document.getElementById('current-airport-name');
+            const mapContainer = document.getElementById('map-container');
+            const mapContent = document.getElementById('map-content');
+            const permissionModal = document.getElementById('permission-modal');
+            const reloadBtn = document.getElementById('reload-btn');
 
+            // --- GESTIÓN DE VISTAS ---
             showTowingBtn.addEventListener('click', () => {
                 mainAppView.style.display = 'none';
                 towingAppView.style.display = 'flex';
@@ -112,73 +150,103 @@
                 mainAppView.style.display = 'flex';
             });
 
-            // --- LÓGICA DE LA APP DE TOWING ---
-            const lemdBtn = document.getElementById('lemd-btn');
-            const legtBtn = document.getElementById('legt-btn');
-            const airportChart = document.getElementById('airport-chart');
-            const imageError = document.getElementById('image-error');
-            const userDot = document.getElementById('user-dot');
-            const statusText = document.getElementById('status-text');
-            const coordsText = document.getElementById('coords-text');
-            const mapContainer = document.getElementById('map-container');
-            const currentAirportName = document.getElementById('current-airport-name');
-            const permissionModal = document.getElementById('permission-modal');
-            const reloadBtn = document.getElementById('reload-btn');
-
-            // --- GESTIÓN DE CARGA DE IMAGEN ---
-            airportChart.onload = () => {
-                imageError.style.display = 'none';
-                airportChart.style.opacity = '1';
-            };
-            airportChart.onerror = () => {
-                imageError.style.display = 'flex';
-                airportChart.style.opacity = '0';
-            };
-
+            // --- DATOS DE AEROPUERTOS ---
             const airports = {
                 'LEMD': {
                     name: 'Adolfo Suárez Madrid-Barajas',
-                    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/LEMD_taxichart.svg/2000px-LEMD_taxichart.svg.png',
-                    bounds: { top: 40.505, bottom: 40.455, left: -3.599, right: -3.532 }
+                    imageUrl: 'lemd.png', 
+                    bounds: { top: 40.5333, bottom: 40.4667, left: -3.6, right: -3.5167 }
                 },
                 'LEGT': {
                     name: 'Base Aérea de Getafe',
-                    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/LEMD_taxichart.svg/2000px-LEMD_taxichart.svg.png',
-                    bounds: { top: 40.312, bottom: 40.288, left: -3.73, right: -3.705 }
+                    // Carga la carta local por defecto. Asegúrate de que 'legt.png' esté en la misma carpeta.
+                    imageUrl: 'legt.png',
+                    // Coordenadas ajustadas a la nueva carta de LEGT proporcionada.
+                    bounds: { top: 40.301, bottom: 40.282, left: -3.7333, right: -3.70 } 
                 }
             };
-
             let currentAirportCode = null;
 
+            // --- LÓGICA DE PAN & ZOOM ---
+            let scale = 1, translateX = 0, translateY = 0;
+            let isPanning = false;
+            let startPanX = 0, startPanY = 0;
+            let lastPinchDist = 0;
+
+            function applyTransform() {
+                mapContent.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            }
+
+            function getPinchDist(e) {
+                const t1 = e.touches[0], t2 = e.touches[1];
+                return Math.sqrt(Math.pow(t1.clientX - t2.clientX, 2) + Math.pow(t1.clientY - t2.clientY, 2));
+            }
+
+            function getMidpoint(e) {
+                const t1 = e.touches[0], t2 = e.touches[1];
+                return { x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 };
+            }
+
+            mapContainer.addEventListener('mousedown', e => { e.preventDefault(); isPanning = true; startPanX = e.clientX - translateX; startPanY = e.clientY - translateY; });
+            mapContainer.addEventListener('touchstart', e => {
+                if (e.touches.length === 1) { isPanning = true; startPanX = e.touches[0].clientX - translateX; startPanY = e.touches[0].clientY - translateY; } 
+                else if (e.touches.length === 2) { isPanning = false; lastPinchDist = getPinchDist(e); }
+            });
+            mapContainer.addEventListener('mousemove', e => { if (!isPanning) return; e.preventDefault(); translateX = e.clientX - startPanX; translateY = e.clientY - startPanY; applyTransform(); });
+            mapContainer.addEventListener('touchmove', e => {
+                e.preventDefault();
+                if (e.touches.length === 1 && isPanning) { translateX = e.touches[0].clientX - startPanX; translateY = e.touches[0].clientY - startPanY; applyTransform(); } 
+                else if (e.touches.length === 2) {
+                    const newDist = getPinchDist(e); const midpoint = getMidpoint(e); const rect = mapContainer.getBoundingClientRect();
+                    const mouseX = midpoint.x - rect.left; const mouseY = midpoint.y - rect.top;
+                    const scaleFactor = newDist / lastPinchDist; const newScale = Math.max(1, Math.min(scale * scaleFactor, 10));
+                    translateX = mouseX - (mouseX - translateX) * (newScale / scale); translateY = mouseY - (mouseY - translateY) * (newScale / scale);
+                    scale = newScale; lastPinchDist = newDist; applyTransform();
+                }
+            });
+            mapContainer.addEventListener('mouseup', () => isPanning = false);
+            mapContainer.addEventListener('mouseleave', () => isPanning = false);
+            mapContainer.addEventListener('touchend', e => { if (e.touches.length < 2) lastPinchDist = 0; if (e.touches.length < 1) isPanning = false; });
+            mapContainer.addEventListener('wheel', e => {
+                e.preventDefault(); const rect = mapContainer.getBoundingClientRect(); const scaleFactor = e.deltaY > 0 ? 0.9 : 1.1;
+                const newScale = Math.max(1, Math.min(scale * scaleFactor, 10)); if (newScale === scale) return;
+                const mouseX = e.clientX - rect.left; const mouseY = e.clientY - rect.top;
+                translateX = mouseX - (mouseX - translateX) * (newScale / scale); translateY = mouseY - (mouseY - translateY) * (newScale / scale);
+                scale = newScale; applyTransform();
+            });
+            resetViewBtn.addEventListener('click', () => { scale = 1; translateX = 0; translateY = 0; applyTransform(); });
+
+            // --- LÓGICA PRINCIPAL DE LA APP ---
+            airportChart.onload = () => { imageError.style.display = 'none'; airportChart.style.opacity = '1'; };
+            airportChart.onerror = () => { imageError.style.display = 'flex'; airportChart.style.opacity = '0'; };
+            
+            loadCustomChartBtn.addEventListener('click', () => chartFileInput.click());
+            chartFileInput.addEventListener('change', event => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = e => { airportChart.src = e.target.result; currentAirportName.textContent = 'Carta Personalizada';
+                        lemdBtn.classList.replace('bg-blue-600', 'bg-gray-600'); legtBtn.classList.replace('bg-blue-600', 'bg-gray-600'); };
+                    reader.readAsDataURL(file);
+                }
+            });
+
             function selectAirport(airportCode) {
-                if (currentAirportCode === airportCode) return;
+                const isCustomChart = airportChart.src.startsWith('data:image');
                 currentAirportCode = airportCode;
                 const airportData = airports[airportCode];
-                
-                // Ocultar la imagen y el error antes de intentar cargar la nueva
-                airportChart.style.opacity = '0';
-                imageError.style.display = 'none';
-                
-                // Asignar la nueva URL para que se dispare onload o onerror
-                airportChart.src = airportData.imageUrl;
-                currentAirportName.textContent = airportData.name;
-
-                if (airportCode === 'LEMD') {
-                    lemdBtn.classList.replace('bg-gray-600', 'bg-blue-600');
-                    legtBtn.classList.replace('bg-blue-600', 'bg-gray-600');
-                } else {
-                    legtBtn.classList.replace('bg-gray-600', 'bg-blue-600');
-                    lemdBtn.classList.replace('bg-blue-600', 'bg-gray-600');
-                }
-                
+                if (!isCustomChart) { airportChart.style.opacity = '0'; imageError.style.display = 'none'; airportChart.src = airportData.imageUrl; }
+                currentAirportName.textContent = airportData.name + (isCustomChart ? ' (Coords)' : '');
+                if (airportCode === 'LEMD') { lemdBtn.classList.replace('bg-gray-600', 'bg-blue-600'); legtBtn.classList.replace('bg-blue-600', 'bg-gray-600'); } 
+                else { legtBtn.classList.replace('bg-gray-600', 'bg-blue-600'); lemdBtn.classList.replace('bg-blue-600', 'bg-gray-600'); }
                 userDot.style.display = 'none';
-                statusText.textContent = `Aeropuerto ${airportCode} seleccionado. Esperando ubicación...`;
+                statusText.textContent = `Coordenadas de ${airportCode} aplicadas. Esperando ubicación...`;
+                resetViewBtn.click(); // Restablece el zoom al cambiar de aeropuerto
             }
 
             function onPositionUpdate(position) {
                 permissionModal.style.display = 'none';
                 if (!currentAirportCode) return;
-                
                 const { latitude, longitude } = position.coords;
                 const { bounds } = airports[currentAirportCode];
                 statusText.textContent = "Ubicación actualizada.";
@@ -187,10 +255,8 @@
                 if (latitude <= bounds.top && latitude >= bounds.bottom && longitude >= bounds.left && longitude <= bounds.right) {
                     const percentX = (longitude - bounds.left) / (bounds.right - bounds.left);
                     const percentY = (latitude - bounds.top) / (bounds.bottom - bounds.top);
-                    const mapWidth = mapContainer.clientWidth;
-                    const mapHeight = mapContainer.clientHeight;
-                    userDot.style.left = `${percentX * mapWidth}px`;
-                    userDot.style.top = `${percentY * mapHeight}px`;
+                    userDot.style.left = `${percentX * 100}%`;
+                    userDot.style.top = `${percentY * 100}%`;
                     userDot.style.display = 'block';
                 } else {
                     userDot.style.display = 'none';
@@ -199,37 +265,23 @@
             }
 
             function onPositionError(error) {
-                let errorMessage;
+                let msg;
                 switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMessage = "Permiso de geolocalización denegado.";
-                        permissionModal.style.display = 'flex';
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMessage = "La información de ubicación no está disponible.";
-                        break;
-                    case error.TIMEOUT:
-                        errorMessage = "La solicitud de ubicación ha caducado.";
-                        break;
-                    default:
-                        errorMessage = 'Error desconocido al obtener la ubicación.';
+                    case error.PERMISSION_DENIED: msg = "Permiso de geolocalización denegado."; permissionModal.style.display = 'flex'; break;
+                    case error.POSITION_UNAVAILABLE: msg = "La información de ubicación no está disponible."; break;
+                    case error.TIMEOUT: msg = "La solicitud de ubicación ha caducado."; break;
+                    default: msg = 'Error desconocido al obtener la ubicación.';
                 }
-                statusText.textContent = errorMessage;
-                console.error(`Geolocation Error: ${errorMessage}`);
+                statusText.textContent = msg;
             }
 
             lemdBtn.addEventListener('click', () => selectAirport('LEMD'));
             legtBtn.addEventListener('click', () => selectAirport('LEGT'));
             reloadBtn.addEventListener('click', () => location.reload());
-            
             selectAirport('LEMD');
 
             if ('geolocation' in navigator) {
-                navigator.geolocation.watchPosition(onPositionUpdate, onPositionError, {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                });
+                navigator.geolocation.watchPosition(onPositionUpdate, onPositionError, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
             } else {
                 statusText.textContent = 'La geolocalización no es compatible con tu navegador.';
             }
