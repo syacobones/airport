@@ -476,11 +476,11 @@ async function downloadWfsPdf(flightId) {
             
             // Fila 2: Date, Flight In, STA, From, Flight Out, STD, To
             addText(flight.date, 76, 144);
-            addText(flight.arrivalFlight, 134, 144);
-            addText(flight.sta, 165, 144);
-            addText((flight.arrivalAirport || '').slice(-3), 192, 144); // FROM (Last 3 letters)
+            addText(flight.arrivalFlight, 132, 144);
+            addText(flight.sta, 162, 144);
+            addText((flight.arrivalAirport || '').slice(-3), 195, 144); // FROM (Last 3 letters)
             addText(flight.departureFlight, 257, 144);
-            addText(flight.std, 309, 144);
+            addText(flight.std, 307, 144);
             addText((flight.departureAirport || '').slice(-3), 347, 144); // TO (Last 3 letters)
             
             // Fila 3: Payload, ATA/End Towing, End Towing Dep/Takeoff
@@ -610,6 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
+
 
 
 
