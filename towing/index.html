@@ -155,13 +155,24 @@
                 'LEMD': {
                     name: 'Adolfo Suárez Madrid-Barajas',
                     imageUrl: 'lemd.png', 
-                    bounds: { top: 40.5333, bottom: 40.4667, left: -3.6, right: -3.5167 }
+                    // Coordenadas precisas extraídas de la carta de LEMD
+                    bounds: { 
+                        top: 40 + 32/60,    // 40°32'N
+                        bottom: 40 + 28/60,  // 40°28'N
+                        left: -(3 + 36/60),  // 3°36'W
+                        right: -(3 + 31/60)  // 3°31'W
+                    }
                 },
                 'LEGT': {
                     name: 'Base Aérea de Getafe',
                     imageUrl: 'legt.png',
-                    // Coordenadas recalibradas basándose en el feedback del usuario.
-                    bounds: { top: 40.306, bottom: 40.287, left: -3.7333, right: -3.70 } 
+                    // Coordenadas precisas extraídas de la carta de LEGT
+                    bounds: { 
+                        top: 40 + 18.2/60,   // 40°18.2'N (Ajustado para el borde superior de la imagen)
+                        bottom: 40 + 16.8/60, // 40°16.8'N (Ajustado para el borde inferior de la imagen)
+                        left: -(3 + 44.2/60), // 3°44.2'W (Ajustado para el borde izquierdo de la imagen)
+                        right: -(3 + 41.8/60) // 3°41.8'W (Ajustado para el borde derecho de la imagen)
+                    } 
                 }
             };
             let currentAirportCode = null;
@@ -253,7 +264,8 @@
 
                 if (latitude <= bounds.top && latitude >= bounds.bottom && longitude >= bounds.left && longitude <= bounds.right) {
                     const percentX = (longitude - bounds.left) / (bounds.right - bounds.left);
-                    const percentY = (latitude - bounds.top) / (bounds.bottom - bounds.top);
+                    const percentY = (1 - ((latitude - bounds.bottom) / (bounds.top - bounds.bottom))); // Invertido para Y
+                    
                     userDot.style.left = `${percentX * 100}%`;
                     userDot.style.top = `${percentY * 100}%`;
                     userDot.style.display = 'block';
@@ -262,6 +274,32 @@
                     statusText.textContent = "Estás fuera del área del aeropuerto seleccionado.";
                 }
             }
+            
+            // Corrección en el cálculo del eje Y. La latitud crece hacia arriba.
+            function onPositionUpdate(position) {
+                permissionModal.style.display = 'none';
+                if (!currentAirportCode) return;
+                const { latitude, longitude } = position.coords;
+                const { bounds } = airports[currentAirportCode];
+                statusText.textContent = "Ubicación actualizada.";
+                coordsText.textContent = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
+
+                if (latitude <= bounds.top && latitude >= bounds.bottom && longitude >= bounds.left && longitude <= bounds.right) {
+                    const percentX = (longitude - bounds.left) / (bounds.right - bounds.left);
+                    // El eje Y en HTML va de arriba (0%) a abajo (100%).
+                    // La latitud va de abajo (bottom) a arriba (top).
+                    // Por lo tanto, necesitamos invertir el cálculo para Y.
+                    const percentY = (bounds.top - latitude) / (bounds.top - bounds.bottom);
+                    
+                    userDot.style.left = `${percentX * 100}%`;
+                    userDot.style.top = `${percentY * 100}%`;
+                    userDot.style.display = 'block';
+                } else {
+                    userDot.style.display = 'none';
+                    statusText.textContent = "Estás fuera del área del aeropuerto seleccionado.";
+                }
+            }
+
 
             function onPositionError(error) {
                 let msg;
