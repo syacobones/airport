@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GHR BELUGA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script src="./jspdf.min.js"></script>
+  <script src="./jspdf.autotable.min.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="w-full max-w-2xl mx-auto text-center">
+    <div class="flex flex-row justify-around items-center mb-6 w-full max-w-md mx-auto">
+      <img src="airbus.PNG" alt="Airbus Logo" class="h-16 object-contain drop-shadow-lg">
+      <div class="border-l-2 border-slate-300 h-12"></div> <img src="wfs.webp" alt="WFS Logo" class="h-16 object-contain drop-shadow">
+    </div>
+
+    <h1 class="text-slate-800 text-4xl font-bold mb-2">GHR BELUGA</h1>
+    <p class="text-slate-600 mb-8">Registro de Operaciones</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+      <button id="newFlightBtn" class="flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300">
+        <i data-lucide="plus-circle"></i> Nuevo Vuelo
+      </button>
+
+      <button id="continueFlightBtn" class="hidden flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300">
+        <i data-lucide="play-circle"></i> Continuar
+      </button>
+
+      <button id="historyBtn" class="flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300">
+        <i data-lucide="history"></i> Historial (<span id="historyCount">0</span>)
+      </button>
+      
+      <button id="statsBtn" class="flex items-center justify-center gap-2 bg-purple-700 hover:bg-purple-800 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300">
+        <i data-lucide="bar-chart-2"></i> Estadísticas
+      </button>
+    </div>
+
+    <div id="viewsContainer" class="relative hidden bg-white rounded-2xl p-6 shadow-xl text-left"></div>
+  </div>
+
+  <footer class="text-center py-4 mt-4">
+    <p class="text-xs text-gray-500">
+      &copy; 2025 | Desarrollado por Sergio Iacobone
+    </p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script> if (window.lucide) lucide.createIcons(); </script>
+
+  <style>
+    @media print {
+      body { background: white !important; padding: 0 !important; margin: 0 !important; }
+      body > * { display: none !important; }
+      #viewsContainer { display: block !important; box-shadow: none !important; border: none !important; padding: 0 !important; border-radius: 0 !important; }
+      #viewsContainer h2, #viewsContainer .grid, #viewsContainer button { display: none !important; }
+      #reportPreview { display: block !important; border: none !important; box-shadow: none !important; max-height: none !important; overflow: visible !important; }
+    }
+  </style>
+</body>
+</html>
