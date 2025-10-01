@@ -168,31 +168,34 @@
                     return;
                 }
 
-                arrivalsDisplay.innerHTML = '<h4>Llegadas</h4><p>Cargando...</p>';
-                departuresDisplay.innerHTML = '<h4>Salidas</h4><p>Cargando...</p>';
+                arrivalsDisplay.innerHTML = '<h4>Llegadas</h4><p>Buscando...</p>';
+                departuresDisplay.innerHTML = '<h4>Salidas</h4><p>Buscando...</p>';
 
                 try {
-                    const arr_params = new URLSearchParams({ access_key: AVIATIONSTACK_API_KEY, arr_icao: airportIcao });
-                    const dep_params = new URLSearchParams({ access_key: AVIATIONSTACK_API_KEY, dep_icao: airportIcao });
+                    const flightPromises = [
+                        fetch(`https://api.aviationstack.com/v1/flights?access_key=${AVIATIONSTACK_API_KEY}&arr_icao=${airportIcao}`),
+                        fetch(`https://api.aviationstack.com/v1/flights?access_key=${AVIATIONSTACK_API_KEY}&dep_icao=${airportIcao}`)
+                    ];
 
-                    const [arr_res, dep_res] = await Promise.all([
-                        fetch(`https://api.aviationstack.com/v1/flights?${arr_params.toString()}`),
-                        fetch(`https://api.aviationstack.com/v1/flights?${dep_params.toString()}`)
-                    ]);
+                    if (airportIcao === 'LEGT') {
+                        flightPromises.push(fetch(`https://api.aviationstack.com/v1/flights?access_key=${AVIATIONSTACK_API_KEY}&airline_icao=BGA`));
+                        flightPromises.push(fetch(`https://api.aviationstack.com/v1/flights?access_key=${AVIATIONSTACK_API_KEY}&airline_icao=CASA`));
+                    }
 
-                    if (!arr_res.ok || !dep_res.ok) throw new Error('Error en la respuesta de la API de vuelos.');
-                    
-                    const arr_data = await arr_res.json();
-                    const dep_data = await dep_res.json();
+                    const responses = await Promise.all(flightPromises);
+                    const data = await Promise.all(responses.map(res => res ? res.json() : null));
 
-                    const arrivals = arr_data.data.filter(f => f.flight_status !== 'landed');
-                    const departures = dep_data.data.filter(f => f.flight_status === 'scheduled');
-                    
+                    const allFlights = [].concat(...data.filter(Boolean).map(d => d.data || []));
+                    const uniqueFlights = Array.from(new Map(allFlights.map(flight => [flight.flight.icao || flight.flight.iata, flight])).values());
+
+                    const arrivals = uniqueFlights.filter(f => f.arrival.icao === airportIcao && f.flight_status !== 'landed');
+                    const departures = uniqueFlights.filter(f => f.departure.icao === airportIcao && f.flight_status !== 'departed' && f.flight_status !== 'landed');
+
                     arrivalsDisplay.innerHTML = '<h4>Llegadas</h4>';
                     if (arrivals.length > 0) {
                         arrivals.slice(0, 3).forEach(f => {
                             const flightId = f.flight.iata || f.flight.icao || 'N/A';
-                            const origin = f.departure.iata || 'N/A';
+                            const origin = f.departure.iata || f.departure.icao || 'N/A';
                             arrivalsDisplay.innerHTML += `<p>${flightId} de ${origin} - ${f.flight_status}</p>`;
                         });
                     } else {
@@ -203,7 +206,7 @@
                     if (departures.length > 0) {
                         departures.slice(0, 3).forEach(f => {
                             const flightId = f.flight.iata || f.flight.icao || 'N/A';
-                            const dest = f.arrival.iata || 'N/A';
+                            const dest = f.arrival.iata || f.arrival.icao || 'N/A';
                             departuresDisplay.innerHTML += `<p>${flightId} a ${dest} - ${f.flight_status}</p>`;
                         });
                     } else {
@@ -219,7 +222,7 @@
             
             const metarDisplay = getEl('metar-display');
             async function fetchMetar(airportIcao) {
-                 metarDisplay.textContent = 'Cargando METAR...';
+                 metarDisplay.textContent = `Cargando METAR para ${airportIcao}...`;
                 try {
                     const response = await fetch(`https://aviationweather.gov/api/data/metar?ids=${airportIcao}&format=json`);
                     if (!response.ok) throw new Error('AviationWeather API failed');
@@ -232,12 +235,11 @@
                 } catch (error) {
                     console.warn('Primary METAR source failed, trying fallback:', error);
                     try {
-                        // Fallback METAR source (CheckWX)
-                        const fallbackResponse = await fetch(`https://api.checkwx.com/metar/${airportIcao}/decoded`, { headers: { 'X-API-Key': 'c032333ddc0044528b33451515' } }); // Clave de ejemplo, puede expirar
+                        const fallbackResponse = await fetch(`https://api.checkwx.com/metar/${airportIcao}`, { headers: { 'X-API-Key': 'c032333ddc0044528b33451515' } }); // Clave de ejemplo
                         if (!fallbackResponse.ok) throw new Error('CheckWX API failed');
                         const fallbackData = await fallbackResponse.json();
                         if (fallbackData.data && fallbackData.data.length > 0) {
-                             metarDisplay.textContent = fallbackData.data[0].raw_text;
+                             metarDisplay.textContent = fallbackData.data[0];
                         } else {
                              metarDisplay.textContent = `METAR para ${airportIcao} no disponible.`;
                         }
