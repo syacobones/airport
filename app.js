@@ -198,7 +198,7 @@ function showCurrentFlight() {
             saveData();
         }
     }
-    showHistory();
+    closeViews();
   });
   updateCurrentFlightView();
   startCountdown();
@@ -338,7 +338,7 @@ function showStatistics() {
         </div>`;
 }
 
-// NUEVA FUNCIÓN PARA MOSTRAR EL WIDGET METAR
+// FUNCIÓN PARA MOSTRAR EL WIDGET METAR
 function showMetarWidget() {
     if (countdownInterval) clearInterval(countdownInterval);
     const c = document.getElementById('viewsContainer');
@@ -615,15 +615,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('newFlightBtn').addEventListener('click', () => showForm());
   document.getElementById('historyBtn').addEventListener('click', showHistory);
   document.getElementById('statsBtn').addEventListener('click', showStatistics);
-  
-  // EVENTO PARA EL NUEVO BOTÓN (CORREGIDO)
   document.getElementById('metarBtn').addEventListener('click', showMetarWidget);
   
   window.editFlight = editFlight;
   window.deleteFlight = deleteFlight;
   window.showHistory = showHistory;
   window.showStatistics = showStatistics;
-  window.showMetarWidget = showMetarWidget; // Asegurarse de que sea global
   window.sendFlightReport = sendFlightReport;
   window.shareViaWhatsApp = shareViaWhatsApp;
   window.copyReportText = copyReportText;
@@ -633,4 +630,5 @@ document.addEventListener('DOMContentLoaded', () => {
   window.closeViews = closeViews;
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
+  window.showMetarWidget = showMetarWidget;
 });
