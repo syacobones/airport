@@ -1,23 +1,3 @@
-// NUEVA FUNCIÓN PARA MOSTRAR EL WIDGET METAR
-function showMetarWidget() {
-    if (countdownInterval) clearInterval(countdownInterval);
-    const c = document.getElementById('viewsContainer');
-    c.classList.remove('hidden');
-    c.innerHTML = `
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold text-slate-800">METAR/TAF para LEGT</h2>
-            <button onclick="closeViews()" class="text-gray-500 hover:text-gray-800">&times;</button>
-        </div>
-        <div>
-            <iframe src="https://metar-taf.com/es/embed-info/LEGT" 
-                    frameborder="0" 
-                    scrolling="no" 
-                    style="width: 100%; height: 440px;">
-            </iframe>
-        </div>
-    `;
-}
-
 // app.js - Versión FINAL con formato WFS, nuevos campos y todas las funcionalidades
 let flights = [];
 let currentFlight = null;
@@ -358,6 +338,26 @@ function showStatistics() {
         </div>`;
 }
 
+// NUEVA FUNCIÓN PARA MOSTRAR EL WIDGET METAR
+function showMetarWidget() {
+    if (countdownInterval) clearInterval(countdownInterval);
+    const c = document.getElementById('viewsContainer');
+    c.classList.remove('hidden');
+    c.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-slate-800">METAR/TAF para LEGT</h2>
+            <button onclick="closeViews()" class="text-gray-500 hover:text-gray-800">&times;</button>
+        </div>
+        <div>
+            <iframe src="https://metar-taf.com/es/embed-info/LEGT" 
+                    frameborder="0" 
+                    scrolling="no" 
+                    style="width: 100%; height: 440px;">
+            </iframe>
+        </div>
+    `;
+}
+
 function editFlight(flightId) {
     const flight = flights.find(f => f.id == flightId);
     if (!flight) return;
@@ -616,10 +616,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('historyBtn').addEventListener('click', showHistory);
   document.getElementById('statsBtn').addEventListener('click', showStatistics);
   
+  // EVENTO PARA EL NUEVO BOTÓN (CORREGIDO)
+  document.getElementById('metarBtn').addEventListener('click', showMetarWidget);
+  
   window.editFlight = editFlight;
   window.deleteFlight = deleteFlight;
   window.showHistory = showHistory;
   window.showStatistics = showStatistics;
+  window.showMetarWidget = showMetarWidget; // Asegurarse de que sea global
   window.sendFlightReport = sendFlightReport;
   window.shareViaWhatsApp = shareViaWhatsApp;
   window.copyReportText = copyReportText;
@@ -630,18 +634,3 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showForm = showForm;
   window.showCurrentFlight = showCurrentFlight;
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
