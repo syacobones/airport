@@ -338,25 +338,39 @@ function showStatistics() {
         </div>`;
 }
 
-// FUNCIÓN PARA MOSTRAR EL WIDGET METAR
+// FUNCIÓN PARA MOSTRAR EL WIDGET METAR (CORREGIDA)
 function showMetarWidget() {
     if (countdownInterval) clearInterval(countdownInterval);
     const c = document.getElementById('viewsContainer');
     c.classList.remove('hidden');
+    
+    // Limpia el contenedor e inserta el HTML base del widget
     c.innerHTML = `
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-bold text-slate-800">METAR/TAF para LEGT</h2>
             <button onclick="closeViews()" class="text-gray-500 hover:text-gray-800">&times;</button>
         </div>
-        <div>
-            <iframe src="https://metar-taf.com/es/embed-info/LEGT" 
-                    frameborder="0" 
-                    scrolling="no" 
-                    style="width: 100%; height: 440px;">
-            </iframe>
+        <div id="metar-widget-container">
+             <a href="https://metar-taf.com/es/metar/LEGT" id="metartaf-a8SOAmkr" style="font-size:18px; font-weight:500; color:#000; width:100%; height:435px; display:block">METAR Getafe Air Base</a>
         </div>
     `;
+
+    // Elimina cualquier script de widget antiguo para evitar duplicados
+    const oldScript = document.getElementById('metar-taf-script');
+    if (oldScript) {
+        oldScript.remove();
+    }
+
+    // Crea y añade el nuevo script dinámicamente para que se ejecute
+    const script = document.createElement('script');
+    script.id = 'metar-taf-script';
+    script.async = true;
+    script.defer = true;
+    script.crossOrigin = 'anonymous';
+    script.src = 'https://metar-taf.com/es/embed-js/LEGT?qnh=hPa&rh=rh&target=a8SOAmkr';
+    document.body.appendChild(script);
 }
+
 
 function editFlight(flightId) {
     const flight = flights.find(f => f.id == flightId);
@@ -489,26 +503,19 @@ async function downloadWfsPdf(flightId) {
             const planeNumberMatch = flight.aircraft.match(/\(Avión Nº (\d+)\)/);
             const planeNumber = planeNumberMatch ? planeNumberMatch[1] : '';
 
-            // Fila 1: GHR, Aircraft, Plane Number
             addText(flight.registrationNumber, 130, 104);
             addText(flight.aircraft.split(' - ')[1].split(' (')[0], 360, 120);
             addText(planeNumber, 429, 120);
-            
-            // Fila 2: Date, Flight In, STA, From, Flight Out, STD, To
             addText(flight.date, 76, 144);
             addText(flight.arrivalFlight, 132, 144);
             addText(flight.sta, 162, 144);
-            addText((flight.arrivalAirport || '').slice(-3), 195, 144); // FROM (Last 3 letters)
+            addText((flight.arrivalAirport || '').slice(-3), 195, 144);
             addText(flight.departureFlight, 257, 144);
             addText(flight.std, 307, 144);
-            addText((flight.departureAirport || '').slice(-3), 347, 144); // TO (Last 3 letters)
-            
-            // Fila 3: Payload, ATA/End Towing, End Towing Dep/Takeoff
+            addText((flight.departureAirport || '').slice(-3), 347, 144);
             addText(flight.operations['PAYLOAD']?.value, 115, 155);
             addText(`${flight.operations['ATA']?.utc || '--:--'} / ${flight.operations['END TOWING']?.utc || '--:--'}`, 214, 155, { align: 'center' });
             addText(`${flight.operations['END TOWING DEPARTURE']?.utc || '--:--'} / ${flight.operations['TAKEOFF']?.utc || '--:--'}`, 361, 155, { align: 'center' });
-            
-            // Operaciones
             addText(flight.operations['EQUIPOS LISTOS']?.utc, 235, 241);
             addText(flight.operations['GPU ON']?.utc, 190, 205);
             addText(flight.operations['GPU OFF']?.utc, 217, 205);
@@ -527,11 +534,8 @@ async function downloadWfsPdf(flightId) {
             addText(flight.operations['PARADA MOTORES']?.utc, 113, 508);
             addText(flight.operations['STARTUP']?.utc, 202, 508);
             addText(flight.operations['TAXI']?.utc, 259, 508);
-
-            // Crew Info (sin roles)
             const crewLine = [flight.coordinator, flight.driver, flight.wingwalker1, flight.wingwalker2].filter(Boolean).join(', ');
             addText(crewLine, 75, 520, { size: 8 });
-
             doc.save(`GHR-WFS-${flight.registrationNumber}.pdf`);
         };
         img.onerror = () => { alert("No se pudo cargar la plantilla 'ghr-wfs-template.png'. Asegúrate de que el archivo existe y tiene el nombre correcto."); };
@@ -607,7 +611,8 @@ function updateContinueButton() {
 
 function closeViews() {
     if (countdownInterval) clearInterval(countdownInterval);
-    document.getElementById('viewsContainer').classList.add('hidden');
+    const c = document.getElementById('viewsContainer');
+    c.classList.add('hidden');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
