@@ -515,7 +515,7 @@ async function downloadWfsPdf(flightId) {
             addText((flight.departureAirport || '').slice(-3), 347, 144);
             addText(flight.operations['PAYLOAD']?.value, 115, 155);
             addText(`${flight.operations['ATA']?.utc || '--:--'} / ${flight.operations['END TOWING']?.utc || '--:--'}`, 214, 155, { align: 'center' });
-            addText(`${flight.operations['END TOWING DEPARTURE']?.utc || '--:--'} / ${flight.operations['TAKEOFF']?.utc || '--:--'}`, 361, 155, { align: 'center' });
+            addText(`${flight.operations['START TOWING DEPARTURE']?.utc || '--:--'} / ${flight.operations['TAKEOFF']?.utc || '--:--'}`, 361, 155, { align: 'center' });
             addText(flight.operations['EQUIPOS LISTOS']?.utc, 235, 241);
             addText(flight.operations['GPU ON']?.utc, 190, 205);
             addText(flight.operations['GPU OFF']?.utc, 217, 205);
@@ -637,3 +637,4 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showCurrentFlight = showCurrentFlight;
   window.showMetarWidget = showMetarWidget;
 });
+
